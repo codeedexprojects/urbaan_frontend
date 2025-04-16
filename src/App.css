@@ -1,0 +1,59 @@
+*{
+  font-family: "Lora", serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* multi date picker styles */
+.rmdp-day.rmdp-today span {
+  background-color: #C21E56 !important;
+}
+.rmdp-panel-body li, .rmdp-panel-body li.bg-blue {
+  background-color: #C21E56 !important;
+}
+.rmdp-panel-body li .b-deselect {
+  background-color: #C21E56 !important;
+}
+.rmdp-week-day {
+  color: #C21E56 !important;
+}
+.rmdp-day.rmdp-selected span:not(.highlight) {
+  background-color: #C21E56 !important;
+}
+
+
+/* scrollbar style in usercategory page */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
+
+
+/* slick styles */
+.slick-slide {
+  padding: 0 5px; /* Add horizontal padding */
+}
+
+/* floating-whatsapp */
+
+.styles-module_whatsappButton__tVits{
+  position: fixed;
+  bottom: 80px !important;
+  right: 1rem !important;
+}
+
+

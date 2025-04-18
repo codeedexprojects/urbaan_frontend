@@ -440,7 +440,7 @@ const ProductDetails = () => {
                                             <li
                                                 key={size._id}
                                                 onClick={() => handleSizeClick(size.size, selectedColor)} // Pass color to handleSizeClick
-                                                className={`bg-white cursor-pointer uppercase shadow-md rounded-md w-10 h-10 flex items-center justify-center text-sm xl:text-sm lg:text-sm 
+                                                className={`bg-white cursor-pointer uppercase shadow-md rounded-md w-20 h-10 flex items-center justify-center text-sm xl:text-sm lg:text-sm 
                                                 ${selectedSize[selectedColor] === size.size ? '!bg-primary text-white' : ''}`}>
                                                 {size.size}
                                             </li>

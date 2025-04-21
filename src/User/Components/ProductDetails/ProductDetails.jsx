@@ -428,7 +428,7 @@ const ProductDetails = () => {
                                 <div className='mt-4'>
                                     <div className='flex items-center justify-between xl:justify-normal lg:justify-normal xl:gap-32 lg:gap-32 mb-2'>
                                         <h4 className='font-medium text-sm xl:text-base lg:text-base'>Select Size</h4>
-                                        {/* <h4 onClick={handleOpenSizeDrawer} className='text-primary underline font-medium text-xs xl:text-sm lg:text-sm cursor-pointer'>Size chart</h4> */}
+                                        <h4 onClick={handleOpenSizeDrawer} className='text-primary underline font-medium text-xs xl:text-sm lg:text-sm cursor-pointer'>Size chart</h4>
                                     </div>
                                     {/* Hint message */}
                                     {!selectedColor && (
@@ -572,7 +572,7 @@ const ProductDetails = () => {
             </div>
 
             {/* size chart drawer */}
-            {/* <SizeChart /> */}
+            <SizeChart />
 
             {/* popup for non-logged users */}
             <UserNotLoginPopup

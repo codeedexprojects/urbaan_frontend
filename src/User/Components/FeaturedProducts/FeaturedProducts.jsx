@@ -146,7 +146,8 @@ const FeaturedProducts = () => {
                                                     {product.description.slice(0, 20)+ '...'}
                                                 </p>
                                                 <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold mt-2'>
-                                                    ₹{product.offerPrice}
+                                                ₹{Math.floor(product.offerPrice)}
+
                                                 </p>
                                             </div>
                                         </div>

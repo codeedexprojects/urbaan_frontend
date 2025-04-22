@@ -37,6 +37,9 @@ const ProductDetails = () => {
     const [openImageModal, setOpenImageModal] = React.useState(false);
     const [zoomImage, setZoomImage] = useState(null);
     const [openUserNotLogin, setOpenUserNotLogin] = useState(false);
+    const [allSizeCharts, setAllSizeCharts] = useState([]);
+
+
 
     const userId = localStorage.getItem('userId');
     const userToken = localStorage.getItem('userToken');
@@ -117,6 +120,19 @@ const ProductDetails = () => {
             console.error('Error fetching product details:', error);
         }
     };
+    useEffect(() => {
+        // Fetch all available size charts
+        fetch(`${BASE_URL}/user/sizechart/get`)
+            .then((res) => res.json())
+            .then((data) => setAllSizeCharts(data))
+            .catch((err) => console.error("Failed to fetch size charts:", err));
+    }, []);
+
+    const sizeChartData =
+        allSizeCharts?.filter((chart) =>
+            productDetails?.sizeChartRefs?.includes(chart._id)
+        ) || [];
+
 
     const fetchSimilarProducts = async () => {
         if (!categoryId) {
@@ -235,7 +251,7 @@ const ProductDetails = () => {
         if (productDetails.colors?.length > 0) {
             const defaultColor = productDetails.colors[0].color;
             setSelectedColor(defaultColor);
-    
+
             // Get sizes for that color
             const sizesForColor = productDetails.colors[0].sizes; // Assuming this is how your sizes are structured
             if (sizesForColor?.length > 0) {
@@ -243,7 +259,7 @@ const ProductDetails = () => {
             }
         }
     }, [productDetails.colors]);
-    
+
 
 
 
@@ -397,11 +413,12 @@ const ProductDetails = () => {
 
                                 <div className='mt-2'>
                                     <ul className='flex items-center gap-3 xl:gap-4 lg:gap-4'>
-                                        <li className='text-deleteBg font-medium text-2xl xl:text-base lg:text-base'>- {productDetails.discount}%</li>
-                                        <li className='font-bold text-3xl xl:text-2xl lg:text-2xl'>₹{productDetails.offerPrice}</li>
+                                        <li className='text-deleteBg font-medium text-2xl xl:text-base lg:text-base'>- {Math.floor(productDetails.discount)}%</li>
+                                        <li className='font-bold text-3xl xl:text-2xl lg:text-2xl'>₹{Math.floor(productDetails.offerPrice)}
+                                    </li>
                                     </ul>
                                     <p className="text-gray-600 font-normal text-sm xl:text-base lg:text-base">
-                                        M.R.P : <s>{productDetails.actualPrice}</s>
+                                        M.R.P : <s>{Math.floor(productDetails.actualPrice)}</s>
                                     </p>
                                 </div>
 
@@ -571,8 +588,12 @@ const ProductDetails = () => {
                 </div>
             </div>
 
-            {/* size chart drawer */}
-            <SizeChart />
+
+
+
+            <SizeChart productSizeData={sizeChartData} />
+
+
 
             {/* popup for non-logged users */}
             <UserNotLoginPopup

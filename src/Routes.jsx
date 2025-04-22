@@ -45,6 +45,7 @@ import { ResetOtp } from './User/Components/ResetPassword/ResetOtp';
 import NewPassword from './User/Components/ResetPassword/NewPassword';
 import PrivacyPolicy from './User/Components/Footer/PrivacyPolicy';
 import TermsConditions from './User/Components/Footer/Terms&Conditions';
+import SizeCharts from './Admin/Components/MainComponents/SizeChart/SizeChart';
 
 const FullRoutes = () => {
     return (
@@ -111,6 +112,7 @@ const RoutesWithLocation = () => {
                     <Route path='addProduct' element={<PrivateRoute><AddProduct /></PrivateRoute>} />
                     <Route path='userDetails' element={<PrivateRoute><ViewUserDetails /></PrivateRoute>} />
                     <Route path='editProduct' element={<PrivateRoute><EditProduct /></PrivateRoute>} />
+                    <Route path='sizechart' element={<PrivateRoute><SizeCharts /></PrivateRoute>} />
                 </Route>
                 <Route path='*' element={<NotFound />} />
             </Routes>

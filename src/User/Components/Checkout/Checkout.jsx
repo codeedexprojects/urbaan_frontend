@@ -359,7 +359,7 @@ const Checkout = () => {
                                                         </ul>
                                                     </div>
                                                     <div className='mt-2'>
-                                                        <p className='text-secondary font-semibold text-xl'>₹{item.price}</p>
+                                                        <p className='text-secondary font-semibold text-xl'>₹{Math.floor(item.price)}</p>
                                                     </div>
                                                 </div>
                                             </div>

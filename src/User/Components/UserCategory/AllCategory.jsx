@@ -216,7 +216,7 @@ const AllCategory = () => {
                                             <div className='mt-3'>
                                                 <p className='font-medium text-sm xl:text-lg lg:text-lg truncate capitalize'>{product.title}</p>
                                                 <p className='text-gray-600 font-normal text-xs xl:text-sm lg:text-sm truncate overflow-hidden whitespace-nowrap w-40 xl:w-56 lg:w-48 capitalize'>{product.description}</p>
-                                                <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold mt-2'>₹{product.offerPrice}</p>
+                                                <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold mt-2'>₹{Math.floor(product.offerPrice)}</p>
                                             </div>
                                         </div>
                                     );

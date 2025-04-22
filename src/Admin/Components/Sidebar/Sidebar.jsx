@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react'
 import { IoMdTimer } from "react-icons/io";
 import { MdOutlineWindow, MdOutlineCategory, MdOutlineViewCarousel } from "react-icons/md";
 import { CgListTree } from "react-icons/cg";
-import { TbListCheck, TbFileInvoice, TbTruckDelivery } from "react-icons/tb";
+import { TbListCheck, TbFileInvoice, TbTruckDelivery , TbRulerMeasure  } from "react-icons/tb";
 import { RiCouponLine } from "react-icons/ri";
 import { PiUsersBold } from "react-icons/pi";
 import { Link, useLocation } from "react-router-dom";
@@ -29,6 +29,7 @@ export function AppSidebar() {
         "/adminHome/delivery": "delivery",
         "/adminHome/coupon": "coupon",
         "/adminHome/invoice": "invoice",
+        "/adminHome/sizechart":"sizechart"
     };
     
     const [activeLink, setActiveLink] = useState(pathMap[location.pathname] || "dashboard");
@@ -55,6 +56,7 @@ export function AppSidebar() {
                     { to: "/adminHome/category", label: "Category", icon: MdOutlineCategory, key: "category" },
                     { to: "/adminHome/subcategory", label: "Sub Category", icon: CgListTree, key: "subcategory" },
                     { to: "/adminHome/admincarousel", label: "Carousel", icon: MdOutlineViewCarousel, key: "admincarousel" },
+                    { to: "/adminHome/sizechart", label: "Size Chart", icon: TbRulerMeasure, key: "sizechart" },
                     { to: "/adminHome/delivery", label: "Delivery", icon: TbTruckDelivery, key: "delivery" },
                     { to: "/adminHome/coupon", label: "Coupons", icon: RiCouponLine, key: "coupon" },
                     { to: "/adminHome/invoice", label: "Invoice", icon: TbFileInvoice, key: "invoice" }

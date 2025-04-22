@@ -61,7 +61,7 @@ const ShopByCategory = () => {
 
                   </div>
                   <p className="text-secondary text-center text-xs xl:text-sm lg:text-sm font-normal capitalize truncate">
-                    {category.name}
+                    {category.name.slice(0,15)+'...'}
                   </p>
                 </Link>
               ))}

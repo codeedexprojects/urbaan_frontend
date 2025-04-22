@@ -69,8 +69,12 @@ const AddedCategories = ({ createEdit, handleEditCategory, adminCategory, setAdm
                     <>
                         {adminCategory.map((category) => (
                             <Card className="p-5 space-y-6 relative" key={category.id}>
-                                <div className='w-full h-72'>
-                                    <img src={category.imageUrl} alt={category.name} className='h-full w-full object-cover rounded-lg' />
+                                <div className="w-full h-full"> {/* Use h-full to make it responsive */}
+                                    <img
+                                        src={category.imageUrl}
+                                        alt={category.name}
+                                        className="h-90 w-full object-cover rounded-lg"
+                                    />
                                 </div>
                                 <div>
                                     <h2 className="font-bold text-2xl text-secondary capitalize">{category.name}</h2>
@@ -93,7 +97,8 @@ const AddedCategories = ({ createEdit, handleEditCategory, adminCategory, setAdm
                                                 handleEditCategory(category);
                                             }}
                                             className={`text-buttonBg bg-editBg w-14 h-7 flex justify-center items-center rounded-md
-                                        ${createEdit === "edit" && selectedCatId === category.id ? "!bg-buttonBg text-editBg" : ""}`}>
+                                       ${createEdit === "edit" && selectedCatId === category.id ? "!bg-buttonBg text-editBg" : ""}`}
+                                        >
                                             Edit
                                         </button>
                                         <button
@@ -107,6 +112,7 @@ const AddedCategories = ({ createEdit, handleEditCategory, adminCategory, setAdm
                                     </div>
                                 </div>
                             </Card>
+
                         ))
                         }
                     </>

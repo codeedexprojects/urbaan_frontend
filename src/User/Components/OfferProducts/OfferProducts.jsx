@@ -147,7 +147,8 @@ const OfferProducts = () => {
                                         <h4 className='font-medium text-sm xl:text-lg lg:text-lg capitalize truncate w-40 xl:w-60 lg:w-60'>{product.title.slice(0, 15)+ '...'} 
                                         </h4>
                                         <p className='text-gray-600 capitalize text-xs xl:text-sm lg:text-sm truncate w-40 xl:w-60 lg:w-60'>{product.description.slice(0,20)+'...'}</p>
-                                        <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold mt-2'>₹{product.offerPrice}</p>
+                                        <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold mt-2'>₹{Math.floor(product.offerPrice)}
+                                        </p>
                                     </div>
                                 </div>
                             );

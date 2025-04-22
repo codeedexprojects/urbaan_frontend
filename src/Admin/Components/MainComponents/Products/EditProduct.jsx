@@ -47,7 +47,48 @@ const EditProduct = () => {
     const [editProdManuAddress, setEditProdManuAddress] = useState('')
     const [categories, setCategories] = useState([])
     const [subCategories, setSubCategories] = useState([])
-    const [filteredSubCategories, setFilteredSubCategories] = useState([]); //for getting subcategory having same catgeory id
+    const [filteredSubCategories, setFilteredSubCategories] = useState([]);
+    const [lastChanged, setLastChanged] = useState('');
+    const [sizeChartOptions, setSizeChartOptions] = useState([]);
+    const [selectedSizeChartRefs, setSelectedSizeChartRefs] = useState([]);
+    // Fetch size charts
+    useEffect(() => {
+        const fetchSizeCharts = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/admin/sizechart/get`);
+                setSizeChartOptions(response.data);
+            } catch (error) {
+                console.log(error, ": Error fetching size charts");
+            }
+        };
+        fetchSizeCharts();
+    }, []);
+    useEffect(() => {
+        const actual = parseFloat(editProdActualPrice);
+        const discount = parseFloat(editProdDiscount);
+        const offer = parseFloat(editProdOfferPrice);
+
+        if (lastChanged === 'discount' && actual && discount >= 0) {
+            const newOffer = actual - (actual * (discount / 100));
+            setEditProdOfferPrice(newOffer.toFixed(2));
+        }
+
+        if (lastChanged === 'offerPrice' && actual && offer >= 0) {
+            const newDiscount = ((actual - offer) / actual) * 100;
+            setEditProdDiscount(newDiscount.toFixed(2));
+        }
+
+        // Optional: if actualPrice is changed and either discount or offer exists, you can update accordingly
+        if (lastChanged === 'actualPrice') {
+            if (discount >= 0) {
+                const newOffer = actual - (actual * (discount / 100));
+                setEditProdOfferPrice(newOffer.toFixed(2));
+            } else if (offer >= 0) {
+                const newDiscount = ((actual - offer) / actual) * 100;
+                setEditProdDiscount(newDiscount.toFixed(2));
+            }
+        }
+    }, [editProdActualPrice, editProdDiscount, editProdOfferPrice, lastChanged]);
 
 
     useEffect(() => {
@@ -89,6 +130,7 @@ const EditProduct = () => {
             setEditProdManuName(initialProducts.manufacturerName);
             setEditProdManuBrand(initialProducts.manufacturerBrand);
             setEditProdManuAddress(initialProducts.manufacturerAddress);
+            setSelectedSizeChartRefs(initialProducts.sizeChartRefs?.map(id => id.toString()) || []);
         }
     }, [initialProducts]);
 
@@ -126,15 +168,15 @@ const EditProduct = () => {
 
 
 
-    // price computation
-    useEffect(() => {
-        if (editProdActualPrice && editProdDiscount) {
-            // Convert discount percentage to decimal and calculate offer price
-            const discountValue = parseFloat(editProdDiscount) / 100;
-            const calculatedOfferPrice = editProdActualPrice - (editProdActualPrice * discountValue);
-            setEditProdOfferPrice(calculatedOfferPrice.toFixed(2)); // Limit to 2 decimal places
-        }
-    }, [editProdActualPrice, editProdDiscount]);
+    // // price computation
+    // useEffect(() => {
+    //     if (editProdActualPrice && editProdDiscount) {
+    //         // Convert discount percentage to decimal and calculate offer price
+    //         const discountValue = parseFloat(editProdDiscount) / 100;
+    //         const calculatedOfferPrice = editProdActualPrice - (editProdActualPrice * discountValue);
+    //         setEditProdOfferPrice(calculatedOfferPrice.toFixed(2)); // Limit to 2 decimal places
+    //     }
+    // }, [editProdActualPrice, editProdDiscount]);
 
 
     // subcategory display based on category id
@@ -248,6 +290,7 @@ const EditProduct = () => {
             editproductFormData.append('manufacturerName', editProdManuName);
             editproductFormData.append('manufacturerBrand', editProdManuBrand);
             editproductFormData.append('manufacturerAddress', editProdManuAddress);
+            editproductFormData.append('sizeChartRefs', JSON.stringify(selectedSizeChartRefs));
 
             // Debugging FormData
             for (const [key, value] of editproductFormData.entries()) {
@@ -286,6 +329,7 @@ const EditProduct = () => {
             setEditProdManuName('');
             setEditProdManuBrand('');
             setEditProdManuAddress('');
+            setSelectedSizeChartRefs([]);
         } catch (error) {
             console.error("Error in form submission:", error);
             console.error(error.response?.data || "No additional error details");
@@ -472,12 +516,15 @@ const EditProduct = () => {
                                     type="text"
                                     name="name"
                                     value={editProdActualPrice}
-                                    onChange={(e) => setEditProdActualPrice(e.target.value)}
+                                    onChange={(e) => {
+                                        setEditProdActualPrice(e.target.value);
+                                        setLastChanged('actualPrice');
+                                    }}
                                     id=""
                                     placeholder='Actual Price'
                                     className='border-[1px] w-full
-                                    bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
-                                     focus:outline-none'/>
+                                  bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
+                               focus:outline-none'/>
                             </div>
                             <div className='flex flex-col gap-1 w-1/3'>
                                 <label className='font-normal text-base'>Discount (%)</label>
@@ -485,12 +532,15 @@ const EditProduct = () => {
                                     type="text"
                                     name="name"
                                     value={editProdDiscount}
-                                    onChange={(e) => setEditProdDiscount(e.target.value)}
+                                    onChange={(e) => {
+                                        setEditProdDiscount(e.target.value);
+                                        setLastChanged('discount');
+                                    }}
                                     id=""
                                     placeholder='Discount'
                                     className='border-[1px] w-full 
-                                    bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
-                                     focus:outline-none'/>
+                                        bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
+                                       focus:outline-none'/>
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor="" className='font-normal text-base'>Offer Price</label>
@@ -498,12 +548,15 @@ const EditProduct = () => {
                                     type="text"
                                     name="name"
                                     value={editProdOfferPrice}
-                                    onChange={(e) => setEditProdOfferPrice(e.target.value)}
+                                    onChange={(e) => {
+                                        setEditProdOfferPrice(e.target.value);
+                                        setLastChanged('offerPrice');
+                                    }}
                                     id=""
                                     placeholder='Offer price'
                                     className='border-[1px] w-full
-                                    bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
-                                     focus:outline-none'/>
+                                     bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
+                                   focus:outline-none'/>
                             </div>
                         </div>
                         {/* checkboxes eg:latest, featured, offer */}
@@ -828,7 +881,7 @@ const EditProduct = () => {
                                             <Button
                                                 onClick={() => handleAddSizeField(colorIndex)}
                                                 className='bg-gray-100/50 border border-gray-300 text-secondary shadow-none rounded-3xl w-11 h-10 p-2 flex items-center justify-center 
-                            font-custom font-normal capitalize text-sm hover:shadow-none'
+                                   font-custom font-normal capitalize text-sm hover:shadow-none'
                                             ><FaPlus /></Button>
                                             <div className='flex items-center gap-2 w-full'>
                                                 <select
@@ -873,6 +926,35 @@ const EditProduct = () => {
                                         </div>
                                     ))}
                                 </div>
+                                {/* Size Chart Selection */}
+<div className="flex flex-col gap-2 mt-4">
+    <label className="text-sm font-medium">Select Size Charts</label>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+        {sizeChartOptions.map((chart) => {
+            const isChecked = selectedSizeChartRefs.includes(chart._id);
+            
+            return (
+                <label
+                    key={chart._id}
+                    className="flex items-center gap-2 bg-gray-100/50 p-2 rounded-md border cursor-pointer"
+                >
+                    <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => {
+                            if (isChecked) {
+                                setSelectedSizeChartRefs(prev => prev.filter(id => id !== chart._id));
+                            } else {
+                                setSelectedSizeChartRefs(prev => [...prev, chart._id]);
+                            }
+                        }}
+                    />
+                    <span className="text-sm">{chart.title}</span>
+                </label>
+            );
+        })}
+    </div>
+</div>
                             </div>
                         ))}
                     </div>

@@ -67,7 +67,7 @@ const FilterBySize = ({ handleSizeFilter }) => {
                         <MenuItem
                             key={index}
                             onClick={() => handleSizeSelection(size)}
-                            className="uppercase font-medium font-custom text-gray-600 cursor-pointer border-2 rounded-full w-10 h-10
+                            className="uppercase font-medium font-custom text-gray-600 cursor-pointer border-2 rounded-full w-20 h-10
                                     flex justify-center items-center mb-1"
                         >
                             {size}

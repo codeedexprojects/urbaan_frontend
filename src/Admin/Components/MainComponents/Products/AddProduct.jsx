@@ -24,6 +24,21 @@ const AddProduct = () => {
     const [productDiscount, setProductDiscount] = useState('')
     const [productOfferPrice, setProductOfferPrice] = useState('')
     const [lastChanged, setLastChanged] = useState('');
+    const [sizeChartOptions, setSizeChartOptions] = useState([]);
+    const [selectedSizeChartRefs, setSelectedSizeChartRefs] = useState([]);
+
+    useEffect(() => {
+        axios.get(`${BASE_URL}/admin/sizechart/get`)
+            .then(res => {
+                console.log('API response:', res.data);
+                setSizeChartOptions(res.data);
+            })
+            .catch(err => console.log(err));
+    }, []);
+
+    useEffect(() => {
+        console.log('Selected charts:', selectedSizeChartRefs);
+    }, [selectedSizeChartRefs]);
 
     const [checkboxes, setCheckboxes] = useState({
         latest: false,
@@ -211,6 +226,12 @@ const AddProduct = () => {
             productFormData.append('manufacturerName', productManuName);
             productFormData.append('manufacturerBrand', productManuBrand);
             productFormData.append('manufacturerAddress', productManuAddress);
+            if (selectedSizeChartRefs.length > 0) {
+                selectedSizeChartRefs.forEach((id) => {
+                    productFormData.append('sizeChartRefs', id); // Append each ID individually
+                });
+            }
+            
 
             // Debugging: Log the FormData
             for (const [key, value] of productFormData.entries()) {
@@ -242,6 +263,7 @@ const AddProduct = () => {
             setProductManuName('');
             setProductManuBrand('');
             setProductManuAddress('');
+            setSelectedSizeChartRefs([]); 
         } catch (error) {
             console.error("Error in form submission:", error?.response?.data || error.message);
             alert(error?.response?.data?.message || "Product is not created");
@@ -725,7 +747,7 @@ const AddProduct = () => {
                                             <Button
                                                 onClick={() => handleAddSizeField(colorIndex)}
                                                 className='bg-gray-100/50 border border-gray-300 text-secondary shadow-none rounded-3xl w-11 h-10 p-2 flex items-center justify-center 
-                            font-custom font-normal capitalize text-sm hover:shadow-none'
+                                  font-custom font-normal capitalize text-sm hover:shadow-none'
                                             ><FaPlus /></Button>
                                             <div className='flex items-center gap-2 w-full'>
                                                 <select
@@ -769,6 +791,34 @@ const AddProduct = () => {
                                             />
                                         </div>
                                     ))}
+                                </div>
+                                <div className="flex flex-col gap-2 mt-4">
+                                    <label className="text-sm font-medium">Select Size Charts</label>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                                        {sizeChartOptions.map((chart) => {
+                                            const isChecked = selectedSizeChartRefs.includes(chart._id); // Use chart._id, not chart.id
+
+                                            return (
+                                                <label
+                                                    key={chart._id} // Also update key to use _id
+                                                    className="flex items-center gap-2 bg-gray-100/50 p-2 rounded-md border cursor-pointer"
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isChecked}
+                                                        onChange={() => {
+                                                            if (isChecked) {
+                                                                setSelectedSizeChartRefs((prev) => prev.filter(id => id !== chart._id)); // Use _id
+                                                            } else {
+                                                                setSelectedSizeChartRefs((prev) => [...prev, chart._id]); // Use _id
+                                                            }
+                                                        }}
+                                                    />
+                                                    <span className="text-sm">{chart.title}</span>
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
                             </div>
                         ))}

@@ -140,7 +140,8 @@ const LatestProducts = () => {
                       <p className='text-gray-600 font-normal text-xs xl:text-sm lg:text-sm capitalize truncate overflow-hidden 
                       whitespace-nowrap w-40 xl:w-60 lg:w-60'>{product.description.slice(0, 20)+ '...'}</p>
                       <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold mt-2'>
-                        ₹{product.offerPrice}
+                      ₹{Math.floor(product.offerPrice)}
+
                       </p>
                     </div>
                   </div>

@@ -370,45 +370,52 @@ const Checkout = () => {
                                 <Card className='p-4 xl:p-6 lg:p-6'>
                                     <ul className='space-y-2'>
                                         <li className='flex items-center justify-between'>
-                                            <span className='text-secondary flex items-center gap-3'>Subtotal
-                                                <span className='text-sm'>(Including discount)</span></span>
-                                            <span className='text-secondary font-bold'>₹{checkoutDetails?.discountedPrice || 0.00}</span>
+                                            <span className='text-secondary flex items-center gap-3'>
+                                                Subtotal
+                                                <span className='text-sm'>(Including discount)</span>
+                                            </span>
+                                            <span className='text-secondary font-bold'>
+                                                ₹{Math.floor(checkoutDetails?.discountedPrice || 0.00)}
+                                            </span>
                                         </li>
+
                                         <li className='flex items-center justify-between'>
                                             <span className='text-secondary'>Shipping</span>
                                             <span className='text-secondary font-bold'>
                                                 ₹{calculateDeliveryCharge(checkoutDetails?.cartItems)}
                                             </span>
                                         </li>
+
                                         {checkoutDetails?.coupenAmount ? (
-                                            <>
-                                                <li className='flex items-center justify-between'>
-                                                    <span className='text-secondary'>Discount</span>
-                                                    <span className='text-secondary font-bold'>
-                                                        ₹{checkoutDetails?.coupen.discountValue || 0.00}
-                                                        {checkoutDetails?.coupen.discountType === "percentage" ? "%" : ""}
-                                                    </span>
-                                                </li>
-                                            </>
+                                            <li className='flex items-center justify-between'>
+                                                <span className='text-secondary'>Discount</span>
+                                                <span className='text-secondary font-bold'>
+                                                    ₹{Math.floor(checkoutDetails?.coupen.discountValue || 0.00)}
+                                                    {checkoutDetails?.coupen.discountType === "percentage" ? "%" : ""}
+                                                </span>
+                                            </li>
                                         ) : (
-                                            <>
-                                                <li className='flex items-center justify-between'>
-                                                    <span className='text-secondary'>Discount</span>
-                                                    <span className='text-primary font-normal text-xs'>
-                                                        *No coupon applied
-                                                    </span>
-                                                </li>
-                                            </>
-                                        )
-                                        }
+                                            <li className='flex items-center justify-between'>
+                                                <span className='text-secondary'>Discount</span>
+                                                <span className='text-primary font-normal text-xs'>*No coupon applied</span>
+                                            </li>
+                                        )}
+
                                         <li className='flex items-center justify-between'>
                                             <span className='text-secondary'>Total</span>
                                             <span className='text-secondary font-bold'>
-                                                ₹{calculateTotalPrice()}
+                                                ₹{Math.floor(calculateTotalPrice())}
                                             </span>
                                         </li>
 
+                                        <li className='flex items-center justify-between'>
+                                            <span className='text-secondary'><b>Please Note</b></span>
+                                            <span className='text-primary text-xs cursor-pointer'>
+                                                <Link to="/please-note">View</Link>
+                                            </span>
+                                        </li>
                                     </ul>
+
                                     <div className='mt-5'>
                                         <h3 className='font-medium text-sm xl:text-base lg:text-base text-secondary'>Payment Options</h3>
                                         <div className='flex flex-col xl:flex-row lg:flex-row lg:items-center xl:items-center gap-0 xl:gap-4 lg:gap-4'>

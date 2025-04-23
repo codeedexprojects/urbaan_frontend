@@ -15,6 +15,8 @@ import AddProduct from "./Admin/Components/MainComponents/Products/AddProduct";
 import ViewUserDetails from "./Admin/Components/MainComponents/UsersList/ViewUserManagement";
 import EditProduct from "./Admin/Components/MainComponents/Products/EditProduct";
 import AdminCarousel from './Admin/Components/MainComponents/AdminCarousel/AdminCarousel';
+import SizeCharts from './Admin/Components/MainComponents/SizeChart/SizeChart';
+
 
 import ScrollToTop from "./ScrollToTop";
 import { LoginSignUpUser } from './User/LoginSignUpUser/LoginSignUpUser';
@@ -45,7 +47,11 @@ import { ResetOtp } from './User/Components/ResetPassword/ResetOtp';
 import NewPassword from './User/Components/ResetPassword/NewPassword';
 import PrivacyPolicy from './User/Components/Footer/PrivacyPolicy';
 import TermsConditions from './User/Components/Footer/Terms&Conditions';
-import SizeCharts from './Admin/Components/MainComponents/SizeChart/SizeChart';
+import ShippingPolicy from './User/Components/Footer/ShippingPolicy'
+import RefundPolicy from './User/Components/Footer/RefundPolicy'
+import PleaseNote from './User/Components/Checkout/PleaseNote'
+import PricingPolicy from './User/Components/Footer/PricingPolicy'
+
 
 const FullRoutes = () => {
     return (
@@ -95,6 +101,10 @@ const RoutesWithLocation = () => {
                 <Route path='/new-password' element={<NewPassword />} />
                 <Route path='/privacy-policy' element={<PrivacyPolicy />} />
                 <Route path='/terms-conditions' element={<TermsConditions />} />
+                <Route path='/shipping-policy' element={<ShippingPolicy />} />
+                <Route path='/refund-policy' element={<RefundPolicy />} />
+                <Route path='/pricing-policy' element={<PricingPolicy />} />
+                <Route path='/please-note' element={<PleaseNote />} />
 
                 {/* Routes of admin section */}
                 <Route path='/admin-login' element={<LoginSignUp />} />

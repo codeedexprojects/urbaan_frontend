@@ -74,19 +74,31 @@ const Footer = () => {
 
         {/* privacy policy */}
         <div className='space-y-10'>
-          <ul className='flex flex-col lg:flex-row xl:flex-row lg:items-center xl:items-center justify-center
-            xl:gap-20 lg:gap-20 gap-5 mt-20'>
-            <li className='text-xs xl:text-sm lg:text-sm md:text-sm font-light cursor-pointer'>
-              <Link to='/privacy-policy'>Privacy Policy</Link>
-            </li>
-            <li className='text-xs xl:text-sm lg:text-sm md:text-sm font-light cursor-pointer'>
-              <Link to='/terms-conditions'>Terms & Conditions</Link>
-            </li>
-          </ul>
+  <ul className='flex flex-col lg:flex-row xl:flex-row lg:items-center xl:items-center justify-center
+    xl:gap-20 lg:gap-20 gap-5 mt-20'>
+    <li className='text-xs xl:text-sm lg:text-sm md:text-sm font-light cursor-pointer'>
+      <Link to='/privacy-policy'>Privacy Policy</Link>
+    </li>
+    <li className='text-xs xl:text-sm lg:text-sm md:text-sm font-light cursor-pointer'>
+      <Link to='/terms-conditions'>Terms & Conditions</Link>
+    </li>
+    <li className='text-xs xl:text-sm lg:text-sm md:text-sm font-light cursor-pointer'>
+      <Link to='/shipping-policy'>Shipping Policy</Link>
+    </li>
+    <li className='text-xs xl:text-sm lg:text-sm md:text-sm font-light cursor-pointer'>
+      <Link to='/refund-policy'>Refund & Cancellation Policy</Link>
+    </li>
+    <li className='text-xs xl:text-sm lg:text-sm md:text-sm font-light cursor-pointer'>
+      <Link to='/pricing-policy'>Pricing Policy</Link>
+    </li>
+  </ul>
 
-          {/* copyright */}
-          <p className='text-xs xl:text-sm lg:text-sm md:text-sm font-light text-center cursor-pointer'>Copyright &copy; {new Date().getFullYear()} • URBAAN COLLECTIONS.</p>
-        </div>
+  {/* copyright */}
+  <p className='text-xs xl:text-sm lg:text-sm md:text-sm font-light text-center cursor-pointer'>
+    Copyright &copy; {new Date().getFullYear()} • URBAAN COLLECTIONS.
+  </p>
+</div>
+
       </div>
     </>
   )

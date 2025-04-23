@@ -4,92 +4,54 @@ const TermsConditions = () => {
     return (
         <>
             <div className="py-10 px-6 md:px-20 lg:px-40">
-                <h1 className="text-center text-3xl font-bold mb-8">Terms and Conditions</h1>
-                <p className="mb-4 text-sm text-gray-600">Effective Date: Jan 20, 2025</p>
+                <h1 className="text-center text-3xl font-bold mb-8">Terms & Conditions</h1>
+                <p className="mb-4 text-sm text-gray-600">Last Updated: 22 APRIL 2025</p>
 
-                <h2 className="text-lg font-semibold mb-2">1. Introduction</h2>
                 <p className="mb-4">
-                    Welcome to URBAAN COLLECTIONS, a fashion and lifestyle e-commerce platform
-                    located at 3rd Floor, Oberon Mall, Edappally, Ernakulam, Kerala - 682024. By accessing
-                    or using our website and/or purchasing from us, you agree to abide by the following
-                    Terms and Conditions.
+                    Your use of the Website and services and tools are governed by the following terms and conditions ("Terms of Use") as applicable to the Website including the applicable policies which are incorporated herein by way of reference. If you transact on the Website, You shall be subject to the policies that are applicable to the Website for such transactions.
                 </p>
 
-                <h2 className="text-lg font-semibold mb-2">2. Changes to Terms</h2>
+                <h2 className="text-lg font-semibold mb-2">1. Revisions</h2>
                 <p className="mb-4">
-                    We reserve the right to update or modify these terms at any time, without prior notice.
-                    Any changes will be effective immediately upon posting on this page. Please check
-                    this page periodically to ensure you are aware of the most current terms.
+                    The materials appearing on the website could include technical, typographical, or photographic errors. URBAAN COLLECTIONS does not warrant that any of the materials on its website are accurate, complete, or current. The materials, contents, and photos on the site can be changed at any time without notice.
                 </p>
 
-                <h2 className="text-lg font-semibold mb-2">3. Use of Website</h2>
+                <h2 className="text-lg font-semibold mb-2">2. Links</h2>
                 <p className="mb-4">
-                    By using this website, you confirm that you are either of legal age to form a binding
-                    contract or have the consent of a guardian. You also agree to use the website only for
-                    lawful purposes and in accordance with these terms.
+                    URBAAN COLLECTIONS has not reviewed all of the sites linked to its Internet web site and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement. Use of any such linked web site is at the user's own risk.
                 </p>
 
-                <h2 className="text-lg font-semibold mb-2">4. Accuracy of Information</h2>
+                <h2 className="text-lg font-semibold mb-2">3. Site Terms of Use Modifications</h2>
                 <p className="mb-4">
-                    While we strive to ensure that all information provided on our website is accurate and
-                    up-to-date, we do not guarantee the accuracy, timeliness, performance, or suitability of
-                    the content. We will not be liable for any inaccuracies or errors, to the fullest extent
-                    permitted by law.
+                    URBAAN COLLECTIONS have the right to revise these terms of use for its web site at any time without notice. By using this web site you are agreeing to be bound by the then current version of these Terms and Conditions of Use.
                 </p>
 
-                <h2 className="text-lg font-semibold mb-2">5. Intellectual Property</h2>
+                <h2 className="text-lg font-semibold mb-2">4. Your Account and Registration Obligations</h2>
                 <p className="mb-4">
-                    All content on this website, including text, images, logos, and graphics, is the property
-                    of URBAAN COLLECTIONS or its licensors. You may not reproduce, distribute, or
-                    display any of the material without prior written consent.
+                    By using the Website, You shall be responsible for maintaining the confidentiality of your Login Name and Password, and you shall be responsible for all activities that occur under your Login Name. You agree that if any information provided by You that is inconsistent, inaccurate, not current or incomplete, or We have reasonable grounds to suspect that such information is inconsistent, inaccurate, not current or incomplete, or not in accordance with these Terms of Use, We reserve the right to indefinitely suspend or terminate or block access of your membership on the Website and refuse You access to the Website.
                 </p>
 
-                <h2 className="text-lg font-semibold mb-2">6. Third-Party Links</h2>
+                <h2 className="text-lg font-semibold mb-2">5. Governing Law</h2>
                 <p className="mb-4">
-                    Our website may contain links to third-party sites. These links are provided for your
-                    convenience and do not imply endorsement of the content on those sites. URBAAN
-                    COLLECTIONS is not responsible for the content or practices of these websites.
+                    Any claim relating to the website of URBAAN COLLECTIONS shall be governed by the laws of the State of Kerala without regard to its conflict of law provisions.
                 </p>
 
-                <h2 className="text-lg font-semibold mb-2">7. Purchase and Payment</h2>
+                <h2 className="text-lg font-semibold mb-2">Disclaimer</h2>
                 <p className="mb-4">
-                    All orders placed through the website are subject to acceptance by URBAAN
-                    COLLECTIONS. URBAAN COLLECTIONS reserves the right to refuse or cancel any
-                    order, at its discretion. Prices and availability of products are subject to change without
-                    notice.
+                    Your use of the Website and services and tools are governed by the following terms and conditions ("Terms of Use") as applicable to the Website including the applicable policies. If you transact on the Website, You shall be subject to the policies that are applicable to the Website for such transactions. If you require any more information or have any questions about our site's disclaimer, please feel free to contact us.
                 </p>
 
-                <h2 className="text-lg font-semibold mb-2">8. Cancellations and Refunds</h2>
+                <h3 className="font-semibold mb-2">Disclaimers for URBAAN COLLECTIONS:</h3>
                 <p className="mb-4">
-                    Cancellations are accepted only within 7 days of placing the order, provided the order
-                    has not been processed or shipped. Products that are perishable (such as flowers,
-                    eatables) cannot be canceled. Refunds or replacements are available only if the
-                    delivered product is of poor quality. Any damaged or defective items must be reported
-                    to our Customer Service team within 7 days of receipt for investigation and resolution.
-                    Refunds, if approved, will be processed within 6-8 business days.
+                    All the information on this website is published in good faith and for general information purpose only. URBAAN COLLECTIONS does not make any warranties about the completeness, reliability, and accuracy of this information. Any action you take upon the information you find on this website is strictly at your own risk. We will not be liable for any losses and/or damages in connection with the use of our website.
                 </p>
 
-                <h2 className="text-lg font-semibold mb-2">9. Shipping and Delivery</h2>
+                <h3 className="font-semibold mb-2">Consent</h3>
                 <p className="mb-4">
-                    Domestic orders are shipped within 0-7 days, while international orders may take longer.
-                    We are not liable for delays caused by courier companies or postal authorities. Delivery
-                    will be made to the address provided at checkout.
+                    By using our website, you hereby consent to our disclaimer and agree to its terms.
                 </p>
 
-                <h2 className="text-lg font-semibold mb-2">10. Limitation of Liability</h2>
-                <p className="mb-4">
-                    We are not liable for any direct, indirect, or consequential damages arising from the use
-                    of this website or the purchase of products. In no event will our liability exceed the total
-                    amount paid by you for the order that caused the damage.
-                </p>
-
-                <h2 className="text-lg font-semibold mb-2">11. Governing Law</h2>
-                <p className="mb-4">
-                    These Terms and Conditions are governed by the laws of India. Any dispute arising from
-                    the use of this website will be resolved in accordance with Indian law.
-                </p>
-
-                <h2 className="text-lg font-semibold mb-2">12. Contact Us</h2>
+                <h2 className="text-lg font-semibold mb-2">Contact Us</h2>
                 <p className="mb-4">
                     If you have any questions regarding these Terms and Conditions, you can reach us at:
                 </p>

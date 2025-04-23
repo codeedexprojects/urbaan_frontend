@@ -68,61 +68,64 @@ const SimilarProducts = ({ similarProducts, fetchSimilarProducts }) => {
             <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 xl:grid-cols-5 lg:grid-cols-5 gap-5 pb-10'>
                 {similarProducts.length === 0 ? (
                     <>
-                    <p className='col-span-5 flex justify-center items-center h-[50vh]'>No similar products</p>
+                        <p className='col-span-5 flex justify-center items-center h-[50vh]'>No similar products</p>
                     </>
-                ): (
+                ) : (
                     <>
-                     {similarProducts.map(product => {
-                    return (
-                        <div className='group relative' key={product._id}>
-                            <Link
-                                // to="/product-details"
-                                state={{
-                                    productId: product._id,
-                                    categoryId: product.category._id // Pass the category ID
-                                }}
-                                className="cursor-pointer"
-                            // onClick={handleClick}
-                            >
-                                <div className='w-full h-52 xl:h-80 lg:h-80 relative rounded-xl overflow-hidden'>
-                                    <img
-                                        src={product.images[0]}
-                                        alt={product.title}
-                                        className='w-full h-full object-cover rounded-xl shadow-md
+                        {similarProducts.map(product => {
+                            return (
+                                <div className='group relative' key={product._id}>
+                                    <Link
+                                        // to="/product-details"
+                                        state={{
+                                            productId: product._id,
+                                            categoryId: product.category._id // Pass the category ID
+                                        }}
+                                        className="cursor-pointer"
+                                    // onClick={handleClick}
+                                    >
+                                        <div className='w-full h-52 xl:h-80 lg:h-80 relative rounded-xl overflow-hidden'>
+                                            <img
+                                                src={product.images[0]}
+                                                alt={product.title}
+                                                className='w-full h-full object-cover rounded-xl shadow-md
                                         transition transform scale-100 duration-500 ease-in-out cursor-pointer group-hover:scale-105'
-                                        onError={(e) => e.target.src = '/no-image.jpg'}
+                                                onError={(e) => e.target.src = '/no-image.jpg'}
+                                            />
+                                        </div>
+                                    </Link>
+                                    <MdZoomOutMap
+                                        onClick={() => handleOpenImageZoom(product.images, 0)}
+                                        className='absolute top-2 left-2 cursor-pointer text-gray-600 bg-white w-7 h-7 xl:w-8 xl:h-8 lg:w-8 lg:h-8 p-1 rounded-full shadow-md'
                                     />
-                                </div>
-                            </Link>
-                            <MdZoomOutMap
-                                onClick={() => handleOpenImageZoom(product.images, 0)}
-                                className='absolute top-2 left-2 cursor-pointer text-gray-600 bg-white w-7 h-7 xl:w-8 xl:h-8 lg:w-8 lg:h-8 p-1 rounded-full shadow-md'
-                            />
-                            {product.isInWishlist || heartIcons[product._id] ? (
-                                <RiHeart3Fill
-                                    onClick={() => handleWishlist(product._id, product.title)}
-                                    className='absolute top-2 right-2 cursor-pointer text-primary bg-white w-7 h-7 xl:w-8 xl:h-8 lg:w-8 lg:h-8 p-1 rounded-full shadow-md'
-                                />
-                            ) : (
-                                <RiHeart3Line
-                                    onClick={() => handleWishlist(product._id, product.title)}
-                                    className='absolute top-2 right-2 cursor-pointer bg-white text-gray-600 w-7 h-7 xl:w-8 xl:h-8 lg:w-8 lg:h-8 p-1 rounded-full shadow-md'
-                                />
-                            )}
-                            <div className='mt-3'>
-                                <h4 className='font-medium text-sm xl:text-lg lg:text-lg capitalize truncate overflow-hidden 
-                                    whitespace-nowrap w-40 xl:w-60 lg:w-60'>{product.title}</h4>
-                                <p className='text-gray-600 font-normal text-xs xl:text-sm lg:text-sm capitalize truncate overflow-hidden 
+                                    {product.isInWishlist || heartIcons[product._id] ? (
+                                        <RiHeart3Fill
+                                            onClick={() => handleWishlist(product._id, product.title)}
+                                            className='absolute top-2 right-2 cursor-pointer text-primary bg-white w-7 h-7 xl:w-8 xl:h-8 lg:w-8 lg:h-8 p-1 rounded-full shadow-md'
+                                        />
+                                    ) : (
+                                        <RiHeart3Line
+                                            onClick={() => handleWishlist(product._id, product.title)}
+                                            className='absolute top-2 right-2 cursor-pointer bg-white text-gray-600 w-7 h-7 xl:w-8 xl:h-8 lg:w-8 lg:h-8 p-1 rounded-full shadow-md'
+                                        />
+                                    )}
+                                    <div className='mt-3'>
+                                        <h4 className='font-medium text-sm xl:text-lg lg:text-lg capitalize truncate overflow-hidden 
+                                    whitespace-nowrap w-40 xl:w-60 lg:w-60'>{product.title.slice(0, 15) + '...'}</h4>
+                                        <p className='text-gray-600 font-normal text-xs xl:text-sm lg:text-sm capitalize truncate overflow-hidden 
                                     whitespace-nowrap w-40 xl:w-60 lg:w-60'>
-                                    {product.description}
-                                </p>
-                                <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold mt-2'>
-                                    ₹{Math.floor(product.offerPrice)}
-                                </p>
-                            </div>
-                        </div>
-                    )
-                })}
+                                            {product.description.slice(0, 20) + '...'}
+                                        </p>
+                                        <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold mt-2'>
+                                            ₹{product.offerPrice % 1 >= 0.9
+                                                ? Math.ceil(product.offerPrice)
+                                                : Math.floor(product.offerPrice)}
+
+                                        </p>
+                                    </div>
+                                </div>
+                            )
+                        })}
                     </>
                 )}
             </div>

@@ -123,7 +123,7 @@ const ListView = ({ products, isLoading, selectedProductId, setSelectedProductId
                                                                 variant="small"
                                                                 className="font-normal font-custom text-sm"
                                                             >
-                                                                ₹{product.offerPrice}
+                                                              ₹{product.offerPrice % 1 >= 0.9 ? Math.ceil(product.offerPrice) : Math.floor(product.offerPrice)}
                                                             </Typography>
                                                         </td>
                                                         <td className={classes}>

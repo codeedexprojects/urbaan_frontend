@@ -258,7 +258,8 @@ const CartItems = () => {
                                     className="text-deleteBg cursor-pointer hover:text-primary"
                                 />
 
-                                <p className='text-secondary font-semibold text-xl'>₹{Math.floor(item.price)}</p>
+                                <p className='text-secondary font-semibold text-xl'>₹{item.price % 1 >= 0.9 ? Math.ceil(item.price) : Math.floor(item.price)}
+                                </p>
                             </div>
                         </div>
                     </Card>

@@ -66,7 +66,7 @@ const CartDetails = () => {
     //handle address with defaultAddress true
     useEffect(() => {
         const fetchDefaultAddress = async () => {
-            if(!token || !userId){
+            if (!token || !userId) {
                 return;
             }
             try {
@@ -119,14 +119,20 @@ const CartDetails = () => {
                     <li className='flex justify-between items-center'>
                         <span className='font-normal text-sm'>Sub Total</span>
                         <span className='text-secondary font-medium text-sm'>
-                            ₹{Math.floor(viewCart?.totalPrice || 0.00)}
+                            ₹{viewCart?.totalPrice % 1 >= 0.9
+                                ? Math.ceil(viewCart?.totalPrice)
+                                : Math.floor(viewCart?.totalPrice || 0.00)}
+
                         </span>
 
                     </li>
                     <li className='flex justify-between items-center'>
                         <span className='font-normal text-sm'>Discount</span>
                         <span className='text-secondary font-medium text-sm'>
-                            ₹{Math.floor(viewCart?.coupenAmount || 0.00)}
+                            ₹{viewCart?.coupenAmount % 1 >= 0.9
+                                ? Math.ceil(viewCart?.coupenAmount)
+                                : Math.floor(viewCart?.coupenAmount || 0.00)}
+
                             {viewCart?.discountType === 'percentage' ? '%' : ''}
                         </span>
                     </li>
@@ -135,7 +141,10 @@ const CartDetails = () => {
                 <ul className='mt-2'>
                     <li className='flex justify-between items-center'>
                         <span className='text-secondary font-medium text-sm'>Total</span>
-                        <span className='text-secondary font-bold text-lg'>₹{Math.floor(viewCart?.discountedTotal || 0.00)}</span>
+                        <span className='text-secondary font-bold text-lg'>₹{viewCart?.discountedTotal % 1 >= 0.9
+                            ? Math.ceil(viewCart?.discountedTotal)
+                            : Math.floor(viewCart?.discountedTotal || 0.00)}
+                        </span>
                     </li>
                 </ul>
             </Card>

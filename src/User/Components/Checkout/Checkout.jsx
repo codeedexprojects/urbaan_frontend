@@ -359,8 +359,11 @@ const Checkout = () => {
                                                         </ul>
                                                     </div>
                                                     <div className='mt-2'>
-                                                        <p className='text-secondary font-semibold text-xl'>₹{Math.floor(item.price)}</p>
+                                                        <p className='text-secondary font-semibold text-xl'>
+                                                            ₹{(item.price % 1 >= 0.9) ? Math.ceil(item.price) : Math.floor(item.price)}
+                                                        </p>
                                                     </div>
+
                                                 </div>
                                             </div>
                                         ))}
@@ -375,22 +378,31 @@ const Checkout = () => {
                                                 <span className='text-sm'>(Including discount)</span>
                                             </span>
                                             <span className='text-secondary font-bold'>
-                                                ₹{Math.floor(checkoutDetails?.discountedPrice || 0.00)}
+                                                ₹{(checkoutDetails?.discountedPrice % 1 >= 0.9)
+                                                    ? Math.ceil(checkoutDetails?.discountedPrice)
+                                                    : Math.floor(checkoutDetails?.discountedPrice || 0.00)}
                                             </span>
+
                                         </li>
 
                                         <li className='flex items-center justify-between'>
                                             <span className='text-secondary'>Shipping</span>
                                             <span className='text-secondary font-bold'>
-                                                ₹{calculateDeliveryCharge(checkoutDetails?.cartItems)}
+                                                ₹{(calculateDeliveryCharge(checkoutDetails?.cartItems) % 1 >= 0.9)
+                                                    ? Math.ceil(calculateDeliveryCharge(checkoutDetails?.cartItems))
+                                                    : Math.floor(calculateDeliveryCharge(checkoutDetails?.cartItems))}
                                             </span>
+
                                         </li>
 
                                         {checkoutDetails?.coupenAmount ? (
                                             <li className='flex items-center justify-between'>
                                                 <span className='text-secondary'>Discount</span>
                                                 <span className='text-secondary font-bold'>
-                                                    ₹{Math.floor(checkoutDetails?.coupen.discountValue || 0.00)}
+                                                    ₹{(checkoutDetails?.coupen.discountValue % 1 >= 0.9)
+                                                        ? Math.ceil(checkoutDetails?.coupen.discountValue || 0.00)
+                                                        : Math.floor(checkoutDetails?.coupen.discountValue || 0.00)}
+
                                                     {checkoutDetails?.coupen.discountType === "percentage" ? "%" : ""}
                                                 </span>
                                             </li>
@@ -404,8 +416,11 @@ const Checkout = () => {
                                         <li className='flex items-center justify-between'>
                                             <span className='text-secondary'>Total</span>
                                             <span className='text-secondary font-bold'>
-                                                ₹{Math.floor(calculateTotalPrice())}
+                                                ₹{calculateTotalPrice() % 1 >= 0.9
+                                                    ? Math.ceil(calculateTotalPrice())
+                                                    : Math.floor(calculateTotalPrice())}
                                             </span>
+
                                         </li>
 
                                         <li className='flex items-center justify-between'>

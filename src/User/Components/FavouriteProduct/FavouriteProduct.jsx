@@ -27,11 +27,11 @@ const FavouriteProduct = () => {
     useEffect(() => {
         if (userId) {
             fetchWishlistProducts();
-        }else{
+        } else {
             setIsLoading(false)
         }
     }, [userId]);
-    
+
 
 
     // Delete wishlist product
@@ -130,8 +130,9 @@ const FavouriteProduct = () => {
                                             {product.productId.description}
                                         </p>
                                         <p className="text-primary text-base xl:text-xl font-semibold mt-2">
-                                            ₹{product.productId.offerPrice}
+                                            ₹{(product.productId.offerPrice % 1 >= 0.9) ? Math.ceil(product.productId.offerPrice) : Math.floor(product.productId.offerPrice)}
                                         </p>
+
                                     </div>
 
                                 </div>

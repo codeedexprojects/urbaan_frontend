@@ -152,14 +152,19 @@ export function SearchDesktopDrawer({ open, closeSearchDrawer }) {
                                             />
                                         )}
                                         <div className='mt-3'>
-                                            <h4 className='font-medium text-sm xl:text-lg lg:text-lg capitalize truncate w-40 xl:w-60 lg:w-60'>{product.title}</h4>
+                                            <h4 className='font-medium text-sm xl:text-lg lg:text-lg capitalize truncate w-40 xl:w-60 lg:w-60'>{product.title.slice(0, 15) + '...'}</h4>
                                             <p className='text-gray-600 font-normal text-xs xl:text-sm lg:text-sm capitalize truncate overflow-hidden 
                                                 whitespace-nowrap w-40 xl:w-60 lg:w-60'>
-                                                {product.description}
+                                                {product.description.slice(0, 15) + '...'}
                                             </p>
-                                            <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold mt-2'>
-                                                ₹{product.offerPrice}
-                                            </p>
+                                            <div className='flex items-center gap-2 mt-2'>
+                                                <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold'>
+                                                    ₹{product.offerPrice % 1 >= 0.9 ? Math.ceil(product.offerPrice) : Math.floor(product.offerPrice)}
+                                                </p>
+                                                <p className='text-gray-600 text-sm xl:text-base lg:text-base line-through'>
+                                                    ₹{product.actualPrice % 1 >= 0.9 ? Math.ceil(product.actualPrice) : Math.floor(product.actualPrice)}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 )

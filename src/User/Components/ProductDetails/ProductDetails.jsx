@@ -359,7 +359,7 @@ const ProductDetails = () => {
                         <IoIosArrowBack className="text-secondary text-2xl cursor-pointer" /> Back</h2>
                     <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-4 mt-5 gap-5 xl:gap-16 lg:gap-16 mb-20 xl:mb-40 lg:mb-40">
                         {/* Image Section */}
-                        <div className='col-span-1 xl:col-span-2 lg:col-span-2 space-y-3 xl:sticky xl:top-0 lg:sticky lg:top-0 h-[350px] xl:h-[600px] lg:h-[600px]'>
+                        {/* <div className='col-span-1 xl:col-span-2 lg:col-span-2 space-y-3 xl:sticky xl:top-0 lg:sticky lg:top-0 h-[350px] xl:h-[600px] lg:h-[600px]'>
                             <div className='w-full h-full relative'>
                                 <img
                                     src={productDetails.images && productDetails.images.length > 0 ? productDetails.images[0] : '/no-image.jpg'}
@@ -386,7 +386,41 @@ const ProductDetails = () => {
                                     </div>
                                 ))}
                             </div>
+                        </div> */}
+
+                        <div className='col-span-1 xl:col-span-2 lg:col-span-2 space-y-3 xl:sticky xl:top-0 lg:sticky lg:top-0 h-[350px] xl:h-[500px] lg:h-[500px]'>
+                            <div className='w-full h-full relative flex items-center justify-center'>
+                                <img
+                                    src={productDetails.images && productDetails.images.length > 0 ? productDetails.images[0] : '/no-image.jpg'}
+                                    alt={productDetails.title}
+                                    className='w-200 h-full object-contain rounded-xl cursor-pointer'
+                                    onClick={() => handleOpenImageZoom(productDetails.images, 0)}
+                                />
+                                <MdZoomOutMap
+                                    onClick={() => handleOpenImageZoom(productDetails.images, 0)}
+                                    className='absolute top-4 left-4 cursor-pointer text-gray-600 bg-white w-7 h-7 xl:w-8 xl:h-8 p-1 rounded-full shadow-md'
+                                />
+                            </div>
+
+
+
+                            <div className='flex items-center justify-center gap-2 xl:gap-5 lg:gap-5 overflow-x-auto hide-scrollbar'>
+                                {productDetails?.images?.slice(0, 5).map((image, index) => (
+                                    <div
+                                        className='w-20 h-24 cursor-pointer'
+                                        key={index}
+                                        onClick={() => handleOpenImageZoom(productDetails.images, index)}
+                                    >
+                                        <img
+                                            src={image}
+                                            alt={`Thumbnail ${index}`}
+                                            className='w-full h-full object-cover rounded-xl'
+                                        />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
+
 
                         <div className='col-span-1 xl:col-span-2 lg:col-span-2 mt-32 xl:mt-0 lg:mt-0'>
                             <div className='flex justify-between items-center'>
@@ -409,6 +443,11 @@ const ProductDetails = () => {
                             <div>
                                 <div className='flex items-center justify-between xl:justify-normal lg:justify-normal xl:gap-10 lg:gap-10 mt-2'>
                                     <p className='text-xs xl:text-sm lg:text-sm font-semibold text-shippedBg'>Free Shipping</p>
+
+                                </div>
+                                <div className='flex items-center justify-between xl:justify-normal lg:justify-normal xl:gap-10 lg:gap-10 mt-2'>
+                                    <p className='text-xs xl:text-sm lg:text-sm font-semibold text-gray-600'>Product Code : {productDetails.product_Code} </p>
+
                                 </div>
 
                                 <div className='mt-2'>

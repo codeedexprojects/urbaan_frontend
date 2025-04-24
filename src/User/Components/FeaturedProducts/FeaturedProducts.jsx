@@ -145,11 +145,14 @@ const FeaturedProducts = () => {
                                                 whitespace-nowrap w-40 xl:w-60 lg:w-60'>
                                                     {product.description.slice(0, 20) + '...'}
                                                 </p>
-                                                <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold mt-2'>
-                                                    ₹{product.offerPrice % 1 >= 0.9
-                                                        ? Math.ceil(product.offerPrice)
-                                                        : Math.floor(product.offerPrice)}
-                                                </p>
+                                                <div className='flex items-center gap-2 mt-2'>
+                        <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold'>
+                          ₹{product.offerPrice % 1 >= 0.9 ? Math.ceil(product.offerPrice) : Math.floor(product.offerPrice)}
+                        </p>
+                        <p className='text-gray-600 text-sm xl:text-base lg:text-base line-through'>
+                          ₹{product.actualPrice % 1 >= 0.9 ? Math.ceil(product.actualPrice) : Math.floor(product.actualPrice)}
+                        </p>
+                      </div>
 
                                             </div>
                                         </div>

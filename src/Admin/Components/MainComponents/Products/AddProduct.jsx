@@ -26,6 +26,7 @@ const AddProduct = () => {
     const [lastChanged, setLastChanged] = useState('');
     const [sizeChartOptions, setSizeChartOptions] = useState([]);
     const [selectedSizeChartRefs, setSelectedSizeChartRefs] = useState([]);
+    const [imageError, setImageError] = useState(false);
 
     useEffect(() => {
         axios.get(`${BASE_URL}/admin/sizechart/get`)
@@ -164,6 +165,41 @@ const AddProduct = () => {
                 alert("Authorization is missing");
                 return;
             }
+            if (productImage.length === 0) {
+                setImageError(true);
+                toast.error("Please upload at least one product image");
+                return;
+              } else {
+                setImageError(false);
+              }
+              let hasValidationErrors = false;
+  
+              const validatedAttributes = attributeFields.map(field => {
+                // Validate color
+                if (!field.color.trim()) {
+                  hasValidationErrors = true;
+                  toast.error("Please fill in all color fields");
+                  return;
+                }
+            
+                // Validate sizes
+                const validatedSizes = field.sizes.map(size => {
+                  if (!size.size.trim()) {
+                    hasValidationErrors = true;
+                    toast.error("Please select a size for all options");
+                  }
+                  if (size.stock === "" || isNaN(Number(size.stock))) {
+                    hasValidationErrors = true;
+                    toast.error("Please enter a valid stock quantity");
+                  }
+                  return size;
+                });
+            
+                return {
+                  color: field.color.trim(),
+                  sizes: validatedSizes
+                };
+              });
 
             // Validate inputs
             if (!productTitle.trim() || !productCategory.trim()) {
@@ -614,24 +650,26 @@ const AddProduct = () => {
                 {/* second col */}
                 {/* photo upload */}
                 <div className='bg-white rounded-xl shadow-md p-5 space-y-6 h-fit'>
-                    <div className='grid grid-cols-5 gap-2'>
-                        <div className="col-span-3 flex flex-col justify-center items-center h-56 border-4 border-dashed border-primary rounded-xl">
-                            <input
-                                type="file"
-                                id="file"
-                                className="hidden"
-                                accept="image/*"
-                                multiple
-                                onChange={handleProductImageUpload}
-                            />
-                            <label htmlFor="file" className="flex flex-col items-center cursor-pointer">
-                                <IoMdCloudUpload className="text-primary text-5xl" />
-                                <p className="text-secondary text-xs">Browse files to upload</p>
-                                <p className='text-secondary text-xs'>Max image size 5MB</p>
-                                <p className='text-secondary text-xs'>We can read: JPG, JPEG</p>
-                            </label>
-                        </div>
-
+                <div className='grid grid-cols-5 gap-2'>
+  <div className="col-span-3 flex flex-col justify-center items-center h-56 border-4 border-dashed border-primary rounded-xl">
+    <input
+      type="file"
+      id="file"
+      className="hidden"
+      accept="image/*"
+      multiple
+      onChange={handleProductImageUpload}
+    />
+    <label htmlFor="file" className="flex flex-col items-center cursor-pointer">
+      <IoMdCloudUpload className="text-primary text-5xl" />
+      <p className="text-secondary text-xs">Browse files to upload</p>
+      <p className='text-secondary text-xs'>Max image size 5MB</p>
+      <p className='text-secondary text-xs'>We can read: JPG, JPEG</p>
+    </label>
+    {imageError && (
+      <p className="text-red-500 text-xs mt-2">At least one image is required</p>
+    )}
+  </div>
                         <div className='col-span-2'>
                             <ul className="flex flex-row gap-2 overflow-y-auto hide-scrollbar">
                                 {productImage.length === 0 ? (
@@ -713,85 +751,103 @@ const AddProduct = () => {
                             <div key={colorIndex} className="flex flex-col gap-2">
                                 {/* Color Picker and Header */}
                                 <div className="flex items-center justify-between gap-2">
-                                    <div className="flex items-center gap-2 w-full">
-                                        <div className="w-64 bg-primary text-white rounded-md font-custom tracking-wider flex items-center justify-center gap-2 p-2 cursor-pointer relative">
-                                            <input
-                                                type="color"
-                                                value={field.color}
-                                                onChange={(e) => handleAttributeInputChange(colorIndex, "color", e.target.value)}
-                                                className="absolute w-full h-full opacity-0 cursor-pointer"
-                                            />
-                                            <p className='text-sm flex items-center gap-2'><FaPlus className="text-base" />Add Color</p>
-                                        </div>
-                                        <div className='w-full'>
-                                            <input
-                                                type="text"
-                                                value={field.color}
-                                                placeholder="Enter color name or color code"
-                                                onChange={(e) => handleAttributeInputChange(colorIndex, "color", e.target.value)}
-                                                className={`w-full p-2 text-center bg-gray-100/50 border rounded-md text-sm uppercase placeholder:capitalize focus:outline-none ${getContrastYIQ(field.color)}`}
-                                                style={{ backgroundColor: field.color }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <MdDelete
-                                        className="text-xl text-primary cursor-pointer"
-                                        onClick={() => handleDeleteColorField(colorIndex)}
-                                    />
-                                </div>
+  <div className="flex items-center gap-2 w-full">
+    <div className="w-64 bg-primary text-white rounded-md font-custom tracking-wider flex items-center justify-center gap-2 p-2 cursor-pointer relative">
+      <input
+        type="color"
+        value={field.color}
+        onChange={(e) => handleAttributeInputChange(colorIndex, "color", e.target.value)}
+        className="absolute w-full h-full opacity-0 cursor-pointer"
+      />
+      <p className='text-sm flex items-center gap-2'><FaPlus className="text-base" />Add Color</p>
+    </div>
+    <div className='w-full'>
+      <input
+        type="text"
+        value={field.color}
+        placeholder="Enter color name or color code"
+        onChange={(e) => handleAttributeInputChange(colorIndex, "color", e.target.value)}
+        className={`w-full p-2 text-center bg-gray-100/50 border rounded-md text-sm uppercase placeholder:capitalize focus:outline-none ${getContrastYIQ(field.color)}`}
+        style={{ backgroundColor: field.color }}
+        required
+      />
+      {!field.color && (
+        <p className="text-red-500 text-xs mt-1">Color is required</p>
+      )}
+    </div>
+  </div>
+  <MdDelete
+    className="text-xl text-primary cursor-pointer"
+    onClick={() => handleDeleteColorField(colorIndex)}
+  />
+</div>
 
-                                {/* Sizes and Stock Table */}
-                                <div className='flex flex-col gap-2'>
-                                    {Array.isArray(field.sizes) && field.sizes.map((sizeField, sizeIndex) => (
-                                        <div key={sizeIndex} className="flex items-center justify-between gap-2">
-                                            <Button
-                                                onClick={() => handleAddSizeField(colorIndex)}
-                                                className='bg-gray-100/50 border border-gray-300 text-secondary shadow-none rounded-3xl w-11 h-10 p-2 flex items-center justify-center 
-                                  font-custom font-normal capitalize text-sm hover:shadow-none'
-                                            ><FaPlus /></Button>
-                                            <div className='flex items-center gap-2 w-full'>
-                                                <select
-                                                    value={sizeField.size}
-                                                    onChange={(e) => handleSizeFieldChange(colorIndex, sizeIndex, "size", e.target.value)}
-                                                    className="border w-full bg-gray-100/50 p-2 rounded-md uppercase placeholder:text-sm focus:outline-none placeholder:capitalize"
-                                                >
-                                                    <option value="">Select Size</option>
-                                                    <optgroup label="Kurthi Sizes">
-                                                        <option value="XS (34)">XS (34)</option>
-                                                        <option value="S (36)">S (36)</option>
-                                                        <option value="M (38)">M (38)</option>
-                                                        <option value="L (40)">L (40)</option>
-                                                        <option value="XL (42)">XL (42)</option>
-                                                        <option value="2XL (44)">2XL (44)</option>
-                                                        <option value="3XL (46)">3XL (46)</option>
-                                                        <option value="4XL (48)">4XL (48)</option>
-                                                        <option value="5XL (50)">5XL (50)</option>
-                                                    </optgroup>
-                                                    <optgroup label="Bottom Sizes">
-                                                        <option value="S">S</option>
-                                                        <option value="M">M</option>
-                                                        <option value="L">L</option>
-                                                        <option value="XL">XL</option>
-                                                        <option value="2XL">2XL</option>
-                                                        <option value="3XL">3XL</option>
-                                                    </optgroup>
-                                                    <option value="Free">Free</option>
-                                                </select>
-                                                <input
-                                                    type="number"
-                                                    value={sizeField.stock}
-                                                    placeholder="Enter stock quantity"
-                                                    onChange={(e) => handleSizeFieldChange(colorIndex, sizeIndex, "stock", e.target.value)}
-                                                    className="border w-full bg-gray-100/50 p-2 rounded-md placeholder:text-sm focus:outline-none placeholder:capitalize"
-                                                />
-                                            </div>
-                                            <HiMiniXMark
-                                                className="text-2xl text-primary cursor-pointer"
-                                                onClick={() => handleDeleteSizeField(colorIndex, sizeIndex)}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
+<div className='flex flex-col gap-2'>
+  {Array.isArray(field.sizes) && field.sizes.map((sizeField, sizeIndex) => (
+    <div key={sizeIndex} className="flex items-center justify-between gap-2">
+      <Button
+        onClick={() => handleAddSizeField(colorIndex)}
+        className='bg-gray-100/50 border border-gray-300 text-secondary shadow-none rounded-3xl w-11 h-10 p-2 flex items-center justify-center 
+          font-custom font-normal capitalize text-sm hover:shadow-none'
+      >
+        <FaPlus />
+      </Button>
+      <div className='flex items-center gap-2 w-full'>
+        <div className="w-full">
+          <select
+            value={sizeField.size}
+            onChange={(e) => handleSizeFieldChange(colorIndex, sizeIndex, "size", e.target.value)}
+            className="border w-full bg-gray-100/50 p-2 rounded-md uppercase placeholder:text-sm focus:outline-none placeholder:capitalize"
+            required
+          >
+            <option value="">Select Size</option>
+            <optgroup label="Kurthi Sizes">
+              <option value="XS (34)">XS (34)</option>
+              <option value="S (36)">S (36)</option>
+              <option value="M (38)">M (38)</option>
+              <option value="L (40)">L (40)</option>
+              <option value="XL (42)">XL (42)</option>
+              <option value="2XL (44)">2XL (44)</option>
+              <option value="3XL (46)">3XL (46)</option>
+              <option value="4XL (48)">4XL (48)</option>
+              <option value="5XL (50)">5XL (50)</option>
+            </optgroup>
+            <optgroup label="Bottom Sizes">
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+              <option value="2XL">2XL</option>
+              <option value="3XL">3XL</option>
+            </optgroup>
+            <option value="Free">Free</option>
+          </select>
+          {!sizeField.size && (
+            <p className="text-red-500 text-xs mt-1">Size is required</p>
+          )}
+        </div>
+        <div className="w-full">
+          <input
+            type="number"
+            value={sizeField.stock}
+            placeholder="Enter stock quantity"
+            onChange={(e) => handleSizeFieldChange(colorIndex, sizeIndex, "stock", e.target.value)}
+            className="border w-full bg-gray-100/50 p-2 rounded-md placeholder:text-sm focus:outline-none placeholder:capitalize"
+            required
+            min="0"
+          />
+          {(!sizeField.stock && sizeField.stock !== 0) && (
+            <p className="text-red-500 text-xs mt-1">Stock is required</p>
+          )}
+        </div>
+      </div>
+      <HiMiniXMark
+        className="text-2xl text-primary cursor-pointer"
+        onClick={() => handleDeleteSizeField(colorIndex, sizeIndex)}
+      />
+    </div>
+  ))}
+</div>
                                 <div className="flex flex-col gap-2 mt-4">
                                     <label className="text-sm font-medium">Select Size Charts</label>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">

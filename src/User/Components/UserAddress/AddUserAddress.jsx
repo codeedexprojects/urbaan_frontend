@@ -17,31 +17,74 @@ const AddUserAddress = () => {
     const [city, setCity] = useState('')
     const [state, setState] = useState('')
     const [addressType, setAddressType] = useState('home')
-    const [defaultAddress, setDefaultAddress] = useState(false) // default address state
+    const [defaultAddress, setDefaultAddress] = useState(false)
+    const [pinCodeError, setPinCodeError] = useState('')
+    const [isValidatingPin, setIsValidatingPin] = useState(false)
+
+    // Validate PIN code using Postal API
+    const validatePinCode = async (pin) => {
+        if (!pin || pin.length !== 6) {
+            setPinCodeError('PIN code must be 6 digits')
+            return false
+        }
+
+        setIsValidatingPin(true)
+        try {
+            const response = await axios.get(`https://api.postalpincode.in/pincode/${pin}`)
+            const data = response.data[0] // API returns an array with one object
+            
+            if (data.Status === 'Error') {
+                setPinCodeError('Invalid PIN code')
+                return false
+            }
+            
+            if (data.Status === 'Success') {
+                setPinCodeError('')
+                // Auto-fill city and state if available
+                if (data.PostOffice && data.PostOffice.length > 0) {
+                    const firstPostOffice = data.PostOffice[0]
+                    setCity(firstPostOffice.District || '')
+                    setState(firstPostOffice.State || '')
+                }
+                return true
+            }
+            
+            return false
+        } catch (error) {
+            console.error('PIN code validation error:', error)
+            setPinCodeError('Error validating PIN code')
+            return false
+        } finally {
+            setIsValidatingPin(false)
+        }
+    }
+
+    const handlePinCodeBlur = async () => {
+        if (pinCode.length === 6) {
+            await validatePinCode(pinCode)
+        }
+    }
 
     const createAddressFormSubmit = async (e) => {
         e.preventDefault()
 
-        // Ensure phone number is exactly 10 digits and does not contain alphabets
+        // Validate phone number
         const phoneNumberRegex = /^[0-9]{10}$/;
-
         if (!phoneNumberRegex.test(number)) {
             toast.error(`${number} is not a valid phone number.`);
             return;
         }
 
-        const pinCodeRegex = /^[0-9]{6}$/;
-
-        if (!pinCodeRegex.test(pinCode)) {
-            toast.error("Pin code should be exactly 6 digits.");
-            return;
+        // Validate PIN code before submission
+        const isPinValid = await validatePinCode(pinCode)
+        if (!isPinValid) {
+            return
         }
 
         try {
             const token = localStorage.getItem('userToken')
             const userId = localStorage.getItem('userId')
 
-            // Append to formdata
             const rowData = {
                 userId: userId,
                 name: name,
@@ -52,7 +95,7 @@ const AddUserAddress = () => {
                 city: city,
                 state: state,
                 addressType: addressType,
-                defaultAddress: defaultAddress, // Use the state value for defaultAddress
+                defaultAddress: defaultAddress,
             }
 
             const headers = {
@@ -65,7 +108,7 @@ const AddUserAddress = () => {
             navigate('/select-delivery-address')
         } catch (error) {
             console.log(error)
-            alert("Error in form submission:", error.response?.message || "Unknown error")
+            toast.error(error.response?.data?.message || "Error adding address")
         }
     }
 
@@ -127,7 +170,7 @@ const AddUserAddress = () => {
                                     id="address"
                                     value={address}
                                     onChange={(e) => setAddress(e.target.value)}
-                                    placeholder="Address (House No, Building, Street, Area )"
+                                    placeholder="Address (House No, Building, Street, Area)"
                                     required
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
                                 />
@@ -141,16 +184,25 @@ const AddUserAddress = () => {
                                     required
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
                                 />
-                                <input
-                                    type="number"
-                                    name="pincode"
-                                    id="pincode"
-                                    value={pinCode}
-                                    onChange={(e) => setPinCode(e.target.value)}
-                                    placeholder="Pin code"
-                                    required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
-                                />
+                                <div className="relative">
+                                    <input
+                                        type="number"
+                                        name="pincode"
+                                        id="pincode"
+                                        value={pinCode}
+                                        onChange={(e) => setPinCode(e.target.value)}
+                                        onBlur={handlePinCodeBlur}
+                                        placeholder="Pin code"
+                                        required
+                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none w-full"
+                                    />
+                                    {isValidatingPin && (
+                                        <span className="absolute right-3 top-2.5 text-xs text-gray-500">Validating...</span>
+                                    )}
+                                </div>
+                                {pinCodeError && (
+                                    <p className="text-red-500 text-xs">{pinCodeError}</p>
+                                )}
                             </div>
                             {/* City */}
                             <div className="flex flex-col gap-1">
@@ -209,7 +261,13 @@ const AddUserAddress = () => {
 
                             {/* Submit Button */}
                             <div className='mb-3'>
-                                <Button type='submit' className='bg-primary font-custom text-sm capitalize w-full font-normal'>Save Address</Button>
+                                <Button 
+                                    type='submit' 
+                                    className='bg-primary font-custom text-sm capitalize w-full font-normal'
+                                    disabled={isValidatingPin || !!pinCodeError}
+                                >
+                                    Save Address
+                                </Button>
                             </div>
                         </form>
                     </Card>

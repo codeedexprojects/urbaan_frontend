@@ -1,13 +1,10 @@
 import { Button, Card } from '@material-tailwind/react'
 import axios from 'axios'
-import React from 'react'
-import { useContext } from 'react'
-import { useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { IoIosArrowBack } from 'react-icons/io'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AppContext } from '../../../StoreContext/StoreContext'
 import toast from 'react-hot-toast'
-import { useEffect } from 'react'
 
 const EditUserAddress = () => {
     const navigate = useNavigate()
@@ -23,7 +20,8 @@ const EditUserAddress = () => {
     const [editState, setEditState] = useState('')
     const [editAddressType, setEditAddressType] = useState('home')
     const [editDefaultAddress, setEditDefaultAddress] = useState(true)
-
+    const [pinCodeError, setPinCodeError] = useState('')
+    const [isValidatingPin, setIsValidatingPin] = useState(false)
 
     useEffect(() => {
         if (initailAddressData) {
@@ -39,14 +37,70 @@ const EditUserAddress = () => {
         }
     }, [initailAddressData])
 
-    // createAddressFormSubmit
+    // Validate PIN code using Postal API
+    const validatePinCode = async (pin) => {
+        if (!pin || pin.length !== 6) {
+            setPinCodeError('PIN code must be 6 digits')
+            return false
+        }
+
+        setIsValidatingPin(true)
+        try {
+            const response = await axios.get(`https://api.postalpincode.in/pincode/${pin}`)
+            const data = response.data[0] // API returns an array with one object
+            
+            if (data.Status === 'Error') {
+                setPinCodeError('Invalid PIN code')
+                return false
+            }
+            
+            if (data.Status === 'Success') {
+                setPinCodeError('')
+                // Auto-fill city and state if available
+                if (data.PostOffice && data.PostOffice.length > 0) {
+                    const firstPostOffice = data.PostOffice[0]
+                    setEditCity(prev => prev || firstPostOffice.District || '')
+                    setEditState(prev => prev || firstPostOffice.State || '')
+                }
+                return true
+            }
+            
+            return false
+        } catch (error) {
+            console.error('PIN code validation error:', error)
+            setPinCodeError('Error validating PIN code')
+            return false
+        } finally {
+            setIsValidatingPin(false)
+        }
+    }
+
+    const handlePinCodeBlur = async () => {
+        if (editPinCode.length === 6) {
+            await validatePinCode(editPinCode)
+        }
+    }
+
     const editAddressFormSubmit = async (e) => {
         e.preventDefault()
+
+        // Validate phone number
+        const phoneNumberRegex = /^[0-9]{10}$/;
+        if (!phoneNumberRegex.test(editNumber)) {
+            toast.error(`${editNumber} is not a valid phone number.`);
+            return;
+        }
+
+        // Validate PIN code before submission
+        const isPinValid = await validatePinCode(editPinCode)
+        if (!isPinValid) {
+            return
+        }
+
         try {
             const token = localStorage.getItem('userToken')
             const userId = localStorage.getItem('userId')
 
-            // append to formdata
             const rowData = {
                 userId: userId,
                 name: editName,
@@ -60,34 +114,16 @@ const EditUserAddress = () => {
                 defaultAddress: editDefaultAddress
             }
 
-            console.log('Payload:', rowData);
-
             const headers = {
                 Authorization: `Bearer ${token}`
             }
-            console.log('Headers:', headers);
-            console.log(`${initailAddressData._id}`);
-            const response = await axios.patch(`${BASE_URL}/user/address/update/${initailAddressData._id}`, rowData, { headers })
-            console.log(response.data);
-            toast.success("Address updated successfully")
-            navigate('/select-delivery-address');
 
-            setEditName('')
-            setEditAddress('')
-            setEditLandMark('')
-            setEditPinCode('')
-            setEditNumber('')
-            setEditAddressType('')
-            setEditState('')
-            setEditCity('')
-            setEditDefaultAddress(false)
+            const response = await axios.patch(`${BASE_URL}/user/address/update/${initailAddressData._id}`, rowData, { headers })
+            toast.success("Address updated successfully")
+            navigate('/select-delivery-address')
         } catch (error) {
-            console.error(error);
-            if (error.response) {
-                console.error(`Error: ${error.response?.data || "Failed to update address"}`);
-            } else {
-                toast.error("Network error. Please try again later.");
-            }
+            console.error(error)
+            toast.error(error.response?.data?.message || "Error updating address")
         }
     }
 
@@ -122,7 +158,7 @@ const EditUserAddress = () => {
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
                                 />
                             </div>
-                            {/* number */}
+                            {/* Number */}
                             <div className="flex flex-col gap-1 w-full">
                                 <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base">
                                     Phone Number
@@ -133,12 +169,12 @@ const EditUserAddress = () => {
                                     id="number"
                                     value={editNumber}
                                     onChange={(e) => setEditNumber(e.target.value)}
-                                    placeholder="Enter your name"
+                                    placeholder="Enter your phone number"
                                     required
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
                                 />
                             </div>
-                            {/* address */}
+                            {/* Address */}
                             <div className="flex flex-col gap-1">
                                 <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base">
                                     Address
@@ -149,7 +185,7 @@ const EditUserAddress = () => {
                                     id="address"
                                     value={editAddress}
                                     onChange={(e) => setEditAddress(e.target.value)}
-                                    placeholder="Address (House No, Building, Street, Area )"
+                                    placeholder="Address (House No, Building, Street, Area)"
                                     required
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
                                 />
@@ -163,18 +199,27 @@ const EditUserAddress = () => {
                                     required
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
                                 />
-                                <input
-                                    type="number"
-                                    name="pincode"
-                                    id="pincode"
-                                    value={editPinCode}
-                                    onChange={(e) => setEditPinCode(e.target.value)}
-                                    placeholder="Pin code"
-                                    required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
-                                />
+                                <div className="relative">
+                                    <input
+                                        type="number"
+                                        name="pincode"
+                                        id="pincode"
+                                        value={editPinCode}
+                                        onChange={(e) => setEditPinCode(e.target.value)}
+                                        onBlur={handlePinCodeBlur}
+                                        placeholder="Pin code"
+                                        required
+                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none w-full"
+                                    />
+                                    {isValidatingPin && (
+                                        <span className="absolute right-3 top-2.5 text-xs text-gray-500">Validating...</span>
+                                    )}
+                                </div>
+                                {pinCodeError && (
+                                    <p className="text-red-500 text-xs">{pinCodeError}</p>
+                                )}
                             </div>
-                            {/* city */}
+                            {/* City */}
                             <div className="flex flex-col gap-1">
                                 <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base">
                                     City
@@ -190,7 +235,7 @@ const EditUserAddress = () => {
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
                                 />
                             </div>
-                            {/* state */}
+                            {/* State */}
                             <div className="flex flex-col gap-1">
                                 <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base">
                                     State
@@ -207,14 +252,14 @@ const EditUserAddress = () => {
                                 />
                             </div>
 
-                            {/* save address */}
+                            {/* Address Type Buttons */}
                             <div className='flex items-center gap-3'>
                                 <Button onClick={() => setEditAddressType("home")} variant='outlined' className={`text-secondary border-secondary font-custom text-sm capitalize 
                                     ${editAddressType === "home" ? "text-primary border-primary text-opacity-100 shadow-none" : ""}`}>Home</Button>
                                 <Button onClick={() => setEditAddressType("work")} variant='outlined' className={`text-secondary border-secondary font-custom text-sm capitalize 
                                     ${editAddressType === "work" ? "text-primary border-primary text-opacity-100 shadow-none" : ""}`}>Work</Button>
                                 <Button onClick={() => setEditAddressType("other")} variant='outlined' className={`text-secondary border-secondary font-custom text-sm capitalize 
-                                ${editAddressType === "other" ? "text-primary border-primary text-opacity-100 shadow-none" : ""}`}>Other</Button>
+                                    ${editAddressType === "other" ? "text-primary border-primary text-opacity-100 shadow-none" : ""}`}>Other</Button>
                             </div>
 
                             {/* Default Address Checkbox */}
@@ -229,14 +274,19 @@ const EditUserAddress = () => {
                                 <label htmlFor="defaultAddress" className="font-medium text-sm xl:text-base lg:text-base">Set as Default Address</label>
                             </div>
 
-                            {/* button */}
+                            {/* Submit Button */}
                             <div className='mb-3'>
-                                <Button type='submit' className='bg-primary font-custom text-sm capitalize w-full font-normal'>Save Address</Button>
+                                <Button 
+                                    type='submit' 
+                                    className='bg-primary font-custom text-sm capitalize w-full font-normal'
+                                    disabled={isValidatingPin || !!pinCodeError}
+                                >
+                                    Save Address
+                                </Button>
                             </div>
                         </form>
                     </Card>
                 </div>
-
             </div>
         </>
     )

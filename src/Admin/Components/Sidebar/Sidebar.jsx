@@ -12,6 +12,7 @@ import { TbListCheck, TbFileInvoice, TbTruckDelivery , TbRulerMeasure  } from "r
 import { RiCouponLine } from "react-icons/ri";
 import { PiUsersBold } from "react-icons/pi";
 import { Link, useLocation } from "react-router-dom";
+import { GiRolledCloth } from "react-icons/gi";
 
 export function AppSidebar() {
     const location = useLocation();
@@ -58,7 +59,7 @@ export function AppSidebar() {
                     { to: "/adminHome/subcategory", label: "Sub Category", icon: CgListTree, key: "subcategory" },
                     { to: "/adminHome/admincarousel", label: "Carousel", icon: MdOutlineViewCarousel, key: "admincarousel" },
                     { to: "/adminHome/sizechart", label: "Size Chart", icon: TbRulerMeasure, key: "sizechart" },
-                    { to: "/adminHome/material", label: "Material", icon: TbRulerMeasure, key: "material" },
+                    { to: "/adminHome/material", label: "Material", icon: GiRolledCloth, key: "material" },
                     { to: "/adminHome/delivery", label: "Delivery", icon: TbTruckDelivery, key: "delivery" },
                     { to: "/adminHome/coupon", label: "Coupons", icon: RiCouponLine, key: "coupon" },
                     { to: "/adminHome/invoice", label: "Invoice", icon: TbFileInvoice, key: "invoice" }

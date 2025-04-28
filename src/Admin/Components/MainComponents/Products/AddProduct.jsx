@@ -27,6 +27,32 @@ const AddProduct = () => {
     const [sizeChartOptions, setSizeChartOptions] = useState([]);
     const [selectedSizeChartRefs, setSelectedSizeChartRefs] = useState([]);
     const [imageError, setImageError] = useState(false);
+    const [materials, setMaterials] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+        const fetchMaterials = async () => {
+          try {
+            const response = await axios.get(`${BASE_URL}/admin/material/view`);
+            
+            // Ensure the response contains the 'materials' key and is an array
+            if (Array.isArray(response.data.materials)) {
+              setMaterials(response.data.materials); // Set the materials data
+            } else {
+              console.error("Unexpected response format for materials.");
+            }
+          } catch (error) {
+            console.error("Error fetching materials:", error);
+          } finally {
+            setIsLoading(false); // Stop loading when API call finishes
+          }
+        };
+        fetchMaterials();
+      }, [BASE_URL]);
+    
+      // Handle when a material is selected
+      const handleMaterialSelect = (e) => {
+        handleSpecificationChange(e, "material"); // Update parent component state via the handler
+      };
 
     useEffect(() => {
         axios.get(`${BASE_URL}/admin/sizechart/get`)
@@ -53,7 +79,8 @@ const AddProduct = () => {
         Length: '',
         occasion: '',
         innerLining: '',
-        material: ''
+        material: '',
+        pocket:''
     });
 
     const [productDescription, setProductDescription] = useState('')
@@ -292,7 +319,7 @@ const AddProduct = () => {
             setProductActualPrice('');
             setProductDiscount('');
             setCheckboxes({ latest: false, offer: false, featured: false });
-            setSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "" })
+            setSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "",pocket:"" })
             setAttributeFields([{ color: "", sizes: [{ size: "", stock: "" }] }]);
             setProductDescription('');
             setProductImage([]);
@@ -613,14 +640,37 @@ const AddProduct = () => {
                                     focus:outline-none'
                                 />
                             </div>
+                            <div className="flex items-center gap-1">
+      <label htmlFor="material" className="font-normal text-sm w-32">Material</label>
+      <p>:</p>
+      <select
+        id="material"
+        name="material"
+        value={specifications.material} // Bind the selected value to the state
+        onChange={handleMaterialSelect} // Handle selection change
+        className="border-[1px] w-full bg-gray-100/50 p-2 rounded-md focus:outline-none"
+        disabled={isLoading} // Disable the dropdown while loading
+      >
+        <option value="">Select Material</option> {/* Default option */}
+        {!isLoading ? (
+          materials.map((material) => (
+            <option key={material._id} value={material.materialName}>
+              {material.materialName} {/* Show material name in dropdown */}
+            </option>
+          ))
+        ) : (
+          <option>Loading...</option> // Loading message
+        )}
+      </select>
+    </div>
                             <div className='flex items-center gap-1'>
-                                <label htmlFor="" className='font-normal text-sm w-32'>Material</label>
+                                <label htmlFor="" className='font-normal text-sm w-32'>Pocket</label>
                                 <p>:</p>
                                 <input
                                     type="text"
                                     name="value"
-                                    value={specifications.material}
-                                    onChange={(e) => handleSpecificationChange(e, 'material')}
+                                    value={specifications.pocket}
+                                    onChange={(e) => handleSpecificationChange(e, 'pocket')}
                                     placeholder='value'
                                     className='border-[1px] w-full 
                                     bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500

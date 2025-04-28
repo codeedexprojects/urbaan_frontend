@@ -29,7 +29,8 @@ export function AppSidebar() {
         "/adminHome/delivery": "delivery",
         "/adminHome/coupon": "coupon",
         "/adminHome/invoice": "invoice",
-        "/adminHome/sizechart":"sizechart"
+        "/adminHome/sizechart":"sizechart",
+         "/adminHome/material":"material"
     };
     
     const [activeLink, setActiveLink] = useState(pathMap[location.pathname] || "dashboard");
@@ -57,6 +58,7 @@ export function AppSidebar() {
                     { to: "/adminHome/subcategory", label: "Sub Category", icon: CgListTree, key: "subcategory" },
                     { to: "/adminHome/admincarousel", label: "Carousel", icon: MdOutlineViewCarousel, key: "admincarousel" },
                     { to: "/adminHome/sizechart", label: "Size Chart", icon: TbRulerMeasure, key: "sizechart" },
+                    { to: "/adminHome/material", label: "Material", icon: TbRulerMeasure, key: "material" },
                     { to: "/adminHome/delivery", label: "Delivery", icon: TbTruckDelivery, key: "delivery" },
                     { to: "/adminHome/coupon", label: "Coupons", icon: RiCouponLine, key: "coupon" },
                     { to: "/adminHome/invoice", label: "Invoice", icon: TbFileInvoice, key: "invoice" }

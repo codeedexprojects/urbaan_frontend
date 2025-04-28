@@ -177,8 +177,8 @@ const AllCategory = () => {
                 <div className="px-4 py-10 xl:py-16 xl:px-32 lg:py-16 lg:px-32 bg-userBg">
                     <ul className='space-y-3 xl:flex xl:items-center xl:space-y-0 xl:gap-5 xl:justify-center
                     lg:flex lg:items-center lg:space-y-0 lg:gap-5 lg:justify-center'>
-                        <li><FilterBySize handleSizeFilter={handleSizeFilter} /></li>
-                        <li><FilterByMaterial handleMaterialFilter={handleMaterialFilter} /></li>
+                       <li><FilterBySize handleSizeFilter={handleSizeFilter} categoryId={productsCategory.id} /></li>
+                        <li><FilterByMaterial handleMaterialFilter={handleMaterialFilter} categoryId={productsCategory.id} /></li>
                         <li><FilterBySubCategory categoryId={productsCategory.id} handleSubCategory={handleSubCategory} /></li>
                         <li><FilterByPrice handlePriceFilter={handlePriceFilter} /></li>
                     </ul>

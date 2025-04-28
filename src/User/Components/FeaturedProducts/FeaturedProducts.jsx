@@ -24,6 +24,15 @@ const FeaturedProducts = () => {
     const [openImageModal, setOpenImageModal] = React.useState(false);
     const [zoomImage, setZoomImage] = useState(null);
     const [openUserNotLogin, setOpenUserNotLogin] = useState(false);
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        const handleResize = () => setScreenWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+
+        // Cleanup function
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const userId = localStorage.getItem('userId');
 
@@ -85,7 +94,10 @@ const FeaturedProducts = () => {
         }
     };
 
-    const visibleProducts = showAllFeature ? featuredProducts : featuredProducts.slice(0, 5);
+    const visibleProducts = showAllFeature
+        ? featuredProducts
+        : featuredProducts.slice(0, screenWidth < 640 ? 6 : 5);
+
 
     return (
         <>
@@ -146,13 +158,13 @@ const FeaturedProducts = () => {
                                                     {product.description.slice(0, 20) + '...'}
                                                 </p>
                                                 <div className='flex items-center gap-2 mt-2'>
-                        <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold'>
-                          ₹{product.offerPrice % 1 >= 0.9 ? Math.ceil(product.offerPrice) : Math.floor(product.offerPrice)}
-                        </p>
-                        <p className='text-gray-600 text-sm xl:text-base lg:text-base line-through'>
-                          ₹{product.actualPrice % 1 >= 0.9 ? Math.ceil(product.actualPrice) : Math.floor(product.actualPrice)}
-                        </p>
-                      </div>
+                                                    <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold'>
+                                                        ₹{product.offerPrice % 1 >= 0.9 ? Math.ceil(product.offerPrice) : Math.floor(product.offerPrice)}
+                                                    </p>
+                                                    <p className='text-gray-600 text-sm xl:text-base lg:text-base line-through'>
+                                                        ₹{product.actualPrice % 1 >= 0.9 ? Math.ceil(product.actualPrice) : Math.floor(product.actualPrice)}
+                                                    </p>
+                                                </div>
 
                                             </div>
                                         </div>

@@ -21,6 +21,15 @@ const OfferProducts = () => {
     const [openImageModal, setOpenImageModal] = React.useState(false);
     const [zoomImage, setZoomImage] = useState(null);
     const [openUserNotLogin, setOpenUserNotLogin] = useState(false);
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+  
+    // Cleanup function
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
     const userId = localStorage.getItem('userId');
 
@@ -94,7 +103,10 @@ const OfferProducts = () => {
     };
 
 
-    const visibleProducts = showAllOffer ? offerProducts : offerProducts.slice(0, 5);
+    const visibleProducts = showAllOffer
+  ? offerProducts
+  : offerProducts.slice(0, screenWidth < 640 ? 6 : 5);
+
 
     return (
         <>

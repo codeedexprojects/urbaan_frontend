@@ -441,14 +441,13 @@ const ProductDetails = () => {
                             </div>
                             <p className='text-gray-600 text-xs capitalize xl:text-sm lg:text-sm mt-3'>{productDetails.description}</p>
                             <div>
-                                <div className='flex items-center justify-between xl:justify-normal lg:justify-normal xl:gap-10 lg:gap-10 mt-2'>
-                                    <p className='text-xs xl:text-sm lg:text-sm font-semibold text-shippedBg'>Free Shipping</p>
 
+                                <div className="flex items-center justify-between xl:justify-normal lg:justify-normal xl:gap-10 lg:gap-10 mt-2">
+                                    <p className="text-base xl:text-lg lg:text-lg font-bold text-gray-700">
+                                        Product Code : {productDetails.product_Code}
+                                    </p>
                                 </div>
-                                <div className='flex items-center justify-between xl:justify-normal lg:justify-normal xl:gap-10 lg:gap-10 mt-2'>
-                                    <p className='text-xs xl:text-sm lg:text-sm font-semibold text-gray-600'>Product Code : {productDetails.product_Code} </p>
 
-                                </div>
 
                                 <div className='mt-2'>
                                     <ul className='flex items-center gap-3 xl:gap-4 lg:gap-4'>
@@ -469,6 +468,10 @@ const ProductDetails = () => {
                                             : Math.floor(productDetails.actualPrice)}
                                         </s>
                                     </p>
+                                </div>
+                                <div className='flex items-center justify-between xl:justify-normal lg:justify-normal xl:gap-10 lg:gap-10 mt-2'>
+                                    <p className='text-xs xl:text-sm lg:text-sm font-semibold text-shippedBg'><b>FREE SHIPPING</b></p>
+
                                 </div>
 
                                 {/* Select Color */}

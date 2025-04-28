@@ -11,20 +11,19 @@ import { IoIosArrowDown } from 'react-icons/io';
 import { useContext } from 'react';
 import { AppContext } from '../../../StoreContext/StoreContext';
 
-
-const FilterBySize = ({ handleSizeFilter }) => {
+const FilterBySize = ({ handleSizeFilter, categoryId }) => {
     const { BASE_URL } = useContext(AppContext);
     const [selectedSize, setSelectedSize] = useState("");
     const [sizes, setSizes] = useState([]);
 
     useEffect(() => {
-        const fetchAllProductSize = async () => {
+        const fetchCategoryProductSizes = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/user/products/view-products`);
-                const allProducts = response.data;
+                const response = await axios.get(`${BASE_URL}/user/products/products/category/${categoryId}`);
+                const categoryProducts = response.data;
 
-                // Extract sizes from products
-                const extractedSizes = allProducts.flatMap(product =>
+                // Extract sizes from products in this category only
+                const extractedSizes = categoryProducts.flatMap(product =>
                     product.colors.flatMap(color =>
                         color.sizes.map(size => size.size)
                     )
@@ -34,12 +33,14 @@ const FilterBySize = ({ handleSizeFilter }) => {
                 const uniqueSizes = Array.from(new Set(extractedSizes)).sort();
                 setSizes(uniqueSizes);
             } catch (error) {
-                console.error("Error fetching products:", error);
+                console.error("Error fetching category products:", error);
             }
         };
 
-        fetchAllProductSize();
-    }, []);
+        if (categoryId) {
+            fetchCategoryProductSizes();
+        }
+    }, [categoryId]);
 
     const handleSizeSelection = (size) => {
         setSelectedSize(size);
@@ -55,9 +56,11 @@ const FilterBySize = ({ handleSizeFilter }) => {
                          border-gray-800 text-gray-800 font-medium rounded-3xl focus:outline-none"
                 >
                     Filter by size
-                    <span className="text-xs uppercase bg-primary ml-5 px-2 text-white rounded-md">
-                        {selectedSize}
-                    </span>
+                    {selectedSize && (
+                        <span className="text-xs uppercase bg-primary ml-5 px-2 text-white rounded-md">
+                            {selectedSize}
+                        </span>
+                    )}
                     <IoIosArrowDown className="text-lg text-gray-800" />
                 </Button>
             </MenuHandler>

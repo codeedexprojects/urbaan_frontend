@@ -37,7 +37,8 @@ const EditProduct = () => {
         Length: '',
         occasion: '',
         innerLining: '',
-        material: ''
+        material: '',
+        pocket: ''
     });
     const [editProdDescription, setEditProdDescription] = useState('')
     const [editProdImage, setEditProdImage] = useState([])
@@ -51,6 +52,32 @@ const EditProduct = () => {
     const [lastChanged, setLastChanged] = useState('');
     const [sizeChartOptions, setSizeChartOptions] = useState([]);
     const [selectedSizeChartRefs, setSelectedSizeChartRefs] = useState([]);
+    const [materials, setMaterials] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+        const fetchMaterials = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/admin/material/view`);
+
+                // Ensure the response contains the 'materials' key and is an array
+                if (Array.isArray(response.data.materials)) {
+                    setMaterials(response.data.materials); // Set the materials data
+                } else {
+                    console.error("Unexpected response format for materials.");
+                }
+            } catch (error) {
+                console.error("Error fetching materials:", error);
+            } finally {
+                setIsLoading(false); // Stop loading when API call finishes
+            }
+        };
+        fetchMaterials();
+    }, [BASE_URL]);
+
+    // Handle when a material is selected
+    const handleMaterialSelect = (e) => {
+        handleSpecificationChange(e, "material"); // Update parent component state via the handler
+    };
     // Fetch size charts
     useEffect(() => {
         const fetchSizeCharts = async () => {
@@ -114,7 +141,8 @@ const EditProduct = () => {
                 Length: initialProducts.features.Length || '',
                 occasion: initialProducts.features.occasion || '',
                 innerLining: initialProducts.features.innerLining || '',
-                material: initialProducts.features.material || ''
+                material: initialProducts.features.material || '',
+                pocket: initialProducts.features.pocket || ''
             });
 
             const formattedAttributes = initialProducts.colors.map((color) => ({
@@ -321,7 +349,7 @@ const EditProduct = () => {
             setEditProdDiscount('');
             setEditProdOfferPrice('');
             setEditProdCheckboxes({ latest: false, offer: false, featured: false });
-            setEditSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "" })
+            setEditSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "" })
             setEditAttributeFields([{ color: "", sizes: [{ size: "", stock: "" }] }]);
             setEditProdDescription('');
             setEditProdImage([]);
@@ -671,14 +699,37 @@ const EditProduct = () => {
                                     focus:outline-none'
                                 />
                             </div>
+                            <div className="flex items-center gap-1">
+                                <label htmlFor="material" className="font-normal text-sm w-32">Material</label>
+                                <p>:</p>
+                                <select
+                                    id="material"
+                                    name="material"
+                                    value={editSpecifications.material} // Bind the selected value to the state
+                                    onChange={handleMaterialSelect} // Handle selection change
+                                    className="border-[1px] w-full capitalize bg-gray-100/50 p-2 rounded-md focus:outline-none"
+                                    disabled={isLoading} // Disable the dropdown while loading
+                                >
+                                    <option value="">Select Material</option> {/* Default option */}
+                                    {!isLoading ? (
+                                        materials.map((material) => (
+                                            <option key={material._id} value={material.materialName}>
+                                                {material.materialName} {/* Show material name in dropdown */}
+                                            </option>
+                                        ))
+                                    ) : (
+                                        <option>Loading...</option> // Loading message
+                                    )}
+                                </select>
+                            </div>
                             <div className='flex items-center gap-1'>
-                                <label htmlFor="" className='font-normal text-sm w-32'>Material</label>
+                                <label htmlFor="" className='font-normal text-sm w-32'>Pocket</label>
                                 <p>:</p>
                                 <input
                                     type="text"
                                     name="value"
-                                    value={editSpecifications.material}
-                                    onChange={(e) => handleSpecificationChange(e, 'material')}
+                                    value={editSpecifications.pocket}
+                                    onChange={(e) => handleSpecificationChange(e, 'pocket')}
                                     placeholder='value'
                                     className='border-[1px] w-full capitalize  
                                     bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
@@ -927,34 +978,34 @@ const EditProduct = () => {
                                     ))}
                                 </div>
                                 {/* Size Chart Selection */}
-<div className="flex flex-col gap-2 mt-4">
-    <label className="text-sm font-medium">Select Size Charts</label>
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-        {sizeChartOptions.map((chart) => {
-            const isChecked = selectedSizeChartRefs.includes(chart._id);
-            
-            return (
-                <label
-                    key={chart._id}
-                    className="flex items-center gap-2 bg-gray-100/50 p-2 rounded-md border cursor-pointer"
-                >
-                    <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={() => {
-                            if (isChecked) {
-                                setSelectedSizeChartRefs(prev => prev.filter(id => id !== chart._id));
-                            } else {
-                                setSelectedSizeChartRefs(prev => [...prev, chart._id]);
-                            }
-                        }}
-                    />
-                    <span className="text-sm">{chart.title}</span>
-                </label>
-            );
-        })}
-    </div>
-</div>
+                                <div className="flex flex-col gap-2 mt-4">
+                                    <label className="text-sm font-medium">Select Size Charts</label>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                                        {sizeChartOptions.map((chart) => {
+                                            const isChecked = selectedSizeChartRefs.includes(chart._id);
+
+                                            return (
+                                                <label
+                                                    key={chart._id}
+                                                    className="flex items-center gap-2 bg-gray-100/50 p-2 rounded-md border cursor-pointer"
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isChecked}
+                                                        onChange={() => {
+                                                            if (isChecked) {
+                                                                setSelectedSizeChartRefs(prev => prev.filter(id => id !== chart._id));
+                                                            } else {
+                                                                setSelectedSizeChartRefs(prev => [...prev, chart._id]);
+                                                            }
+                                                        }}
+                                                    />
+                                                    <span className="text-sm">{chart.title}</span>
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>

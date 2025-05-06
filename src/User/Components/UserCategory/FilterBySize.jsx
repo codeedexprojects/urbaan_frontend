@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import {
     Menu,
@@ -8,7 +8,6 @@ import {
     Button,
 } from "@material-tailwind/react";
 import { IoIosArrowDown } from 'react-icons/io';
-import { useContext } from 'react';
 import { AppContext } from '../../../StoreContext/StoreContext';
 
 const FilterBySize = ({ handleSizeFilter, categoryId }) => {
@@ -22,15 +21,29 @@ const FilterBySize = ({ handleSizeFilter, categoryId }) => {
                 const response = await axios.get(`${BASE_URL}/user/products/products/category/${categoryId}`);
                 const categoryProducts = response.data;
 
-                // Extract sizes from products in this category only
+                // Extract sizes with full value (e.g., '2XL (44)')
                 const extractedSizes = categoryProducts.flatMap(product =>
                     product.colors.flatMap(color =>
                         color.sizes.map(size => size.size)
                     )
                 );
 
-                // Remove duplicates and sort sizes
-                const uniqueSizes = Array.from(new Set(extractedSizes)).sort();
+                // Remove duplicates
+                const uniqueSizesSet = new Set(extractedSizes);
+                const uniqueSizes = Array.from(uniqueSizesSet);
+
+                // Define standard order
+                const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'];
+
+                // Sort based on main part before parentheses
+                uniqueSizes.sort((a, b) => {
+                    const mainA = a.replace(/\s*\(.*\)/, '').trim();
+                    const mainB = b.replace(/\s*\(.*\)/, '').trim();
+                    const indexA = sizeOrder.indexOf(mainA);
+                    const indexB = sizeOrder.indexOf(mainB);
+                    return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+                });
+
                 setSizes(uniqueSizes);
             } catch (error) {
                 console.error("Error fetching category products:", error);
@@ -70,7 +83,7 @@ const FilterBySize = ({ handleSizeFilter, categoryId }) => {
                         <MenuItem
                             key={index}
                             onClick={() => handleSizeSelection(size)}
-                            className="uppercase font-medium font-custom text-gray-600 cursor-pointer border-2 rounded-full w-20 h-10
+                            className="uppercase font-medium font-custom text-gray-600 cursor-pointer border-2 rounded-full w-28 h-10
                                     flex justify-center items-center mb-1"
                         >
                             {size}

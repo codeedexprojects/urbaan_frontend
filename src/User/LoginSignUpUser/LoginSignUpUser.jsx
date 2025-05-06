@@ -24,7 +24,7 @@ export function LoginSignUpUser() {
         email: "", // Added email field
     });
     const [isWalkIn, setIsWalkIn] = useState(false); // Added state for isWalkIn
-    const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
+    const [isPrivacyChecked, setIsPrivacyChecked] = useState(true);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -52,7 +52,10 @@ export function LoginSignUpUser() {
 
         // Ensure privacy policy is checked for sign-up
         if (!isLogin && !isPrivacyChecked) {
-            toast.error("To create an account, you must accept the Terms and Privacy Policy.");
+            toast.error("To create an account, you must accept the Terms and Privacy Policy.", {
+                duration: 3000, 
+              
+            });
             return;
         }
 

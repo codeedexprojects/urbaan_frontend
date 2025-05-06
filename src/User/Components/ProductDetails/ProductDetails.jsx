@@ -633,11 +633,32 @@ const ProductDetails = () => {
                 </div>
 
                 <div className="bg-white shadow-md fixed bottom-0 inset-x-0 z-50 w-full p-4 xl:hidden lg:hidden">
-                    <Button onClick={addToCart} className='flex items-center justify-center gap-2 font-normal rounded-md font-custom tracking-wide text-sm
-                        w-full bg-primary'>
-                        <RiHandbagLine />Add to cart
-                    </Button>
+                    <div className="flex items-center gap-3">
+                        <Button
+                            onClick={addToCart}
+                            className='flex-1 flex items-center justify-center gap-2 font-normal rounded-md font-custom tracking-wide text-sm
+            bg-primary'>
+                            <RiHandbagLine />Add to cart
+                        </Button>
+
+                        {productDetails.isInWishlist || heartIcons[productDetails._id] ? (
+                            <Button
+                                onClick={() => handleWishlist(productDetails._id, productDetails.title)}
+                                className='flex items-center justify-center gap-2 font-normal rounded-md font-custom tracking-wide text-sm
+                bg-transparent text-primary border border-gray-500 px-3'>
+                                <RiHeart3Fill className='text-xl' />
+                            </Button>
+                        ) : (
+                            <Button
+                                onClick={() => handleWishlist(productDetails._id, productDetails.title)}
+                                className='flex items-center justify-center gap-2 font-normal rounded-md font-custom tracking-wide text-sm
+                bg-transparent text-primary border border-gray-500 px-3'>
+                                <IoHeartOutline className='text-xl' />
+                            </Button>
+                        )}
+                    </div>
                 </div>
+
             </div>
 
 

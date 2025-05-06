@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import ApplyCouponModal from './ApplyCouponModal';
 import AppLoader from '../../../Loader';
 import { UserNotLoginPopup } from '../UserNotLogin/UserNotLoginPopup';
+import { FiEdit } from 'react-icons/fi';
 
 const CartDetails = () => {
     const navigate = useNavigate();
@@ -154,7 +155,10 @@ const CartDetails = () => {
                 <div className='flex items-center justify-between mb-3'>
                     <h1 className='text-secondary font-medium'>Delivery Address</h1>
                     <Link to='/select-delivery-address'>
-                        <p className='text-primary underline text-sm font-medium'>Change</p>
+                        <p className='flex items-center gap-1 text-primary underline text-sm font-medium'>
+                            <FiEdit className='text-base' />
+                            
+                        </p>
                     </Link>
                 </div>
                 {isLoading ? (

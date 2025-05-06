@@ -8,6 +8,7 @@ import { AppContext } from '../../../StoreContext/StoreContext'
 import AppLoader from '../../../Loader'
 import { UserNotLoginPopup } from '../UserNotLogin/UserNotLoginPopup'
 import toast from 'react-hot-toast'
+import { CreditCard, Banknote, Wallet, DollarSign } from 'lucide-react';
 
 const Checkout = () => {
     const navigate = useNavigate()
@@ -433,21 +434,58 @@ const Checkout = () => {
 
                                     <div className='mt-5'>
                                         <h3 className='font-medium text-sm xl:text-base lg:text-base text-secondary'>Payment Options</h3>
-                                        <div className='flex flex-col xl:flex-row lg:flex-row lg:items-center xl:items-center gap-0 xl:gap-4 lg:gap-4'>
+                                        <div className='flex flex-col gap-2'>
                                             <Radio
                                                 name="type"
                                                 label="Cash on Delivery (coming soon)"
                                                 color='pink'
                                                 disabled
                                                 checked={paymentMethod === 'Cash on Delivery'}
-                                                onChange={() => setPaymentMethod('Cash on Delivery')} // Explicitly setting the value
+                                                onChange={() => setPaymentMethod('Cash on Delivery')}
                                             />
                                             <Radio
                                                 name="type"
-                                                label=" UPI"
+                                                label={
+                                                    <span className='flex items-center gap-2'>
+                                                        <Banknote size={16} /> UPI
+                                                    </span>
+                                                }
                                                 color='pink'
                                                 checked={paymentMethod === 'UPI'}
-                                                onChange={() => setPaymentMethod('UPI')} // Explicitly setting the value
+                                                onChange={() => setPaymentMethod('UPI')}
+                                            />
+                                            <Radio
+                                                name="type"
+                                                label={
+                                                    <span className='flex items-center gap-2'>
+                                                        <CreditCard size={16} /> Card Payment
+                                                    </span>
+                                                }
+                                                color='pink'
+                                                checked={paymentMethod === 'UPI'} // Force-checked if UPI is selected
+                                                onChange={() => setPaymentMethod('UPI')} // Always set to UPI
+                                            />
+                                            <Radio
+                                                name="type"
+                                                label={
+                                                    <span className='flex items-center gap-2'>
+                                                        <DollarSign size={16} /> Netbanking
+                                                    </span>
+                                                }
+                                                color='pink'
+                                                checked={paymentMethod === 'UPI'} // Force-checked if UPI is selected
+                                                onChange={() => setPaymentMethod('UPI')} // Always set to UPI
+                                            />
+                                            <Radio
+                                                name="type"
+                                                label={
+                                                    <span className='flex items-center gap-2'>
+                                                        <Wallet size={16} /> Wallets
+                                                    </span>
+                                                }
+                                                color='pink'
+                                                checked={paymentMethod === 'UPI'} // Force-checked if UPI is selected
+                                                onChange={() => setPaymentMethod('UPI')} // Always set to UPI
                                             />
                                         </div>
                                     </div>

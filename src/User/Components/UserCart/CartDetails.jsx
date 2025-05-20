@@ -21,12 +21,16 @@ const CartDetails = () => {
     const [openCoupon, setOpenCoupon] = React.useState(false); // modal for coupon
     const [defaultAddress, setDefaultAddress] = useState([])
 
+    // Calculate total quantity
+    const totalQuantity = viewCart?.items?.reduce((total, item) => {
+        return total + (item.quantity || 0);
+    }, 0) || 0;
+
     // handle Coupon modal
     const handleCouponModalOpen = () => setOpenCoupon(!openCoupon);
 
     const token = localStorage.getItem('userToken');
     const userId = localStorage.getItem('userId');
-
 
     // handle checkout
     const handleCheckout = async () => {
@@ -92,10 +96,8 @@ const CartDetails = () => {
         fetchCartItems();
     }, [BASE_URL]);
 
-
     // Find the address with defaultAddress set to true
     const defaultAddr = defaultAddress.find(address => address.defaultAddress === true);
-
 
     return (
         <>
@@ -109,6 +111,7 @@ const CartDetails = () => {
                     </div>
                 </Link>
             </Card>
+
             {/* total */}
             <Card className='p-4 xl:p-6 lg:p-6'>
                 <h1 className='text-secondary font-medium'>Cart Totals</h1>
@@ -118,14 +121,16 @@ const CartDetails = () => {
                         <span className='text-secondary font-medium text-sm'>{viewCart?.items?.length || 0}</span>
                     </li>
                     <li className='flex justify-between items-center'>
+                        <span className='font-normal text-sm'>Total Quantity</span>
+                        <span className='text-secondary font-medium text-sm'>{totalQuantity}</span>
+                    </li>
+                    <li className='flex justify-between items-center'>
                         <span className='font-normal text-sm'>Sub Total</span>
                         <span className='text-secondary font-medium text-sm'>
                             ₹{viewCart?.totalPrice % 1 >= 0.9
                                 ? Math.ceil(viewCart?.totalPrice)
                                 : Math.floor(viewCart?.totalPrice || 0.00)}
-
                         </span>
-
                     </li>
                     <li className='flex justify-between items-center'>
                         <span className='font-normal text-sm'>Discount</span>
@@ -133,11 +138,9 @@ const CartDetails = () => {
                             ₹{viewCart?.coupenAmount % 1 >= 0.9
                                 ? Math.ceil(viewCart?.coupenAmount)
                                 : Math.floor(viewCart?.coupenAmount || 0.00)}
-
                             {viewCart?.discountType === 'percentage' ? '%' : ''}
                         </span>
                     </li>
-
                 </ul>
                 <ul className='mt-2'>
                     <li className='flex justify-between items-center'>
@@ -157,7 +160,7 @@ const CartDetails = () => {
                     <Link to='/select-delivery-address'>
                         <p className='flex items-center gap-1 text-primary underline text-sm font-medium'>
                             <FiEdit className='text-base' />
-                            
+                            Change
                         </p>
                     </Link>
                 </div>
@@ -187,8 +190,7 @@ const CartDetails = () => {
                             </p>
                         )}
                     </>
-                )
-                }
+                )}
                 <Button
                     onClick={async () => {
                         const newCheckoutId = await handleCheckout(); // Ensure handleCheckout returns checkoutId
@@ -202,7 +204,6 @@ const CartDetails = () => {
                 </Button>
             </Card>
 
-
             <ApplyCouponModal
                 handleCouponModalOpen={handleCouponModalOpen}
                 openCoupon={openCoupon}
@@ -213,7 +214,6 @@ const CartDetails = () => {
                 title="Session Expired"
                 description="Your session has expired. Please log in again to continue."
             />
-
         </>
     )
 }

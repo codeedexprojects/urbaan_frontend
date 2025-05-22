@@ -247,18 +247,19 @@ const ProductDetails = () => {
     //         setSelectedColor(productDetails.colors[0].color);
     //     }
     // }, [productDetails.colors]);
-    useEffect(() => {
-        if (productDetails.colors?.length > 0) {
-            const defaultColor = productDetails.colors[0].color;
-            setSelectedColor(defaultColor);
+   useEffect(() => {
+    if (productDetails.colors?.length > 0) {
+        const defaultColor = productDetails.colors[0].color;
+        setSelectedColor(defaultColor);
 
-            // Get sizes for that color
-            const sizesForColor = productDetails.colors[0].sizes; // Assuming this is how your sizes are structured
-            if (sizesForColor?.length > 0) {
-                setSelectedSize({ [defaultColor]: sizesForColor[0].size });
-            }
-        }
-    }, [productDetails.colors]);
+        // Don't set default size
+        // const sizesForColor = productDetails.colors[0].sizes;
+        // if (sizesForColor?.length > 0) {
+        //     setSelectedSize({ [defaultColor]: sizesForColor[0].size });
+        // }
+    }
+}, [productDetails.colors]);
+
 
 
 

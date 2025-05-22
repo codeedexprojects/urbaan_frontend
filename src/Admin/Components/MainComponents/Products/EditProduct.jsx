@@ -54,6 +54,57 @@ const EditProduct = () => {
     const [selectedSizeChartRefs, setSelectedSizeChartRefs] = useState([]);
     const [materials, setMaterials] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [specificationOptions, setSpecificationOptions] = useState({
+        netWeight: [],
+        fit: [],
+        sleevesType: [],
+        length: [],
+        occasion: [],
+        innerLining: [],
+        material: [],
+        pocket: []
+    });
+
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSpecifications = async () => {
+            try {
+                const response = await axios.get(`${BASE_URL}/admin/specification/all`);
+                const specs = response.data.specifications;
+
+                // Organize specifications by their type
+                const organizedSpecs = {
+                    netWeight: [],
+                    fit: [],
+                    sleevesType: [],
+                    length: [],
+                    occasion: [],
+                    innerLining: [],
+                    material: [],
+                    pocket: []
+                };
+
+                specs.forEach(spec => {
+                    if (organizedSpecs.hasOwnProperty(spec.type)) {
+                        organizedSpecs[spec.type].push({
+                            id: spec._id,
+                            name: spec.name
+                        });
+                    }
+                });
+
+                setSpecificationOptions(organizedSpecs);
+            } catch (error) {
+                console.error('Error fetching specifications:', error);
+                toast.error('Failed to load specifications');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSpecifications();
+    }, []);
     useEffect(() => {
         const fetchMaterials = async () => {
             try {
@@ -182,12 +233,14 @@ const EditProduct = () => {
     };
 
     // handle input change of specifications
-    const handleSpecificationChange = (e, key) => {
-        setEditSpecifications(prev => ({
-            ...prev,
-            [key]: e.target.value
-        }));
+    const handleSpecificationChange = (e, field) => {
+        setEditSpecifications({
+            ...editSpecifications,
+            [field]: e.target.value
+        });
     };
+
+
 
     // Handler for checkbox change
     const handleCheckboxChange = (e, checkboxName) => {
@@ -615,127 +668,164 @@ const EditProduct = () => {
                         {/* specifications */}
                         <div className='flex flex-col gap-1'>
                             <label htmlFor="" className='font-normal text-base'>Specifications</label>
+
+                            {/* Net Weight */}
                             <div className='flex items-center gap-1 mt-4'>
-                                <label htmlFor="" className='font-normal text-sm w-32'>NetWeight</label>
+                                <label htmlFor="netWeight" className='font-normal text-sm w-32'>NetWeight</label>
                                 <p>:</p>
-                                <input
-                                    type="text"
-                                    name="value"
+                                <select
+                                    id="netWeight"
+                                    name="netWeight"
                                     value={editSpecifications.netWeight}
                                     onChange={(e) => handleSpecificationChange(e, 'netWeight')}
-                                    placeholder='value'
-                                    className='border-[1px] w-full capitalize
-                                    bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
-                                    focus:outline-none'
-                                />
+                                    className='border-[1px] w-full bg-gray-100/50 p-2 rounded-md focus:outline-none'
+                                    disabled={loading}
+                                >
+                                    <option value="">Select Net Weight</option>
+                                    {specificationOptions.netWeight.map(option => (
+                                        <option key={option.id} value={option.name}>{option.name}</option>
+                                    ))}
+                                </select>
                             </div>
+
+                            {/* Fit */}
                             <div className='flex items-center gap-1'>
-                                <label htmlFor="" className='font-normal text-sm w-32'>Fit</label>
+                                <label htmlFor="fit" className='font-normal text-sm w-32'>Fit</label>
                                 <p>:</p>
-                                <input
-                                    type="text"
-                                    name="value"
+                                <select
+                                    id="fit"
+                                    name="fit"
                                     value={editSpecifications.fit}
                                     onChange={(e) => handleSpecificationChange(e, 'fit')}
-                                    placeholder='value'
-                                    className='border-[1px] w-full capitalize 
-                                    bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
-                                    focus:outline-none'
-                                />
+                                    className='border-[1px] w-full bg-gray-100/50 p-2 rounded-md focus:outline-none'
+                                    disabled={loading}
+                                >
+                                    <option value="">Select Fit</option>
+                                    {specificationOptions.fit.map(option => (
+                                        <option key={option.id} value={option.name}>{option.name}</option>
+                                    ))}
+                                </select>
                             </div>
+
+                            {/* Sleeves Type */}
                             <div className='flex items-center gap-1'>
-                                <label htmlFor="" className='font-normal text-sm w-32'>Sleeves Type</label>
+                                <label htmlFor="sleevesType" className='font-normal text-sm w-32'>Sleeves Type</label>
                                 <p>:</p>
-                                <input
-                                    type="text"
-                                    name="value"
+                                <select
+                                    id="sleevesType"
+                                    name="sleevesType"
                                     value={editSpecifications.sleevesType}
                                     onChange={(e) => handleSpecificationChange(e, 'sleevesType')}
-                                    placeholder='value'
-                                    className='border-[1px] w-full capitalize  
-                                    bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
-                                    focus:outline-none'
-                                />
+                                    className='border-[1px] w-full bg-gray-100/50 p-2 rounded-md focus:outline-none'
+                                    disabled={loading}
+                                >
+                                    <option value="">Select Sleeves Type</option>
+                                    {specificationOptions.sleevesType.map(option => (
+                                        <option key={option.id} value={option.name}>{option.name}</option>
+                                    ))}
+                                </select>
                             </div>
+
+                            {/* Length */}
                             <div className='flex items-center gap-1'>
-                                <label htmlFor="" className='font-normal text-sm w-32'>Length</label>
+                                <label htmlFor="length" className='font-normal text-sm w-32'>Length</label>
                                 <p>:</p>
-                                <input
-                                    type="text"
-                                    name="value"
-                                    value={editSpecifications.Length}
+                                <select
+                                    id="length"
+                                    name="length"
+                                    value={editSpecifications.Length} // Note: keeping original casing for consistency
                                     onChange={(e) => handleSpecificationChange(e, 'Length')}
-                                    placeholder='value'
-                                    className='border-[1px] w-full capitalize  
-                                    bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
-                                    focus:outline-none'
-                                />
+                                    className='border-[1px] w-full bg-gray-100/50 p-2 rounded-md focus:outline-none'
+                                    disabled={loading}
+                                >
+                                    <option value="">Select Length</option>
+                                    {specificationOptions.length.map(option => (
+                                        <option key={option.id} value={option.name}>{option.name}</option>
+                                    ))}
+                                </select>
                             </div>
+
+                            {/* Occasion */}
                             <div className='flex items-center gap-1'>
-                                <label htmlFor="" className='font-normal text-sm w-32'>Occassion</label>
+                                <label htmlFor="occasion" className='font-normal text-sm w-32'>Occasion</label>
                                 <p>:</p>
-                                <input
-                                    type="text"
-                                    name="value"
+                                <select
+                                    id="occasion"
+                                    name="occasion"
                                     value={editSpecifications.occasion}
                                     onChange={(e) => handleSpecificationChange(e, 'occasion')}
-                                    placeholder='value'
-                                    className='border-[1px] w-full capitalize  
-                                    bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
-                                    focus:outline-none'
-                                />
+                                    className='border-[1px] w-full bg-gray-100/50 p-2 rounded-md focus:outline-none'
+                                    disabled={loading}
+                                >
+                                    <option value="">Select Occasion</option>
+                                    {specificationOptions.occasion.map(option => (
+                                        <option key={option.id} value={option.name}>{option.name}</option>
+                                    ))}
+                                </select>
                             </div>
+
+                            {/* Inner Lining */}
                             <div className='flex items-center gap-1'>
-                                <label htmlFor="" className='font-normal text-sm w-32'>Inner Lining</label>
+                                <label htmlFor="innerLining" className='font-normal text-sm w-32'>Inner Lining</label>
                                 <p>:</p>
-                                <input
-                                    type="text"
-                                    name="value"
+                                <select
+                                    id="innerLining"
+                                    name="innerLining"
                                     value={editSpecifications.innerLining}
                                     onChange={(e) => handleSpecificationChange(e, 'innerLining')}
-                                    placeholder='value'
-                                    className='border-[1px] w-full capitalize  
-                                    bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
-                                    focus:outline-none'
-                                />
+                                    className='border-[1px] w-full bg-gray-100/50 p-2 rounded-md focus:outline-none'
+                                    disabled={loading}
+                                >
+                                    <option value="">Select Inner Lining</option>
+                                    {specificationOptions.innerLining.map(option => (
+                                        <option key={option.id} value={option.name}>{option.name}</option>
+                                    ))}
+                                </select>
                             </div>
+
+                            {/* Material */}
                             <div className="flex items-center gap-1">
                                 <label htmlFor="material" className="font-normal text-sm w-32">Material</label>
                                 <p>:</p>
                                 <select
                                     id="material"
                                     name="material"
-                                    value={editSpecifications.material} // Bind the selected value to the state
-                                    onChange={handleMaterialSelect} // Handle selection change
-                                    className="border-[1px] w-full capitalize bg-gray-100/50 p-2 rounded-md focus:outline-none"
-                                    disabled={isLoading} // Disable the dropdown while loading
+                                    value={editSpecifications.material}
+                                    onChange={(e) => handleSpecificationChange(e, 'material')}
+                                    className="border-[1px] w-full bg-gray-100/50 p-2 rounded-md focus:outline-none"
+                                    disabled={loading}
                                 >
-                                    <option value="">Select Material</option> {/* Default option */}
-                                    {!isLoading ? (
-                                        materials.map((material) => (
-                                            <option key={material._id} value={material.materialName}>
-                                                {material.materialName} {/* Show material name in dropdown */}
-                                            </option>
-                                        ))
-                                    ) : (
-                                        <option>Loading...</option> // Loading message
-                                    )}
+                                    <option value="">Select Material</option>
+                                    {specificationOptions.material.map(option => (
+                                        <option key={option.id} value={option.name}>{option.name}</option>
+                                    ))}
                                 </select>
                             </div>
+
+                            {/* Pocket */}
                             <div className='flex items-center gap-1'>
-                                <label htmlFor="" className='font-normal text-sm w-32'>Pocket</label>
+                                <label htmlFor="pocket" className='font-normal text-sm w-32'>Pocket</label>
                                 <p>:</p>
-                                <input
-                                    type="text"
-                                    name="value"
+                                <select
+                                    id="pocket"
+                                    name="pocket"
                                     value={editSpecifications.pocket}
                                     onChange={(e) => handleSpecificationChange(e, 'pocket')}
-                                    placeholder='value'
-                                    className='border-[1px] w-full capitalize  
-                                    bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
-                                    focus:outline-none'
-                                />
+                                    className='border-[1px] w-full bg-gray-100/50 p-2 rounded-md focus:outline-none'
+                                    disabled={loading}
+                                >
+                                    <option value="">Select Pocket</option>
+                                    {specificationOptions.pocket.map(option => (
+                                        <option key={option.id} value={option.name}>{option.name}</option>
+                                    ))}
+                                </select>
                             </div>
+
+                            {loading && (
+                                <div className="text-center text-gray-500 py-2">
+                                    Loading specifications...
+                                </div>
+                            )}
                         </div>
 
 

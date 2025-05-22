@@ -141,7 +141,11 @@ const CartDetails = () => {
                             {viewCart?.discountType === 'percentage' ? '%' : ''}
                         </span>
                     </li>
+                     <p className='mt-4 text-xs text-gray-500 italic'>
+                    * Delivery charges will be calculated during checkout.
+                </p>
                 </ul>
+                
                 <ul className='mt-2'>
                     <li className='flex justify-between items-center'>
                         <span className='text-secondary font-medium text-sm'>Total</span>
@@ -151,6 +155,7 @@ const CartDetails = () => {
                         </span>
                     </li>
                 </ul>
+               
             </Card>
 
             {/* delivery address */}

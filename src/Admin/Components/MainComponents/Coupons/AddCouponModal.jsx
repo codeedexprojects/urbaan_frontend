@@ -206,40 +206,40 @@ export function AddCouponModal({ open, handleOpen, setAdminCoupon }) {
                             </div>
                             {/* category */}
                             <div className='flex flex-col gap-3 w-full'>
-                                    <label className="font-normal text-base">Select Category</label>
+                                <label className="font-normal text-base">Select Category</label>
                                 <ul className='flex items-center justify-between'>
-                                        <li onClick={prevSlideCategory} className='text-sm font-semibold text-secondary flex items-center gap-0 cursor-pointer'><IoIosArrowBack /> Prev</li>
-                                        <li onClick={nextSlideCategory} className='text-sm font-semibold text-secondary flex items-center gap-0 cursor-pointer'>Next <IoIosArrowForward /></li>
-                                    </ul>
-                                    <div
-                                        className='flex flex-row items-center gap-2 overflow-x-auto hide-scrollbar scroll-smooth'
-                                        ref={categoryContainer}
-                                    >
-                                        <div className='flex items-center space-x-0 shrink-0'>
+                                    <li onClick={prevSlideCategory} className='text-sm font-semibold text-secondary flex items-center gap-0 cursor-pointer'><IoIosArrowBack /> Prev</li>
+                                    <li onClick={nextSlideCategory} className='text-sm font-semibold text-secondary flex items-center gap-0 cursor-pointer'>Next <IoIosArrowForward /></li>
+                                </ul>
+                                <div
+                                    className='flex flex-row items-center gap-2 overflow-x-auto hide-scrollbar scroll-smooth'
+                                    ref={categoryContainer}
+                                >
+                                    <div className='flex items-center space-x-0 shrink-0'>
+                                        <Checkbox
+                                            checked={couponCategory.length === categories.length}
+                                            onChange={handleSelectAll}
+                                            color='black'
+                                            className='w-4 h-4 border-2 border-gray-600 rounded-sm'
+                                        />
+                                        <Typography className='text-sm sm:text-base font-custom font-medium capitalize text-secondary'>
+                                            Select All
+                                        </Typography>
+                                    </div>
+                                    {categories.map((category) => (
+                                        <div key={category.id} className='flex items-center space-x-0 shrink-0'>
                                             <Checkbox
-                                                checked={couponCategory.length === categories.length}
-                                                onChange={handleSelectAll}
+                                                checked={couponCategory.includes(category.id)}
+                                                onChange={() => handleCategorySelect(category.id)}
                                                 color='black'
                                                 className='w-4 h-4 border-2 border-gray-600 rounded-sm'
                                             />
-                                            <Typography className='text-sm sm:text-base font-custom font-medium capitalize text-secondary'>
-                                                Select All
+                                            <Typography className='text-sm sm:text-base font-custom font-medium capitalize text-secondary truncate'>
+                                                {category.name}
                                             </Typography>
                                         </div>
-                                        {categories.map((category) => (
-                                            <div key={category.id} className='flex items-center space-x-0 shrink-0'>
-                                                <Checkbox
-                                                    checked={couponCategory.includes(category.id)}
-                                                    onChange={() => handleCategorySelect(category.id)}
-                                                    color='black'
-                                                    className='w-4 h-4 border-2 border-gray-600 rounded-sm'
-                                                />
-                                                <Typography className='text-sm sm:text-base font-custom font-medium capitalize text-secondary truncate'>
-                                                    {category.name}
-                                                </Typography>
-                                            </div>
-                                        ))}
-                                    </div>
+                                    ))}
+                                </div>
                             </div>
 
 
@@ -288,18 +288,21 @@ export function AddCouponModal({ open, handleOpen, setAdminCoupon }) {
                                      focus:outline-none'/>
                                 </div>
                                 <div className='flex flex-col gap-1 w-1/3'>
-                                    <label htmlFor="" className='font-normal text-sm'>Discount Type</label>
-                                    <input
-                                        type="text"
-                                        name="name"
+                                    <label htmlFor="discountType" className='font-normal text-sm'>Discount Type</label>
+                                    <select
+                                        name="discountType"
+                                        id="discountType"
                                         value={couponDiscountType}
                                         onChange={(e) => setCouponDiscountType(e.target.value)}
-                                        id=""
-                                        placeholder='Percentage or amount'
-                                        className='border-[1px] text-sm
-                                    bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
-                                     focus:outline-none'/>
+                                        className='border-[1px] text-sm bg-gray-100/50 p-2 rounded-md 
+               placeholder:text-sm placeholder:font-light placeholder:text-gray-500 
+               focus:outline-none'>
+                                        <option value="" disabled>Select discount type</option>
+                                        <option value="percentage">Percentage</option>
+                                        <option value="amount">Amount</option>
+                                    </select>
                                 </div>
+
                                 <div className='flex flex-col gap-1 w-1/3'>
                                     <label className='font-normal text-base'>Status</label>
                                     <select

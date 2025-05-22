@@ -52,6 +52,7 @@ import RefundPolicy from './User/Components/Footer/RefundPolicy'
 import PleaseNote from './User/Components/Checkout/PleaseNote'
 import PricingPolicy from './User/Components/Footer/PricingPolicy'
 import MaterialsList from './Admin/Components/MainComponents/Material/AddMaterial';
+import ProductSpecifications from './Admin/Components/MainComponents/Specifications/AddSpecifications';
 
 
 const FullRoutes = () => {
@@ -125,6 +126,7 @@ const RoutesWithLocation = () => {
                     <Route path='editProduct' element={<PrivateRoute><EditProduct /></PrivateRoute>} />
                     <Route path='sizechart' element={<PrivateRoute><SizeCharts /></PrivateRoute>} />
                     <Route path='material' element={<PrivateRoute><MaterialsList /></PrivateRoute>} />
+                    <Route path='specifications' element={<PrivateRoute><ProductSpecifications /></PrivateRoute>} />
                 </Route>
                 <Route path='*' element={<NotFound />} />
             </Routes>

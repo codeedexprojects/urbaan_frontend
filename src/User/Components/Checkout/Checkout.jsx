@@ -87,12 +87,20 @@ const Checkout = () => {
         if (!deliveryCharge?.length || !cartItems?.length) return 0;
 
         return cartItems.reduce((totalFee, item) => {
+            // Skip item if it has free delivery
+            if (item?.productId?.freeDelivery) {
+                return totalFee;
+            }
+
+            // Find matching delivery fee
             const bestMatch = deliveryCharge
                 .filter((fee) => fee.quantity <= item.quantity)
                 .reduce((max, fee) => Math.max(max, fee.deliveryFee), 0);
+
             return totalFee + bestMatch;
         }, 0);
     };
+
 
     const calculateTotalPrice = () => {
         const subtotal = checkoutDetails?.discountedPrice || 0;
@@ -362,8 +370,12 @@ const Checkout = () => {
                                                     <div className='mt-2'>
                                                         <p className='text-secondary font-semibold text-xl'>
                                                             ₹{(item.price % 1 >= 0.9) ? Math.ceil(item.price) : Math.floor(item.price)}
+                                                            <span className="text-sm text-gray-500 line-through ml-2">
+                                                                ₹{item.productId.actualPrice}
+                                                            </span>
                                                         </p>
                                                     </div>
+
 
                                                 </div>
                                             </div>
@@ -373,55 +385,76 @@ const Checkout = () => {
                                 {/* total price */}
                                 <Card className='p-4 xl:p-6 lg:p-6'>
                                     <ul className='space-y-2'>
+                                        {/* Total Items Price */}
                                         <li className='flex items-center justify-between'>
-                                            <span className='text-secondary flex items-center gap-3'>
-                                                Subtotal
-                                                <span className='text-sm'>(Including discount)</span>
+                                            <span className='text-secondary'>
+                                                Price ({checkoutDetails?.cartItems?.reduce((total, item) => total + item.quantity, 0)} items)
                                             </span>
-                                            <span className='text-secondary font-bold'>
-                                                ₹{(checkoutDetails?.discountedPrice % 1 >= 0.9)
-                                                    ? Math.ceil(checkoutDetails?.discountedPrice)
-                                                    : Math.floor(checkoutDetails?.discountedPrice || 0.00)}
+                                            <span className='text-secondary'>
+                                                ₹{checkoutDetails?.cartItems?.reduce((total, item) =>
+                                                    total + (item.productId.actualPrice * item.quantity), 0)}
                                             </span>
-
                                         </li>
 
+                                        {/* Total Discount */}
+                                        <li className='flex items-center justify-between'>
+                                            <span className='text-secondary'>Discount</span>
+                                            <span className='text-green-600'>
+                                                -₹{Math.ceil(checkoutDetails?.cartItems?.reduce((total, item) =>
+                                                    total + ((item.productId.actualPrice - item.productId.offerPrice) * item.quantity), 0))}
+                                            </span>
+                                        </li>
+
+
+                                        {/* Subtotal */}
+                                        <li className='flex items-center justify-between'>
+                                            <span className='text-secondary font-medium'>Subtotal</span>
+                                            <span className='text-secondary font-bold'>
+                                                ₹{Math.ceil(checkoutDetails?.cartItems?.reduce((total, item) =>
+                                                    total + (item.price * item.quantity), 0))}
+                                            </span>
+                                        </li>
+
+
+                                        {/* Shipping */}
                                         <li className='flex items-center justify-between'>
                                             <span className='text-secondary'>Shipping</span>
-                                            <span className='text-secondary font-bold'>
-                                                ₹{(calculateDeliveryCharge(checkoutDetails?.cartItems) % 1 >= 0.9)
-                                                    ? Math.ceil(calculateDeliveryCharge(checkoutDetails?.cartItems))
-                                                    : Math.floor(calculateDeliveryCharge(checkoutDetails?.cartItems))}
-                                            </span>
-
+                                            {checkoutDetails?.cartItems?.some(item => item?.productId?.freeDelivery) ? (
+                                                <span className='text-green-600 font-bold'>FREE</span>
+                                            ) : (
+                                                <span className='text-secondary font-bold'>
+                                                    ₹{calculateDeliveryCharge(checkoutDetails?.cartItems) % 1 >= 0.9
+                                                        ? Math.ceil(calculateDeliveryCharge(checkoutDetails?.cartItems))
+                                                        : Math.floor(calculateDeliveryCharge(checkoutDetails?.cartItems))}
+                                                </span>
+                                            )}
                                         </li>
 
+                                        {/* Coupon Discount */}
                                         {checkoutDetails?.coupenAmount ? (
                                             <li className='flex items-center justify-between'>
-                                                <span className='text-secondary'>Discount</span>
-                                                <span className='text-secondary font-bold'>
-                                                    ₹{(checkoutDetails?.coupen.discountValue % 1 >= 0.9)
-                                                        ? Math.ceil(checkoutDetails?.coupen.discountValue || 0.00)
-                                                        : Math.floor(checkoutDetails?.coupen.discountValue || 0.00)}
-
-                                                    {checkoutDetails?.coupen.discountType === "percentage" ? "%" : ""}
+                                                <span className='text-secondary'>Coupon Discount</span>
+                                                <span className='text-green-600 font-bold'>
+                                                    -₹{(checkoutDetails?.coupenAmount % 1 >= 0.9)
+                                                        ? Math.ceil(checkoutDetails?.coupenAmount || 0.00)
+                                                        : Math.floor(checkoutDetails?.coupenAmount || 0.00)}
                                                 </span>
                                             </li>
                                         ) : (
                                             <li className='flex items-center justify-between'>
-                                                <span className='text-secondary'>Discount</span>
-                                                <span className='text-primary font-normal text-xs'>*No coupon applied</span>
+                                                <span className='text-secondary'>Coupon Discount</span>
+                                                <span className='text-primary font-normal text-xs'>No coupon applied</span>
                                             </li>
                                         )}
 
-                                        <li className='flex items-center justify-between'>
-                                            <span className='text-secondary'>Total</span>
-                                            <span className='text-secondary font-bold'>
+                                        {/* Total */}
+                                        <li className='flex items-center justify-between pt-2 border-t border-gray-300'>
+                                            <span className='text-secondary font-bold text-lg'>Total</span>
+                                            <span className='text-secondary font-bold text-lg'>
                                                 ₹{calculateTotalPrice() % 1 >= 0.9
                                                     ? Math.ceil(calculateTotalPrice())
                                                     : Math.floor(calculateTotalPrice())}
                                             </span>
-
                                         </li>
 
                                         <li className='flex items-center justify-between'>
@@ -515,4 +548,3 @@ const Checkout = () => {
 }
 
 export default Checkout
-

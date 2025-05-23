@@ -29,6 +29,7 @@ const EditProduct = () => {
         latest: false,
         offer: false,
         featured: false,
+        freeDelivery: false
     });
     const [editSpecifications, setEditSpecifications] = useState({
         netWeight: '',
@@ -182,6 +183,7 @@ const EditProduct = () => {
                 latest: initialProducts.isLatestProduct || false,
                 offer: initialProducts.isOfferProduct || false,
                 featured: initialProducts.isFeaturedProduct || false,
+                freeDelivery: initialProducts.freeDelivery || false,
             });
 
             // Set specifications from features
@@ -331,6 +333,7 @@ const EditProduct = () => {
             editproductFormData.append('isLatestProduct', editProdCheckboxes.latest);
             editproductFormData.append('isOfferProduct', editProdCheckboxes.offer);
             editproductFormData.append('isFeaturedProduct', editProdCheckboxes.featured);
+            editproductFormData.append('freeDelivery', editProdCheckboxes.freeDelivery);
             editproductFormData.append('description', editProdDescription);
 
             // Handle colors and sizes
@@ -401,7 +404,7 @@ const EditProduct = () => {
             setEditProdActualPrice('');
             setEditProdDiscount('');
             setEditProdOfferPrice('');
-            setEditProdCheckboxes({ latest: false, offer: false, featured: false });
+            setEditProdCheckboxes({ latest: false, offer: false, featured: false, freeDelivery: false });
             setEditSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "" })
             setEditAttributeFields([{ color: "", sizes: [{ size: "", stock: "" }] }]);
             setEditProdDescription('');
@@ -661,6 +664,13 @@ const EditProduct = () => {
                                 color='pink'
                                 checked={editProdCheckboxes.featured}
                                 onChange={(e) => handleCheckboxChange(e, 'featured')}
+                                className='border-2 border-primary rounded-sm w-4 h-4'
+                            />
+                            <Checkbox label={
+                                <Typography className='font-custom text-secondary text-base font-normal'>Free Delivery</Typography>}
+                                color='pink'
+                                checked={editProdCheckboxes.freeDelivery}
+                                onChange={(e) => handleCheckboxChange(e, 'freeDelivery')}
                                 className='border-2 border-primary rounded-sm w-4 h-4'
                             />
                         </div>

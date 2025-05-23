@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { IoIosArrowForward } from 'react-icons/io';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { RiCoupon4Line } from "react-icons/ri";
+import { MdClose } from "react-icons/md";
 import axios from 'axios';
 import { useContext } from 'react';
 import { AppContext } from '../../../StoreContext/StoreContext';
@@ -20,6 +21,8 @@ const CartDetails = () => {
     const [checkoutId, setCheckoutId] = useState('')
     const [openCoupon, setOpenCoupon] = React.useState(false); // modal for coupon
     const [defaultAddress, setDefaultAddress] = useState([])
+    const [availableCoupons, setAvailableCoupons] = useState([]);
+    const [loadingCoupons, setLoadingCoupons] = useState(false);
 
     // Calculate total quantity
     const totalQuantity = viewCart?.items?.reduce((total, item) => {
@@ -31,6 +34,59 @@ const CartDetails = () => {
 
     const token = localStorage.getItem('userToken');
     const userId = localStorage.getItem('userId');
+
+    // Fetch available coupons
+    const fetchAvailableCoupons = async () => {
+        setLoadingCoupons(true);
+        try {
+            const response = await axios.get(`${BASE_URL}/user/coupon/list`);
+            // Filter only active coupons that are within date range
+            const activeCoupons = response.data.filter(coupon => {
+                const currentDate = new Date();
+                const startDate = new Date(coupon.startDate);
+                const endDate = new Date(coupon.endDate);
+                return coupon.status === 'active' && currentDate >= startDate && currentDate <= endDate;
+            });
+            setAvailableCoupons(activeCoupons);
+        } catch (error) {
+            console.error("Error fetching coupons:", error);
+            toast.error("Failed to load available coupons");
+        } finally {
+            setLoadingCoupons(false);
+        }
+    };
+
+    // Apply coupon
+    
+
+    // Remove coupon
+    const removeCoupon = async () => {
+        if (!userId || !token) {
+            setOpenUserNotLogin(true);
+            return;
+        }
+
+        try {
+            const response = await axios.post(`${BASE_URL}/user/cart/remove-coupon`, {
+                userId: userId
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.data.success) {
+                toast.success("Coupon removed successfully!");
+                await fetchCartItems();
+            }
+        } catch (error) {
+            console.error("Error removing coupon:", error);
+            toast.error(error.response?.data?.message || "Failed to remove coupon");
+            if (error.response?.status === 401) {
+                setOpenUserNotLogin(true);
+            }
+        }
+    };
 
     // handle checkout
     const handleCheckout = async () => {
@@ -94,22 +150,79 @@ const CartDetails = () => {
 
     useEffect(() => {
         fetchCartItems();
+        fetchAvailableCoupons();
     }, [BASE_URL]);
 
     // Find the address with defaultAddress set to true
     const defaultAddr = defaultAddress.find(address => address.defaultAddress === true);
 
+    // Check if any coupon is applied
+    const isCouponApplied = viewCart?.coupenAmount > 0;
+
     return (
         <>
             {/* coupon */}
             <Card className='p-4'>
-                <Link onClick={handleCouponModalOpen}>
+                {isCouponApplied ? (
                     <div className='flex items-center justify-between'>
-                        <h1 className='flex items-center gap-3 text-base text-secondary font-medium'>
-                            <RiCoupon4Line className='text-xl' />Apply Coupon</h1>
-                        <IoIosArrowForward className='text-secondary text-2xl' />
+                        <div className='flex items-center gap-3'>
+                            <RiCoupon4Line className='text-xl text-green-600' />
+                            <div>
+                                <h1 className='text-base text-secondary font-medium'>Coupon Applied</h1>
+                                <p className='text-sm text-green-600'>
+                                    You saved ₹{viewCart?.coupenAmount % 1 >= 0.9
+                                        ? Math.ceil(viewCart?.coupenAmount)
+                                        : Math.floor(viewCart?.coupenAmount || 0)}
+                                    {viewCart?.discountType === 'percentage' ? '%' : ''}
+                                </p>
+                            </div>
+                        </div>
+                        <Button
+                            onClick={removeCoupon}
+                            size="sm"
+                            className='bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-xs font-normal capitalize'
+                        >
+                            Remove
+                        </Button>
                     </div>
-                </Link>
+                ) : (
+                    <div>
+                        <div className='flex items-center justify-between cursor-pointer' onClick={handleCouponModalOpen}>
+                            <h1 className='flex items-center gap-3 text-base text-secondary font-medium'>
+                                <RiCoupon4Line className='text-xl' />Apply Coupon</h1>
+                            <IoIosArrowForward className='text-secondary text-2xl' />
+                        </div>
+
+                        {/* Available Coupons Dropdown */}
+                        <div className='mt-3'>
+                            
+                            
+                            {/* Show coupon details when available */}
+                            {availableCoupons.length > 0 && !loadingCoupons && (
+                                <div className='mt-2 p-2 bg-blue-50 rounded-lg'>
+                                    <p className='text-xs text-blue-600 font-medium'>Available Offers:</p>
+                                    <div className='mt-1 space-y-1'>
+                                        {availableCoupons.map((coupon) => (
+                                            <div key={coupon._id} className='text-xs text-gray-600'>
+                                                <span className='font-medium text-primary'>{coupon.code}</span> - 
+                                                <span className='text-green-600 ml-1'>
+                                                    {coupon.discountType === 'percentage' 
+                                                        ? `${coupon.discountValue}% OFF`
+                                                        : `₹${coupon.discountValue} OFF`
+                                                    }
+                                                </span>
+                                                <span className='ml-1'>on {coupon.category.map(cat => cat.name).join(', ')}</span>
+                                            </div>
+                                        ))}
+                                        {/* {availableCoupons.length > 2 && (
+                                            <p className='text-xs text-gray-500'>+{availableCoupons.length - 2} more offers available</p>
+                                        )} */}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
             </Card>
 
             {/* total */}
@@ -132,15 +245,16 @@ const CartDetails = () => {
                                 : Math.floor(viewCart?.totalPrice || 0.00)}
                         </span>
                     </li>
-                    <li className='flex justify-between items-center'>
-                        <span className='font-normal text-sm'>Discount</span>
-                        <span className='text-secondary font-medium text-sm'>
-                            ₹{viewCart?.coupenAmount % 1 >= 0.9
-                                ? Math.ceil(viewCart?.coupenAmount)
-                                : Math.floor(viewCart?.coupenAmount || 0.00)}
-                            {viewCart?.discountType === 'percentage' ? '%' : ''}
-                        </span>
-                    </li>
+                    {isCouponApplied && (
+                        <li className='flex justify-between items-center'>
+                            <span className='font-normal text-sm text-green-600'>Coupon Discount</span>
+                            <span className='text-green-600 font-medium text-sm'>
+                                -₹{viewCart?.coupenAmount % 1 >= 0.9
+                                    ? Math.ceil(viewCart?.coupenAmount)
+                                    : Math.floor(viewCart?.coupenAmount || 0.00)}
+                            </span>
+                        </li>
+                    )}
                      <p className='mt-4 text-xs text-gray-500 italic'>
                     * Delivery charges will be calculated during checkout.
                 </p>

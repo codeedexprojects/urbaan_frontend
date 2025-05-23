@@ -247,18 +247,18 @@ const ProductDetails = () => {
     //         setSelectedColor(productDetails.colors[0].color);
     //     }
     // }, [productDetails.colors]);
-   useEffect(() => {
-    if (productDetails.colors?.length > 0) {
-        const defaultColor = productDetails.colors[0].color;
-        setSelectedColor(defaultColor);
+    useEffect(() => {
+        if (productDetails.colors?.length > 0) {
+            const defaultColor = productDetails.colors[0].color;
+            setSelectedColor(defaultColor);
 
-        // Don't set default size
-        // const sizesForColor = productDetails.colors[0].sizes;
-        // if (sizesForColor?.length > 0) {
-        //     setSelectedSize({ [defaultColor]: sizesForColor[0].size });
-        // }
-    }
-}, [productDetails.colors]);
+            // Don't set default size
+            // const sizesForColor = productDetails.colors[0].sizes;
+            // if (sizesForColor?.length > 0) {
+            //     setSelectedSize({ [defaultColor]: sizesForColor[0].size });
+            // }
+        }
+    }, [productDetails.colors]);
 
 
 
@@ -470,10 +470,13 @@ const ProductDetails = () => {
                                         </s>
                                     </p>
                                 </div>
-                                <div className='flex items-center justify-between xl:justify-normal lg:justify-normal xl:gap-10 lg:gap-10 mt-2'>
-                                    <p className='text-xs xl:text-sm lg:text-sm font-semibold text-shippedBg'><b>FREE SHIPPING</b></p>
-
-                                </div>
+                                {productDetails?.freeDelivery && (
+                                    <div className='flex items-center justify-between xl:justify-normal lg:justify-normal xl:gap-10 lg:gap-10 mt-2'>
+                                        <p className='text-xs xl:text-sm lg:text-sm font-semibold text-shippedBg'>
+                                            <b>FREE SHIPPING</b>
+                                        </p>
+                                    </div>
+                                )}
 
                                 {/* Select Color */}
                                 <div className='mt-4'>

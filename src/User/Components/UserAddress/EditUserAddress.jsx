@@ -152,10 +152,10 @@ const EditUserAddress = () => {
                                     name="name"
                                     id="name"
                                     value={editName}
-                                    onChange={(e) => setEditName(e.target.value)}
+                                    onChange={(e) => setEditName(e.target.value.toUpperCase())}
                                     placeholder="Enter your name"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
                             </div>
                             {/* Number */}
@@ -168,10 +168,10 @@ const EditUserAddress = () => {
                                     name="number"
                                     id="number"
                                     value={editNumber}
-                                    onChange={(e) => setEditNumber(e.target.value)}
+                                    onChange={(e) => setEditNumber(e.target.value.toUpperCase())}
                                     placeholder="Enter your phone number"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
                             </div>
                             {/* Address */}
@@ -184,20 +184,20 @@ const EditUserAddress = () => {
                                     name="address"
                                     id="address"
                                     value={editAddress}
-                                    onChange={(e) => setEditAddress(e.target.value)}
+                                    onChange={(e) => setEditAddress(e.target.value.toUpperCase())}
                                     placeholder="Address (House No, Building, Street, Area)"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
                                 <input
                                     type="text"
                                     name="landmark"
                                     id="landmark"
                                     value={editLandMark}
-                                    onChange={(e) => setEditLandMark(e.target.value)}
+                                    onChange={(e) => setEditLandMark(e.target.value.toUpperCase())}
                                     placeholder="Landmark"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
                                 <div className="relative">
                                     <input
@@ -205,11 +205,11 @@ const EditUserAddress = () => {
                                         name="pincode"
                                         id="pincode"
                                         value={editPinCode}
-                                        onChange={(e) => setEditPinCode(e.target.value)}
+                                        onChange={(e) => setEditPinCode(e.target.value.toUpperCase())}
                                         onBlur={handlePinCodeBlur}
                                         placeholder="Pin code"
                                         required
-                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none w-full"
+                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none w-full uppercase"
                                     />
                                     {isValidatingPin && (
                                         <span className="absolute right-3 top-2.5 text-xs text-gray-500">Validating...</span>
@@ -229,10 +229,10 @@ const EditUserAddress = () => {
                                     name="city"
                                     id="city"
                                     value={editCity}
-                                    onChange={(e) => setEditCity(e.target.value)}
+                                    onChange={(e) => setEditCity(e.target.value.toUpperCase())}
                                     placeholder="Enter your city"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
                             </div>
                             {/* State */}
@@ -245,10 +245,10 @@ const EditUserAddress = () => {
                                     name="state"
                                     id="state"
                                     value={editState}
-                                    onChange={(e) => setEditState(e.target.value)}
+                                    onChange={(e) => setEditState(e.target.value.toUpperCase())}
                                     placeholder="Enter your state"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
                             </div>
 

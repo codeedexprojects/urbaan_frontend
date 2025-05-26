@@ -32,12 +32,12 @@ const AddUserAddress = () => {
         try {
             const response = await axios.get(`https://api.postalpincode.in/pincode/${pin}`)
             const data = response.data[0] // API returns an array with one object
-            
+
             if (data.Status === 'Error') {
                 setPinCodeError('Invalid PIN code')
                 return false
             }
-            
+
             if (data.Status === 'Success') {
                 setPinCodeError('')
                 // Auto-fill city and state if available
@@ -48,7 +48,7 @@ const AddUserAddress = () => {
                 }
                 return true
             }
-            
+
             return false
         } catch (error) {
             console.error('PIN code validation error:', error)
@@ -137,10 +137,10 @@ const AddUserAddress = () => {
                                     name="name"
                                     id="name"
                                     value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    onChange={(e) => setName(e.target.value.toUpperCase())}
                                     placeholder="Enter your name"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
                             </div>
                             {/* Number */}
@@ -156,7 +156,7 @@ const AddUserAddress = () => {
                                     onChange={(e) => setNumber(e.target.value)}
                                     placeholder="Enter your phone number"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
                             </div>
                             {/* Address */}
@@ -169,20 +169,21 @@ const AddUserAddress = () => {
                                     name="address"
                                     id="address"
                                     value={address}
-                                    onChange={(e) => setAddress(e.target.value)}
-                                    placeholder="Address (House No, Building, Street, Area)"
+                                    onChange={(e) => setAddress(e.target.value.toUpperCase())}
+                                    placeholder="ADDRESS (HOUSE NO, BUILDING, STREET, AREA)"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
+
                                 <input
                                     type="text"
                                     name="landmark"
                                     id="landmark"
                                     value={landMark}
-                                    onChange={(e) => setLandMark(e.target.value)}
+                                    onChange={(e) => setLandMark(e.target.value.toUpperCase())}
                                     placeholder="Landmark"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
                                 <div className="relative">
                                     <input
@@ -194,7 +195,7 @@ const AddUserAddress = () => {
                                         onBlur={handlePinCodeBlur}
                                         placeholder="Pin code"
                                         required
-                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none w-full"
+                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none w-full uppercase"
                                     />
                                     {isValidatingPin && (
                                         <span className="absolute right-3 top-2.5 text-xs text-gray-500">Validating...</span>
@@ -214,10 +215,10 @@ const AddUserAddress = () => {
                                     name="city"
                                     id="city"
                                     value={city}
-                                    onChange={(e) => setCity(e.target.value)}
+                                    onChange={(e) => setCity(e.target.value.toUpperCase())}
                                     placeholder="Enter your city"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
                             </div>
                             {/* State */}
@@ -230,10 +231,10 @@ const AddUserAddress = () => {
                                     name="state"
                                     id="state"
                                     value={state}
-                                    onChange={(e) => setState(e.target.value)}
+                                    onChange={(e) => setState(e.target.value.toUpperCase())}
                                     placeholder="Enter your state"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
                             </div>
 
@@ -261,8 +262,8 @@ const AddUserAddress = () => {
 
                             {/* Submit Button */}
                             <div className='mb-3'>
-                                <Button 
-                                    type='submit' 
+                                <Button
+                                    type='submit'
                                     className='bg-primary font-custom text-sm capitalize w-full font-normal'
                                     disabled={isValidatingPin || !!pinCodeError}
                                 >

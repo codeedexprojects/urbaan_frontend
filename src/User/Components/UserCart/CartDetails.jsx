@@ -142,7 +142,7 @@ const CartDetails = () => {
             } catch (error) {
                 console.log(error);
             } finally {
-                setIsLoading(false); // Ensure this is called after the data is fetched
+                setIsLoading(false); 
             }
         };
         fetchDefaultAddress();

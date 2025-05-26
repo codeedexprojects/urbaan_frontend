@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Menu, MenuHandler, MenuList, Button } from "@material-tailwind/react";
 
-const orderStatus = ["Pending", "Processing", "Cancelled", "Delivered", "In-Transist", 'invoice_generated'];
+const orderStatus = ["Pending", "Processing","In-Transist", "Delivered",  'invoice_generated', "Cancelled",];
 
 export function FilterOrderStatus({ setFilters, resetFilter }) {
     const [selectedStatus, setSelectedStatus] = useState(null); // Single selection

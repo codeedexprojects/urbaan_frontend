@@ -410,16 +410,23 @@ const Checkout = () => {
                                         <li className='flex items-center justify-between'>
                                             <span className='text-secondary font-medium'>Subtotal</span>
                                             <span className='text-secondary font-bold'>
-                                                ₹{Math.ceil(checkoutDetails?.cartItems?.reduce((total, item) =>
-                                                    total + (item.price * item.quantity), 0))}
+                                                ₹{
+                                                    (() => {
+                                                        const subtotal = checkoutDetails?.cartItems?.reduce(
+                                                            (total, item) => total + (item.price * item.quantity), 0
+                                                        );
+                                                        return subtotal % 1 >= 0.9 ? Math.ceil(subtotal) : Math.floor(subtotal || 0);
+                                                    })()
+                                                }
                                             </span>
                                         </li>
+
 
 
                                         {/* Shipping */}
                                         <li className='flex items-center justify-between'>
                                             <span className='text-secondary'>Shipping</span>
-                                            {checkoutDetails?.cartItems?.some(item => item?.productId?.freeDelivery) ? (
+                                            {checkoutDetails?.cartItems?.every(item => item?.productId?.freeDelivery) ? (
                                                 <span className='text-green-600 font-bold'>FREE</span>
                                             ) : (
                                                 <span className='text-secondary font-bold'>
@@ -429,6 +436,7 @@ const Checkout = () => {
                                                 </span>
                                             )}
                                         </li>
+
 
                                         {/* Coupon Discount */}
                                         {checkoutDetails?.coupenAmount ? (

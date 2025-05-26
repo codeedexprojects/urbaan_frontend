@@ -503,21 +503,38 @@ const ProductDetails = () => {
                                         <h4 className='font-medium text-sm xl:text-base lg:text-base'>Select Size</h4>
                                         <h4 onClick={handleOpenSizeDrawer} className='text-primary underline font-medium text-xs xl:text-sm lg:text-sm cursor-pointer'>Size chart</h4>
                                     </div>
+
                                     {/* Hint message */}
                                     {!selectedColor && (
-                                        <p className="text-xs text-gray-500 mb-3"><span className='text-primary'>*</span>
-                                            Please select a color to see available sizes</p>
+                                        <p className="text-xs text-gray-500 mb-3">
+                                            <span className='text-primary'>*</span> Please select a color to see available sizes
+                                        </p>
                                     )}
+
                                     <ul className='flex items-center gap-3'>
-                                        {colorSizes.map((size) => (
-                                            <li
-                                                key={size._id}
-                                                onClick={() => handleSizeClick(size.size, selectedColor)} // Pass color to handleSizeClick
-                                                className={`bg-white cursor-pointer uppercase shadow-md rounded-md w-20 h-10 flex items-center justify-center text-sm xl:text-sm lg:text-sm 
-                                                ${selectedSize[selectedColor] === size.size ? '!bg-primary text-white' : ''}`}>
-                                                {size.size}
-                                            </li>
-                                        ))}
+                                        {colorSizes.map((size) => {
+                                            const isSizeOutOfStock = size.stock === 0;
+                                            const isSelected = selectedSize[selectedColor] === size.size;
+
+                                            return (
+                                                <li
+                                                    key={size._id}
+                                                    onClick={() => !isSizeOutOfStock && handleSizeClick(size.size, selectedColor)}
+                                                    className={`
+            bg-white cursor-pointer uppercase shadow-md rounded-md w-20 h-10 flex items-center justify-center text-sm xl:text-sm lg:text-sm
+            ${isSelected ? '!bg-primary text-white' : ''}
+            ${isSizeOutOfStock ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-100'}
+          `}
+                                                    style={isSizeOutOfStock ? { backgroundColor: '#80aaff' } : {}}
+                                                    title={isSizeOutOfStock ? 'Out of stock' : ''}
+                                                >
+                                                    {size.size}
+                                                    {isSizeOutOfStock && (
+                                                        <span className="sr-only">(Out of stock)</span>
+                                                    )}
+                                                </li>
+                                            );
+                                        })}
                                     </ul>
                                 </div>
 

@@ -18,8 +18,6 @@ export function AppSidebar() {
     const location = useLocation();
     const pathMap = {
         "/adminHome": "dashboard",
-        "/adminHome/userslist": "userslist",
-        "/adminHome/userDetails": "userslist",
         "/adminHome/orderlist": "orderlist",
         "/adminHome/product": "product",
         "/adminHome/addProduct": "product",
@@ -30,6 +28,8 @@ export function AppSidebar() {
         "/adminHome/delivery": "delivery",
         "/adminHome/coupon": "coupon",
         "/adminHome/invoice": "invoice",
+        "/adminHome/userslist": "userslist",
+        "/adminHome/userDetails": "userslist",
         "/adminHome/sizechart":"sizechart",
          "/adminHome/specifications":"specifications"
     };
@@ -52,8 +52,7 @@ export function AppSidebar() {
             <List className='mt-8 px-4 space-y-1'>
                 {[
                     { to: "/adminHome", label: "Dashboard", icon: IoMdTimer, key: "dashboard" },
-                    { to: "/adminHome/userslist", label: "Users List", icon: PiUsersBold, key: "userslist" },
-                    { to: "/adminHome/orderlist", label: "Order List", icon: TbListCheck, key: "orderlist" },
+                    
                     { to: "/adminHome/product", label: "Products", icon: MdOutlineWindow, key: "product" },
                     { to: "/adminHome/category", label: "Category", icon: MdOutlineCategory, key: "category" },
                     { to: "/adminHome/subcategory", label: "Sub Category", icon: CgListTree, key: "subcategory" },
@@ -62,6 +61,8 @@ export function AppSidebar() {
                     { to: "/adminHome/specifications", label: "Specifications", icon: GiRolledCloth, key: "specifications" },
                     { to: "/adminHome/delivery", label: "Delivery", icon: TbTruckDelivery, key: "delivery" },
                     { to: "/adminHome/coupon", label: "Coupons", icon: RiCouponLine, key: "coupon" },
+                    { to: "/adminHome/userslist", label: "Users List", icon: PiUsersBold, key: "userslist" },
+                    { to: "/adminHome/orderlist", label: "Order List", icon: TbListCheck, key: "orderlist" },
                     { to: "/adminHome/invoice", label: "Invoice", icon: TbFileInvoice, key: "invoice" }
                 ].map(({ to, label, icon: Icon, key }) => (
                     <Link to={to} key={key}>

@@ -62,7 +62,7 @@ const OrdersTracking = () => {
             {/* Order List Section */}
             <div className="mt-10">
                 <h2 className="text-secondary font-medium text-xl mb-5">Your Orders</h2>
-                
+
                 {isLoading ? (
                     <div className="flex justify-center items-center h-[50vh]">
                         <AppLoader />
@@ -70,44 +70,45 @@ const OrdersTracking = () => {
                 ) : userOrders.length === 0 ? (
                     <p className="text-center py-10">No orders found</p>
                 ) : (
-                    <div className="grid grid-cols-1 gap-5 mb-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
                         {userOrders.map((order) => (
-                            <Card key={order._id} className="p-4">
-                                <div className="flex flex-col sm:flex-row justify-between gap-4">
+                            <Card key={order._id} className="p-3">
+                                <div className="flex flex-col gap-3">
                                     {/* Product Info */}
-                                    <div className="flex gap-4">
-                                        <div className="w-16 h-20 sm:w-20 sm:h-24 flex-shrink-0">
+                                    <div className="flex gap-3">
+                                        <div className="w-12 h-16 flex-shrink-0">
                                             <img
                                                 src={order.products[0]?.productId?.images[0]}
                                                 alt="Product"
-                                                className="w-full h-full object-cover rounded-lg"
+                                                className="w-full h-full object-cover rounded-md"
                                                 onError={(e) => e.target.src = '/no-image.jpg'}
                                             />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h3 className="text-sm sm:text-base font-medium text-secondary">
+                                            <h3 className="text-sm font-medium text-secondary line-clamp-2">
                                                 {order.products[0]?.productId?.title || "Product Title Unavailable"}
                                             </h3>
-                                            <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                                                Order ID: {order.orderId}
+                                            <p className="text-xs text-gray-600 mt-1">
+                                                Order: {order.orderId}
                                             </p>
-                                            <p className="text-xs sm:text-sm text-gray-600">
-                                                Track ID: {order.TrackId || 'Not available yet'}
+                                            <p className="text-xs text-gray-600">
+                                                Track: {order.TrackId || 'Not available'}
                                             </p>
                                         </div>
                                     </div>
-                                    
-                                    {/* Status and Price - Mobile Responsive */}
-                                    <div className="flex flex-row sm:flex-col justify-between sm:justify-start items-end sm:items-end gap-2 sm:gap-2">
+
+                                    {/* Status and Price Row */}
+                                    <div className="flex justify-between items-center">
                                         <Chip
-                                            value={order.status === 'In-Transist' ? 'dispatched' : 
-                                                  order.status === 'invoice_generated' ? 'Dispatched' : 
-                                                  order.status}
-                                            className={`text-[10px] sm:text-xs font-normal capitalize ${statusColors[order.status] || statusColors.default}`}
+                                            value={order.status === 'In-Transist' ? 'dispatched' :
+                                                order.status === 'invoice_generated' ? 'Dispatched' :
+                                                    order.status}
+                                            className={`text-[10px] font-normal capitalize ${statusColors[order.status] || statusColors.default}`}
                                         />
-                                        <p className="text-sm sm:text-base font-bold text-secondary">
-                                            ₹{order.finalPayableAmount}
+                                        <p className="text-sm font-bold text-secondary">
+                                            ₹{Math.ceil(order.finalPayableAmount).toFixed(2)}
                                         </p>
+
                                     </div>
                                 </div>
                             </Card>

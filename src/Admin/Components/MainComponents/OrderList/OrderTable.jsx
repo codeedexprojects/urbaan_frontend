@@ -10,7 +10,7 @@ import { TrackIdModal } from './TrackIdModal';
 import EditTrackIdModal from './EditTrackIdModal'
 import * as XLSX from 'xlsx';
 
-const TABLE_HEAD = ["ID", "Customer", "Address", "Order Date", "Payment", "Total Price", "Status", "Orders", "Track ID"];
+const TABLE_HEAD = ["ID", "Customer", "Address", "Order Date", "Payment", "Total Price", "Status", "Orders", "Track ID", "Actions"];
 
 const OrderTable = ({ orderList, setOrderList }) => {
   const { BASE_URL } = useContext(AppContext);
@@ -27,10 +27,20 @@ const OrderTable = ({ orderList, setOrderList }) => {
   const [editTrackId, setEditTrackId] = useState(false)
   const [initialTrackId, setInitialTrackId] = useState(null);
 
+  // Shop address - you can modify this as needed
+  const SHOP_ADDRESS = {
+    name: "URBAAN Collections",
+    address: "3rd Floor, Oberon Mall, Edappally",
+    city: "Ernakulam",
+    state: "Kerala",
+    pincode: "682024",
+    phone: "+91 9847820705",
+    email: "chimsuc@gmail.com"
+  };
+
   const handleEditTrackId = (trackId) => {
     setInitialTrackId(trackId)
   }
-
 
   //handle for set track id
   const handleOpenTrackId = (orderId) => {
@@ -46,17 +56,302 @@ const OrderTable = ({ orderList, setOrderList }) => {
     console.log(orderId);
   };
 
-
   //handle user order modal
   const handleOpenViewOrders = (orderProducts) => {
     setOpenViewOrders(!openViewOrders);
     setGetUserOrders(orderProducts)
     console.log(orderProducts);
-
   }
 
   //handle order status
   const handleOpenOrderStatus = () => setOpenOrderStatus(!openOrderStatus);
+
+  // Print functionality
+  const handlePrintOrder = (order) => {
+    // Function to get the nearest named color (you'll need to import color-namer)
+    const getNamedColor = (colorCode) => {
+        try {
+            // If you have color-namer imported, use this:
+            // const namedColors = namer(colorCode);
+            // return namedColors.pantone[0].name || "Unknown Color";
+            
+            // Otherwise, you can use a simple fallback:
+            return colorCode || "No Color";
+        } catch (error) {
+            console.error("Invalid color code:", error);
+            return "Invalid Color";
+        }
+    };
+
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Order Invoice - ${order.orderId}</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+          }
+          .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+          }
+          .company-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin-bottom: 10px;
+          }
+          .addresses {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+          }
+          .address-block {
+            width: 45%;
+          }
+          .address-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #2c5aa0;
+          }
+          .address-content {
+            line-height: 1.6;
+            font-size: 14px;
+          }
+          .order-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+          }
+          .order-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+          }
+          .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+          }
+          .order-table th,
+          .order-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+          }
+          .order-table th {
+            background-color: #2c5aa0;
+            color: white;
+            font-weight: bold;
+          }
+          .order-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+          }
+          .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+          }
+          .product-details {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+          }
+          .color-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+            border: 1px solid #ddd;
+          }
+          .total-section {
+            text-align: right;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid #333;
+          }
+          .total-amount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c5aa0;
+          }
+          .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+            color: #666;
+          }
+          @media print {
+            body { margin: 0; padding: 15px; }
+            .invoice-container { max-width: none; }
+            .no-print { display: none !important; }
+          }
+          .print-button {
+            background-color: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 20px 0;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="invoice-container">
+          <div class="header">
+            <div class="company-name">${SHOP_ADDRESS.name}</div>
+          </div>
+          
+          <div class="addresses">
+            <div class="address-block">
+              <div class="address-title">From:</div>
+              <div class="address-content">
+                <strong>${SHOP_ADDRESS.name}</strong><br>
+                ${SHOP_ADDRESS.address}<br>
+                ${SHOP_ADDRESS.city}, ${SHOP_ADDRESS.state} - ${SHOP_ADDRESS.pincode}<br>
+                Phone: ${SHOP_ADDRESS.phone}<br>
+                Email: ${SHOP_ADDRESS.email}
+              </div>
+            </div>
+            
+            <div class="address-block">
+              <div class="address-title">To:</div>
+              <div class="address-content">
+                <strong>${order.userId?.name || 'N/A'}</strong><br>
+                ${order.addressId?.address || 'N/A'}<br>
+                ${order.addressId?.city || ''} ${order.addressId?.state || ''}<br>
+                ${order.addressId?.pincode || ''}<br>
+                Phone: ${order.userId?.phone || 'N/A'}
+              </div>
+            </div>
+          </div>
+          
+          <div class="order-info">
+            <div class="order-info-row">
+              <span><strong>Order ID:</strong></span>
+              <span>${order.orderId}</span>
+            </div>
+            <div class="order-info-row">
+              <span><strong>Order Date:</strong></span>
+              <span>${new Date(order.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}</span>
+            </div>
+            <div class="order-info-row">
+              <span><strong>Payment Method:</strong></span>
+              <span>${order.paymentMethod}</span>
+            </div>
+            <div class="order-info-row">
+              <span><strong>Order Status:</strong></span>
+              <span>${order.status}</span>
+            </div>
+            ${order.TrackId ? `
+            <div class="order-info-row">
+              <span><strong>Tracking ID:</strong></span>
+              <span>${order.TrackId}</span>
+            </div>
+            ` : ''}
+          </div>
+          
+          <table class="order-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Color & Size</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${order.products?.map(product => {
+                // Try different ways to access the price
+                const unitPrice = product.price || product.productId?.price || 0;
+                const quantity = product.quantity || 1;
+                const totalPrice = unitPrice * quantity;
+                
+                return `
+                <tr>
+                  <td>
+                    <img src="${product.productId?.images?.[0] || '/no-image.jpg'}" 
+                         alt="${product.productId?.title || 'Product Image'}" 
+                         class="product-image"
+                         onerror="this.src='/no-image.jpg'">
+                  </td>
+                  <td>
+                    <strong>${product.productId?.title || 'Product'}</strong><br>
+                    <div class="product-details">
+                      Code: ${product.productId?.product_Code || 'N/A'}
+                    </div>
+                  </td>
+                  <td>
+                    ${product.color ? `
+                      <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                        <span class="color-indicator" style="background-color: ${product.color};"></span>
+                        <span>${getNamedColor(product.color)}</span>
+                      </div>
+                    ` : '<div>No Color</div>'}
+                    ${product.size ? `<div><strong>Size:</strong> ${product.size}</div>` : ''}
+                  </td>
+                  <td style="text-align: center;">${quantity}</td>
+                  <td>₹${unitPrice.toFixed(2)}</td>
+                  <td><strong>₹${totalPrice.toFixed(2)}</strong></td>
+                </tr>
+              `;
+              }).join('') || '<tr><td colspan="6">No products found</td></tr>'}
+            </tbody>
+          </table>
+          
+          <div class="total-section">
+            
+            
+            <div class="total-amount">
+              Total Amount: ₹${(order.finalPayableAmount || 0).toFixed(2)}
+            </div>
+          </div>
+          
+          <div class="footer">
+            <p>Thank you for shopping with ${SHOP_ADDRESS.name}!</p>
+            <p>For any queries, contact us at ${SHOP_ADDRESS.phone} or ${SHOP_ADDRESS.email}</p>
+          </div>
+        </div>
+
+        <div class="no-print" style="text-align: center;">
+          <button class="print-button" onclick="window.print()">Print Invoice</button>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.open();
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+};
 
   // Status colors
   const statusColors = {
@@ -90,7 +385,6 @@ const OrderTable = ({ orderList, setOrderList }) => {
     fetchOrderList();
   }, [BASE_URL]);
 
-
   // Handle individual checkbox click
   const handleCheckboxClick = (orderId) => {
     setSelectOrder((prevSelected) => {
@@ -114,7 +408,6 @@ const OrderTable = ({ orderList, setOrderList }) => {
       console.log(allOrderIds);
     }
   };
-
 
   // Get current items to display
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -320,7 +613,15 @@ const OrderTable = ({ orderList, setOrderList }) => {
                             </Button>
                           )}
                         </td>
-
+                        <td className={classes}>
+                          <Button
+                            onClick={() => handlePrintOrder(order)}
+                            className='bg-green-500 shadow-none text-white font-custom capitalize font-normal 
+                              text-xs border border-gray-700 rounded-3xl px-3 py-2 hover:shadow-none hover:bg-green-600'
+                          >
+                            Print
+                          </Button>
+                        </td>
                       </tr>
                     );
                   })}

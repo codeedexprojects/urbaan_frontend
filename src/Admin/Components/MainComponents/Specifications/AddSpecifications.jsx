@@ -115,17 +115,23 @@ const ProductSpecifications = () => {
 
       {/* Filter by type */}
       <div className="mb-6 w-64">
-        <Select 
-          label="Filter by Type" 
-          value={filterType}
-          onChange={(value) => setFilterType(value)}
-        >
-          <Option value="all">All Types</Option>
-          {specificationTypes.map(type => (
-            <Option key={type.value} value={type.value}>{type.label}</Option>
-          ))}
-        </Select>
-      </div>
+  <Select 
+    label="Filter by Type" 
+    value={filterType}
+    onChange={(value) => setFilterType(value)}
+  >
+    <Option value="all">All Types</Option>
+    {specificationTypes.map(type => (
+      <Option key={type.value} value={type.value}>{type.label}</Option>
+    ))}
+  </Select>
+  {/* Add this to show the selected label */}
+  {filterType !== "all" && (
+    <div className="mt-1 text-sm text-gray-600">
+      Selected: {specificationTypes.find(t => t.value === filterType)?.label || filterType}
+    </div>
+  )}
+</div>
 
       {/* Specifications Table */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">

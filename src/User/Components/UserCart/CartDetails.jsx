@@ -304,7 +304,7 @@ const CartDetails = () => {
                         ) : (
                             <p className='text-sm font-normal mb-3 capitalize'>
                                 {selectedAddress
-                                    ? `${selectedAddress.address}, ${selectedAddress.landmark}, ${selectedAddress.city}, ${selectedAddress.state}, ${selectedAddress.pincode}`
+                                    ? `${selectedAddress.address},${selectedAddress.area}, ${selectedAddress.landmark}, ${selectedAddress.city}, ${selectedAddress.state}, ${selectedAddress.pincode}`
                                     : `${defaultAddr?.address}, ${defaultAddr?.landmark}, ${defaultAddr?.city}, ${defaultAddr?.state}, ${defaultAddr?.pincode}`}
                             </p>
                         )}

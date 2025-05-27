@@ -66,7 +66,7 @@ const InvoiceTable = ({ invoice, setInvoice }) => {
                 console.log(response.data);
             } catch (error) {
                 console.log(error);
-            }finally{
+            } finally {
                 setIsLoading(false)
             }
         }
@@ -196,9 +196,10 @@ const InvoiceTable = ({ invoice, setInvoice }) => {
                                                             variant="small"
                                                             className="font-normal capitalize font-custom text-sm"
                                                         >
-                                                            ₹{invoice.Discounted_Amount || 0}
+                                                            ₹{(invoice.SubTotalAmount || 0) - (invoice.Discounted_Amount || 0)}
                                                         </Typography>
                                                     </td>
+
 
                                                     <td className={classes}>
                                                         <Typography

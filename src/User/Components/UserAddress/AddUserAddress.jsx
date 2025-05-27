@@ -12,6 +12,7 @@ const AddUserAddress = () => {
     const [name, setName] = useState('')
     const [number, setNumber] = useState('')
     const [address, setAddress] = useState('')
+    const [area, setArea] = useState('')
     const [landMark, setLandMark] = useState('')
     const [pinCode, setPinCode] = useState('')
     const [city, setCity] = useState('')
@@ -90,6 +91,7 @@ const AddUserAddress = () => {
                 name: name,
                 number: number,
                 address: address,
+                 area: area,
                 landmark: landMark,
                 pincode: pinCode,
                 city: city,
@@ -170,10 +172,21 @@ const AddUserAddress = () => {
                                     id="address"
                                     value={address}
                                     onChange={(e) => setAddress(e.target.value.toUpperCase())}
-                                    placeholder="ADDRESS (HOUSE NO, BUILDING, STREET, AREA)"
+                                    placeholder="Flat No, House No, Building, Company..."
                                     required
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
+                                <input
+                                    type="text"
+                                    name="area"
+                                    id="area"
+                                    value={area}
+                                    onChange={(e) => setAddress(e.target.value.toUpperCase())}
+                                    placeholder="Area, Street, Sector, Village..."
+                                    required
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
+                                />
+
 
                                 <input
                                     type="text"

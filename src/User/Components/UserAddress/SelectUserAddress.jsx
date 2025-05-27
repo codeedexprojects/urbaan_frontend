@@ -119,7 +119,7 @@ const SelectUserAddress = () => {
                                         <div className='flex justify-between'>
                                             <div>
                                                 <h1 className='text-secondary font-bold capitalize'>{address.addressType}</h1>
-                                                <p className='text-sm capitalize'>{address.address}, {address.landmark}, {address.city}, {address.state}, {address.pincode}</p>
+                                                <p className='text-sm capitalize'>{address.address},{address.area}, {address.landmark}, {address.city}, {address.state}, {address.pincode}</p>
                                                 <div className='mt-3 flex items-center gap-2'>
                                                     <Link to={{
                                                         pathname: '/edit-delivery-address'

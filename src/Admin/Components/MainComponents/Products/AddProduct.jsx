@@ -382,19 +382,22 @@ const AddProduct = () => {
             setSelectedSizeChartRefs([]);
         } catch (error) {
             console.error("Error in form submission:", error?.response?.data || error.message);
-            alert(error?.response?.data?.message || "Product is not created");
+
             if (error.response) {
                 if (error.response.status === 413) {
                     toast.error("File size is too large. Please upload a smaller file.");
+                } else if (error.response.data?.message || error.response.data?.error) {
+                    toast.error(error.response.data.message || error.response.data.error);
                 } else {
-                    toast.error(error.response.data?.message || "Something went wrong!");
+                    toast.error("Something went wrong!");
                 }
-            }
-            else {
+            } else if (error.message) {
+                toast.error(error.message);
+            } else {
                 toast.error("Network error. Please try again.");
             }
         }
-    };
+    }
 
 
     const handleAddColorField = () => {

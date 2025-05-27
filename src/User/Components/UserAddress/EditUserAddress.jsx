@@ -14,6 +14,7 @@ const EditUserAddress = () => {
     const [editName, setEditName] = useState('')
     const [editNumber, setEditNumber] = useState('')
     const [editAddress, setEditAddress] = useState('')
+    const [editArea, setEditArea] = useState('')
     const [editLandMark, setEditLandMark] = useState('')
     const [editPinCode, setEditPinCode] = useState('')
     const [editCity, setEditCity] = useState('')
@@ -28,6 +29,7 @@ const EditUserAddress = () => {
             setEditName(initailAddressData.name)
             setEditNumber(initailAddressData.number)
             setEditAddress(initailAddressData.address)
+            setEditArea(initailAddressData.area)
             setEditLandMark(initailAddressData.landmark)
             setEditPinCode(initailAddressData.pincode)
             setEditCity(initailAddressData.city)
@@ -48,12 +50,12 @@ const EditUserAddress = () => {
         try {
             const response = await axios.get(`https://api.postalpincode.in/pincode/${pin}`)
             const data = response.data[0] // API returns an array with one object
-            
+
             if (data.Status === 'Error') {
                 setPinCodeError('Invalid PIN code')
                 return false
             }
-            
+
             if (data.Status === 'Success') {
                 setPinCodeError('')
                 // Auto-fill city and state if available
@@ -64,7 +66,7 @@ const EditUserAddress = () => {
                 }
                 return true
             }
-            
+
             return false
         } catch (error) {
             console.error('PIN code validation error:', error)
@@ -106,6 +108,7 @@ const EditUserAddress = () => {
                 name: editName,
                 number: editNumber,
                 address: editAddress,
+                area: editArea,
                 landmark: editLandMark,
                 pincode: editPinCode,
                 city: editCity,
@@ -185,7 +188,17 @@ const EditUserAddress = () => {
                                     id="address"
                                     value={editAddress}
                                     onChange={(e) => setEditAddress(e.target.value.toUpperCase())}
-                                    placeholder="Address (House No, Building, Street, Area)"
+                                    placeholder="Flat No, House No, Building, Company..."
+                                    required
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
+                                />
+                                <input
+                                    type="text"
+                                    name="area"
+                                    id="area"
+                                    value={editArea}
+                                    onChange={(e) => setEditAddress(e.target.value.toUpperCase())}
+                                    placeholder="Area, Street, Sector, Village..."
                                     required
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
@@ -276,8 +289,8 @@ const EditUserAddress = () => {
 
                             {/* Submit Button */}
                             <div className='mb-3'>
-                                <Button 
-                                    type='submit' 
+                                <Button
+                                    type='submit'
                                     className='bg-primary font-custom text-sm capitalize w-full font-normal'
                                     disabled={isValidatingPin || !!pinCodeError}
                                 >

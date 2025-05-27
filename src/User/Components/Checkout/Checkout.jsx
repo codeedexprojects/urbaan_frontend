@@ -84,22 +84,21 @@ const Checkout = () => {
 
     // Calculate the delivery charge based on the cart items and available delivery fees
     const calculateDeliveryCharge = (cartItems) => {
-        if (!deliveryCharge?.length || !cartItems?.length) return 0;
+    if (!deliveryCharge?.length || !cartItems?.length) return 0;
 
-        return cartItems.reduce((totalFee, item) => {
-            // Skip item if it has free delivery
-            if (item?.productId?.freeDelivery) {
-                return totalFee;
-            }
+    // Calculate total quantity of non-free-delivery items
+    const totalQty = cartItems.reduce((sum, item) => {
+        return item?.productId?.freeDelivery ? sum : sum + item.quantity;
+    }, 0);
 
-            // Find matching delivery fee
-            const bestMatch = deliveryCharge
-                .filter((fee) => fee.quantity <= item.quantity)
-                .reduce((max, fee) => Math.max(max, fee.deliveryFee), 0);
+    // Find the best matching delivery fee
+    const bestMatch = deliveryCharge
+        .filter(fee => fee.quantity <= totalQty)
+        .sort((a, b) => b.quantity - a.quantity)[0]; // Get the largest quantity <= totalQty
 
-            return totalFee + bestMatch;
-        }, 0);
-    };
+    return bestMatch?.deliveryFee || 0;
+};
+
 
 
     const calculateTotalPrice = () => {
@@ -228,122 +227,7 @@ const Checkout = () => {
                         </div>
                     ) : (
                         <>
-                            <Card className='p-4 xl:p-6 lg:p-6 h-fit'>
-                                <h1 className='text-secondary font-medium capitalize text-xl mb-3'>Delivery address information</h1>
-                                <form action="" className='space-y-3'>
-                                    {/* name */}
-                                    <div className="flex flex-col gap-1 w-full">
-                                        <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
-                                            Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            value={checkoutDetails?.addressId?.name}
-                                            id="name"
-                                            disabled
-                                            className="border-[2px] capitalize bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
-                                        />
-                                    </div>
-                                    {/* number */}
-                                    <div className="flex flex-col gap-1 w-full">
-                                        <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
-                                            Phone Number
-                                        </label>
-                                        <input
-                                            type="number"
-                                            name="number"
-                                            id="number"
-                                            disabled
-                                            value={checkoutDetails?.addressId?.number}
-                                            className="border-[1px] capitalize bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
-                                        />
-                                    </div>
-                                    {/* address */}
-                                    <div className="flex flex-col gap-1 w-full">
-                                        <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
-                                            Address
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="address"
-                                            id="address"
-                                            disabled
-                                            value={checkoutDetails?.addressId?.address}
-                                            className="border-[1px] capitalize bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
-                                        />
-                                    </div>
-                                    {/* landmark */}
-                                    <div className="flex flex-col gap-1 w-full">
-                                        <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
-                                            Landmark
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="landmark"
-                                            id="landmark"
-                                            disabled
-                                            value={checkoutDetails?.addressId?.landmark}
-                                            className="border-[1px] capitalize bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
-                                        />
-                                    </div>
-                                    {/* city state pincode */}
-                                    <div className="flex gap-1 w-full">
-                                        {/* city */}
-                                        <div className="flex flex-col gap-1 w-1/3">
-                                            <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
-                                                City
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="text"
-                                                id="text"
-                                                disabled
-                                                value={checkoutDetails?.addressId?.city}
-                                                className="border-[1px] capitalize w-full bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
-                                            />
-                                        </div>
-                                        {/* state */}
-                                        <div className="flex flex-col gap-1 w-1/3">
-                                            <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
-                                                State
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="text"
-                                                id="text"
-                                                disabled
-                                                value={checkoutDetails?.addressId?.state}
-                                                className="border-[1px] capitalize w-full bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
-                                            />
-                                        </div>
-                                        {/* pincode */}
-                                        <div className="flex flex-col gap-1 w-1/3">
-                                            <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
-                                                Pin Code
-                                            </label>
-                                            <input
-                                                type="number"
-                                                name="number"
-                                                id="number"
-                                                disabled
-                                                value={checkoutDetails?.addressId?.pincode}
-                                                className="border-[1px] capitalize w-full bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
-                                            />
-                                        </div>
-                                    </div>
-                                </form>
-                            </Card>
-                        </>
-                    )}
-                    {/* cart and total price */}
-                    {isLoading || checkoutDetails?.cartItems === 0 ? (
-                        <div className='flex justify-center items-center h-[50vh]'>
-                            <AppLoader />
-                        </div>
-                    ) : (
-                        <>
-                            <div className='space-y-5'>
+                           <div className='space-y-5'>
                                 {/* cart */}
                                 <Card className={`p-4 xl:p-6 lg:p-6 overflow-y-auto hide-scrollbar ${checkoutDetails?.cartItems?.length > 1 ? 'max-h-[500px]' : 'min-h-[200px]'}`}>
                                     <h1 className='text-secondary font-medium capitalize text-lg mb-3'>Review your cart</h1>
@@ -536,7 +420,130 @@ const Checkout = () => {
                                     </div>
                                     {/* </Link> */}
                                 </Card>
-                            </div>
+                            </div> 
+                        </>
+                    )}
+                    {/* cart and total price */}
+                    {isLoading || checkoutDetails?.cartItems === 0 ? (
+                        <div className='flex justify-center items-center h-[50vh]'>
+                            <AppLoader />
+                        </div>
+                    ) : (
+                        <>
+                           <Card className='p-4 xl:p-6 lg:p-6 h-fit'>
+                                <h1 className='text-secondary font-medium capitalize text-xl mb-3'>Delivery address information</h1>
+                                <form action="" className='space-y-3'>
+                                    {/* name */}
+                                    <div className="flex flex-col gap-1 w-full">
+                                        <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
+                                            Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            value={checkoutDetails?.addressId?.name}
+                                            id="name"
+                                            disabled
+                                            className="border-[2px] capitalize bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
+                                        />
+                                    </div>
+                                    {/* number */}
+                                    <div className="flex flex-col gap-1 w-full">
+                                        <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
+                                            Phone Number
+                                        </label>
+                                        <input
+                                            type="number"
+                                            name="number"
+                                            id="number"
+                                            disabled
+                                            value={checkoutDetails?.addressId?.number}
+                                            className="border-[1px] capitalize bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
+                                        />
+                                    </div>
+                                    {/* address */}
+                                    <div className="flex flex-col gap-1 w-full">
+                                        <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
+                                            Address
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="address"
+                                            id="address"
+                                            disabled
+                                            value={checkoutDetails?.addressId?.address}
+                                            className="border-[1px] capitalize bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
+                                        />
+                                        <input
+                                            type="text"
+                                            name="area"
+                                            id="area"
+                                            disabled
+                                            value={checkoutDetails?.addressId?.area}
+                                            className="border-[1px] capitalize bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
+                                        />
+                                    </div>
+                                    {/* landmark */}
+                                    <div className="flex flex-col gap-1 w-full">
+                                        <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
+                                            Landmark
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="landmark"
+                                            id="landmark"
+                                            disabled
+                                            value={checkoutDetails?.addressId?.landmark}
+                                            className="border-[1px] capitalize bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
+                                        />
+                                    </div>
+                                    {/* city state pincode */}
+                                    <div className="flex gap-1 w-full">
+                                        {/* city */}
+                                        <div className="flex flex-col gap-1 w-1/3">
+                                            <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
+                                                City
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="text"
+                                                id="text"
+                                                disabled
+                                                value={checkoutDetails?.addressId?.city}
+                                                className="border-[1px] capitalize w-full bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
+                                            />
+                                        </div>
+                                        {/* state */}
+                                        <div className="flex flex-col gap-1 w-1/3">
+                                            <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
+                                                State
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="text"
+                                                id="text"
+                                                disabled
+                                                value={checkoutDetails?.addressId?.state}
+                                                className="border-[1px] capitalize w-full bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
+                                            />
+                                        </div>
+                                        {/* pincode */}
+                                        <div className="flex flex-col gap-1 w-1/3">
+                                            <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
+                                                Pin Code
+                                            </label>
+                                            <input
+                                                type="number"
+                                                name="number"
+                                                id="number"
+                                                disabled
+                                                value={checkoutDetails?.addressId?.pincode}
+                                                className="border-[1px] capitalize w-full bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
+                                            />
+                                        </div>
+                                    </div>
+                                </form>
+                            </Card> 
                         </>
                     )}
                 </div>

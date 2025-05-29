@@ -126,7 +126,7 @@ const FeaturedProducts = () => {
                                                 }}
                                                 className="cursor-pointer"
                                             >
-                                                <div className='w-full h-52 xl:h-80 lg:h-80 relative rounded-xl overflow-hidden'>
+                                                <div className='w-full aspect-[2/3] rounded-xl overflow-hidden'>
                                                     <img
                                                         src={product.images[0]}
                                                         alt={product.title}

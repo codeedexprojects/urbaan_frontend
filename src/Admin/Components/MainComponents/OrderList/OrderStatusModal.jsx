@@ -5,6 +5,8 @@ import {
     DialogHeader,
     DialogBody,
     Radio,
+    Input,
+    Checkbox,
 } from "@material-tailwind/react";
 import { HiXMark } from "react-icons/hi2";
 import { useContext } from "react";
@@ -16,20 +18,54 @@ import { useState } from "react";
 export function OrderStatusModal({ open, handleOpen, selectOrder, setSelectOrder, setOrderList, orderList }) {
     const { BASE_URL } = useContext(AppContext)
     const [statusHandle, setStatusHandle] = useState('')
+    const [showPasswordModal, setShowPasswordModal] = useState(false)
+    const [cancellationPassword, setCancellationPassword] = useState('')
+    const [isRefunded, setIsRefunded] = useState(false)
+    const [cancelReason, setCancelReason] = useState('')
 
     const token = localStorage.getItem('token')
 
     const handleUpdateStatus = async () => {
+        // If status is Cancelled, show password modal instead of proceeding
+        if (statusHandle === 'Cancelled') {
+            setShowPasswordModal(true)
+            return
+        }
+        
+        await updateStatus(statusHandle)
+    };
+
+    const handleCancelOrder = async () => {
+        if (!cancellationPassword) {
+            toast.error("Please enter the cancellation password")
+            return
+        }
+        
+        const payload = {
+            status: statusHandle,
+            cancellationPassword,
+            isRefunded,
+            cancelReason: cancelReason || "No reason provided"
+        }
+        
+        await updateStatus(statusHandle, payload)
+        setShowPasswordModal(false)
+        setCancellationPassword('')
+        setIsRefunded(false)
+        setCancelReason('')
+    }
+
+    const updateStatus = async (status, additionalPayload = {}) => {
         try {
             const statusPayload = {
                 orderIds: selectOrder,
-                status: statusHandle,
+                status,
+                ...additionalPayload
             }
-            console.log(statusPayload);
 
             const updatedOrders = orderList.map(order => {
                 if (selectOrder.includes(order._id)) {
-                    return { ...order, status: statusHandle };
+                    return { ...order, status };
                 }
                 return order;
             });
@@ -40,22 +76,19 @@ export function OrderStatusModal({ open, handleOpen, selectOrder, setSelectOrder
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(response.data);
-            toast.success("status updated");
+            
+            toast.success("Status updated");
 
-            // If there are skipped orders, extract their order numbers
             if (response.data.skippedOrders && response.data.skippedOrders.length > 0) {
                 const skippedOrderNumbers = response.data.skippedOrders
                     .map(order => order.order_id)
                     .join(", ");
                 setTimeout(() => {
-                    toast.error(`Warning: Orders (${skippedOrderNumbers}) were skipped due to missing TrackId.`);
+                    toast.error(`Warning: Orders (${skippedOrderNumbers}) were skipped.`);
                 }, 3000)
             }
 
-            // Check if any updated orders have a TrackId
-            const hasTrackId = response.data.updatedOrders.some(order => order.TrackId);
-            if (hasTrackId) {
+            if (response.data.updatedOrders.some(order => order.TrackId)) {
                 setTimeout(() => {
                     toast.success("Mail has been sent for tracked orders.");
                 }, 2000)
@@ -65,15 +98,15 @@ export function OrderStatusModal({ open, handleOpen, selectOrder, setSelectOrder
             handleOpen()
         } catch (error) {
             if (error.response && error.response.status === 400) {
-                // Handle specific 400 error
                 if (error.response.data.message === 'No valid orders found for updating.') {
                     handleOpen()
                     toast.error("No valid orders found for updating.");
+                } else if (error.response.data.message === 'Invalid cancellation password') {
+                    toast.error("Incorrect cancellation password");
                 } else {
                     toast.error(error.response.data.message || "Something went wrong!");
                 }
             } else {
-                // Generic error handling
                 console.log(error);
                 toast.error("An error occurred while updating the status.");
             }
@@ -135,6 +168,48 @@ export function OrderStatusModal({ open, handleOpen, selectOrder, setSelectOrder
                     </div>
                     <div className='flex items-center justify-center mt-10'>
                         <Button onClick={handleUpdateStatus} className='bg-buttonBg text-sm capitalize font-custom font-normal'>Save Status</Button>
+                    </div>
+                </DialogBody>
+            </Dialog>
+
+            {/* Cancellation password modal */}
+            <Dialog open={showPasswordModal} handler={() => setShowPasswordModal(false)} size='xs'>
+                <DialogHeader className='capitalize font-custom flex justify-between items-center'>
+                    Confirm Order Cancellation
+                    <HiXMark onClick={() => setShowPasswordModal(false)} className='cursor-pointer' />
+                </DialogHeader>
+                <DialogBody className='pt-2'>
+                    <div className='space-y-4'>
+                        <Input
+                            type='password'
+                            label='Enter cancellation password'
+                            value={cancellationPassword}
+                            onChange={(e) => setCancellationPassword(e.target.value)}
+                        />
+                        {/* <Input
+                            label='Cancellation reason (optional)'
+                            value={cancelReason}
+                            onChange={(e) => setCancelReason(e.target.value)}
+                        /> */}
+                        <Checkbox
+                            label='Mark as refunded'
+                            checked={isRefunded}
+                            onChange={() => setIsRefunded(!isRefunded)}
+                        />
+                    </div>
+                    <div className='flex items-center justify-center mt-10 space-x-4'>
+                        <Button 
+                            onClick={() => setShowPasswordModal(false)} 
+                            className='bg-gray-500 text-sm capitalize font-custom font-normal'
+                        >
+                            Cancel
+                        </Button>
+                        <Button 
+                            onClick={handleCancelOrder} 
+                            className='bg-red-500 text-sm capitalize font-custom font-normal'
+                        >
+                            Confirm Cancellation
+                        </Button>
                     </div>
                 </DialogBody>
             </Dialog>

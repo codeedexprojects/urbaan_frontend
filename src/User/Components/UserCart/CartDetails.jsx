@@ -56,9 +56,6 @@ const CartDetails = () => {
         }
     };
 
-    // Apply coupon
-    
-
     // Remove coupon
     const removeCoupon = async () => {
         if (!userId || !token) {

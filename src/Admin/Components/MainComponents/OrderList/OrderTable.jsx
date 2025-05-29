@@ -9,6 +9,8 @@ import { ViewOrdersModal } from './ViewOrdersModal';
 import { TrackIdModal } from './TrackIdModal';
 import EditTrackIdModal from './EditTrackIdModal'
 import * as XLSX from 'xlsx';
+import namer from 'color-namer';
+
 
 const TABLE_HEAD = ["ID", "Customer", "Address", "Order Date", "Payment", "Total Price", "Status", "Orders", "Track ID", "Actions"];
 
@@ -68,20 +70,16 @@ const OrderTable = ({ orderList, setOrderList }) => {
 
   // Print functionality
   const handlePrintOrder = (order) => {
-    // Function to get the nearest named color (you'll need to import color-namer)
     const getNamedColor = (colorCode) => {
-        try {
-            // If you have color-namer imported, use this:
-            // const namedColors = namer(colorCode);
-            // return namedColors.pantone[0].name || "Unknown Color";
-            
-            // Otherwise, you can use a simple fallback:
-            return colorCode || "No Color";
-        } catch (error) {
-            console.error("Invalid color code:", error);
-            return "Invalid Color";
-        }
+      try {
+        const namedColors = namer(colorCode);
+        return namedColors.ntc[0]?.name || "Unknown Color";
+      } catch (error) {
+        console.error("Invalid color code:", error);
+        return "Invalid Color";
+      }
     };
+
 
     const printContent = `
       <!DOCTYPE html>
@@ -252,10 +250,10 @@ const OrderTable = ({ orderList, setOrderList }) => {
             <div class="order-info-row">
               <span><strong>Order Date:</strong></span>
               <span>${new Date(order.createdAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}</span>
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })}</span>
             </div>
             <div class="order-info-row">
               <span><strong>Payment Method:</strong></span>
@@ -286,12 +284,12 @@ const OrderTable = ({ orderList, setOrderList }) => {
             </thead>
             <tbody>
               ${order.products?.map(product => {
-                // Try different ways to access the price
-                const unitPrice = product.price || product.productId?.price || 0;
-                const quantity = product.quantity || 1;
-                const totalPrice = unitPrice * quantity;
-                
-                return `
+      // Try different ways to access the price
+      const unitPrice = product.price || product.productId?.price || 0;
+      const quantity = product.quantity || 1;
+      const totalPrice = unitPrice * quantity;
+
+      return `
                 <tr>
                   <td>
                     <img src="${product.productId?.images?.[0] || '/no-image.jpg'}" 
@@ -315,11 +313,11 @@ const OrderTable = ({ orderList, setOrderList }) => {
                     ${product.size ? `<div><strong>Size:</strong> ${product.size}</div>` : ''}
                   </td>
                   <td style="text-align: center;">${quantity}</td>
-                  <td>₹${unitPrice.toFixed(2)}</td>
-                  <td><strong>₹${totalPrice.toFixed(2)}</strong></td>
+                  <td>₹${Math.ceil(unitPrice).toFixed(2)}</td>
+                  <td><strong>₹${Math.ceil(totalPrice).toFixed(2)}</strong></td>
                 </tr>
               `;
-              }).join('') || '<tr><td colspan="6">No products found</td></tr>'}
+    }).join('') || '<tr><td colspan="6">No products found</td></tr>'}
             </tbody>
           </table>
           
@@ -327,7 +325,7 @@ const OrderTable = ({ orderList, setOrderList }) => {
             
             
             <div class="total-amount">
-              Total Amount: ₹${(order.finalPayableAmount || 0).toFixed(2)}
+              Total Amount: ₹${Math.ceil(order.finalPayableAmount || 0).toFixed(2)}
             </div>
           </div>
           
@@ -351,7 +349,7 @@ const OrderTable = ({ orderList, setOrderList }) => {
     printWindow.focus();
     printWindow.print();
     printWindow.close();
-};
+  };
 
   // Status colors
   const statusColors = {
@@ -576,13 +574,23 @@ const OrderTable = ({ orderList, setOrderList }) => {
                         </td>
                         <td className={classes}>
                           <Typography variant="small" className="font-normal font-custom text-sm capitalize">
-                          ₹{order?.finalPayableAmount}
+                            ₹{Math.ceil(order?.finalPayableAmount)}
                           </Typography>
                         </td>
+
+
                         <td className={classes}>
                           <Chip
                             className={`capitalize text-sm text-center font-normal ${statusColors[order.status] || statusColors.default}`}
-                            value={order?.status === 'In-Transist' ? 'dispatched' : order.status === 'invoice_generated' ? 'Invoice Generated' : order.status}
+                            value={
+                              order?.status === 'In-Transist'
+                                ? 'dispatched'
+                                : order.status === 'invoice_generated'
+                                  ? 'Invoice Generated'
+                                  : order.status === 'Cancelled'
+                                    ? `Cancelled (${order.isRefunded ? 'Refunded' : 'Not Refunded'})`
+                                    : order.status
+                            }
                           />
                         </td>
                         <td className={classes}>

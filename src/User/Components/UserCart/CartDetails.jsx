@@ -139,7 +139,7 @@ const CartDetails = () => {
             } catch (error) {
                 console.log(error);
             } finally {
-                setIsLoading(false); 
+                setIsLoading(false);
             }
         };
         fetchDefaultAddress();
@@ -192,8 +192,8 @@ const CartDetails = () => {
 
                         {/* Available Coupons Dropdown */}
                         <div className='mt-3'>
-                            
-                            
+
+
                             {/* Show coupon details when available */}
                             {availableCoupons.length > 0 && !loadingCoupons && (
                                 <div className='mt-2 p-2 bg-blue-50 rounded-lg'>
@@ -201,9 +201,9 @@ const CartDetails = () => {
                                     <div className='mt-1 space-y-1'>
                                         {availableCoupons.map((coupon) => (
                                             <div key={coupon._id} className='text-xs text-gray-600'>
-                                                <span className='font-medium text-primary'>{coupon.code}</span> - 
+                                                <span className='font-medium text-primary'>{coupon.code}</span> -
                                                 <span className='text-green-600 ml-1'>
-                                                    {coupon.discountType === 'percentage' 
+                                                    {coupon.discountType === 'percentage'
                                                         ? `${coupon.discountValue}% OFF`
                                                         : `₹${coupon.discountValue} OFF`
                                                     }
@@ -252,11 +252,11 @@ const CartDetails = () => {
                             </span>
                         </li>
                     )}
-                     <p className='mt-4 text-xs text-gray-500 italic'>
-                    * Delivery charges will be calculated during checkout.
-                </p>
+                    <p className='mt-4 text-xs text-gray-500 italic'>
+                        * Delivery charges will be calculated during checkout.
+                    </p>
                 </ul>
-                
+
                 <ul className='mt-2'>
                     <li className='flex justify-between items-center'>
                         <span className='text-secondary font-medium text-sm'>Total</span>
@@ -266,7 +266,7 @@ const CartDetails = () => {
                         </span>
                     </li>
                 </ul>
-               
+
             </Card>
 
             {/* delivery address */}
@@ -301,8 +301,8 @@ const CartDetails = () => {
                         ) : (
                             <p className='text-sm font-normal mb-3 capitalize'>
                                 {selectedAddress
-                                    ? `${selectedAddress.address},${selectedAddress.area}, ${selectedAddress.landmark}, ${selectedAddress.city}, ${selectedAddress.state}, ${selectedAddress.pincode}`
-                                    : `${defaultAddr?.address}, ${defaultAddr?.landmark}, ${defaultAddr?.city}, ${defaultAddr?.state}, ${defaultAddr?.pincode}`}
+                                    ? `${selectedAddress.address},${selectedAddress.area}, ${selectedAddress.landmark}, ${selectedAddress.city}, ${selectedAddress.state},${selectedAddress.country}, ${selectedAddress.pincode}`
+                                    : `${defaultAddr?.address}, ${defaultAddr?.landmark}, ${defaultAddr?.city}, ${defaultAddr?.state}, ${defaultAddr?.country}, ${defaultAddr?.pincode}`}
                             </p>
                         )}
                     </>

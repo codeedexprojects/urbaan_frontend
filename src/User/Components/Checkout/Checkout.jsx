@@ -84,20 +84,20 @@ const Checkout = () => {
 
     // Calculate the delivery charge based on the cart items and available delivery fees
     const calculateDeliveryCharge = (cartItems) => {
-    if (!deliveryCharge?.length || !cartItems?.length) return 0;
+        if (!deliveryCharge?.length || !cartItems?.length) return 0;
 
-    // Calculate total quantity of non-free-delivery items
-    const totalQty = cartItems.reduce((sum, item) => {
-        return item?.productId?.freeDelivery ? sum : sum + item.quantity;
-    }, 0);
+        // Calculate total quantity of non-free-delivery items
+        const totalQty = cartItems.reduce((sum, item) => {
+            return item?.productId?.freeDelivery ? sum : sum + item.quantity;
+        }, 0);
 
-    // Find the best matching delivery fee
-    const bestMatch = deliveryCharge
-        .filter(fee => fee.quantity <= totalQty)
-        .sort((a, b) => b.quantity - a.quantity)[0]; // Get the largest quantity <= totalQty
+        // Find the best matching delivery fee
+        const bestMatch = deliveryCharge
+            .filter(fee => fee.quantity <= totalQty)
+            .sort((a, b) => b.quantity - a.quantity)[0]; // Get the largest quantity <= totalQty
 
-    return bestMatch?.deliveryFee || 0;
-};
+        return bestMatch?.deliveryFee || 0;
+    };
 
 
 
@@ -227,7 +227,7 @@ const Checkout = () => {
                         </div>
                     ) : (
                         <>
-                           <div className='space-y-5'>
+                            <div className='space-y-5'>
                                 {/* cart */}
                                 <Card className={`p-4 xl:p-6 lg:p-6 overflow-y-auto hide-scrollbar ${checkoutDetails?.cartItems?.length > 1 ? 'max-h-[500px]' : 'min-h-[200px]'}`}>
                                     <h1 className='text-secondary font-medium capitalize text-lg mb-3'>Review your cart</h1>
@@ -420,7 +420,7 @@ const Checkout = () => {
                                     </div>
                                     {/* </Link> */}
                                 </Card>
-                            </div> 
+                            </div>
                         </>
                     )}
                     {/* cart and total price */}
@@ -430,23 +430,42 @@ const Checkout = () => {
                         </div>
                     ) : (
                         <>
-                           <Card className='p-4 xl:p-6 lg:p-6 h-fit'>
+                            <Card className='p-4 xl:p-6 lg:p-6 h-fit'>
                                 <h1 className='text-secondary font-medium capitalize text-xl mb-3'>Delivery address information</h1>
                                 <form action="" className='space-y-3'>
-                                    {/* name */}
-                                    <div className="flex flex-col gap-1 w-full">
-                                        <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
-                                            Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            value={checkoutDetails?.addressId?.name}
-                                            id="name"
-                                            disabled
-                                            className="border-[2px] capitalize bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
-                                        />
+                                    {/* First and Last Name (disabled) */}
+                                    <div className="flex gap-5 w-full">
+                                        {/* First Name */}
+                                        <div className="flex flex-col gap-1 w-1/2">
+                                            <label htmlFor="firstName" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
+                                                First Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="firstName"
+                                                id="firstName"
+                                                value={checkoutDetails?.addressId?.firstName || ''}
+                                                disabled
+                                                className="border-[2px] capitalize bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
+                                            />
+                                        </div>
+
+                                        {/* Last Name */}
+                                        <div className="flex flex-col gap-1 w-1/2">
+                                            <label htmlFor="lastName" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
+                                                Last Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="lastName"
+                                                id="lastName"
+                                                value={checkoutDetails?.addressId?.lastName || ''}
+                                                disabled
+                                                className="border-[2px] capitalize bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
+                                            />
+                                        </div>
                                     </div>
+
                                     {/* number */}
                                     <div className="flex flex-col gap-1 w-full">
                                         <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
@@ -506,8 +525,8 @@ const Checkout = () => {
                                             </label>
                                             <input
                                                 type="text"
-                                                name="text"
-                                                id="text"
+                                                name="city"
+                                                id="city"
                                                 disabled
                                                 value={checkoutDetails?.addressId?.city}
                                                 className="border-[1px] capitalize w-full bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
@@ -520,10 +539,23 @@ const Checkout = () => {
                                             </label>
                                             <input
                                                 type="text"
-                                                name="text"
-                                                id="text"
+                                                name="state"
+                                                id="state"
                                                 disabled
                                                 value={checkoutDetails?.addressId?.state}
+                                                className="border-[1px] capitalize w-full bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-1 w-1/3">
+                                            <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base text-secondary">
+                                                Country
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="country"
+                                                id="country"
+                                                disabled
+                                                value={checkoutDetails?.addressId?.country}
                                                 className="border-[1px] capitalize w-full bg-gray-100 border-gray-100 text-gray-600 p-2 rounded-lg focus:outline-none"
                                             />
                                         </div>
@@ -543,7 +575,7 @@ const Checkout = () => {
                                         </div>
                                     </div>
                                 </form>
-                            </Card> 
+                            </Card>
                         </>
                     )}
                 </div>

@@ -9,7 +9,8 @@ import toast from 'react-hot-toast'
 const AddUserAddress = () => {
     const navigate = useNavigate()
     const { BASE_URL } = useContext(AppContext)
-    const [name, setName] = useState('')
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
     const [number, setNumber] = useState('')
     const [address, setAddress] = useState('')
     const [area, setArea] = useState('')
@@ -17,12 +18,51 @@ const AddUserAddress = () => {
     const [pinCode, setPinCode] = useState('')
     const [city, setCity] = useState('')
     const [state, setState] = useState('')
+    const [country, setCountry] = useState('')
     const [addressType, setAddressType] = useState('home')
     const [defaultAddress, setDefaultAddress] = useState(false)
     const [pinCodeError, setPinCodeError] = useState('')
     const [isValidatingPin, setIsValidatingPin] = useState(false)
 
-    // Validate PIN code using Postal API
+    const indianStates = [
+        'ANDHRA PRADESH',
+        'ARUNACHAL PRADESH',
+        'ASSAM',
+        'BIHAR',
+        'CHHATTISGARH',
+        'GOA',
+        'GUJARAT',
+        'HARYANA',
+        'HIMACHAL PRADESH',
+        'JHARKHAND',
+        'KARNATAKA',
+        'KERALA',
+        'MADHYA PRADESH',
+        'MAHARASHTRA',
+        'MANIPUR',
+        'MEGHALAYA',
+        'MIZORAM',
+        'NAGALAND',
+        'ODISHA',
+        'PUNJAB',
+        'RAJASTHAN',
+        'SIKKIM',
+        'TAMIL NADU',
+        'TELANGANA',
+        'TRIPURA',
+        'UTTAR PRADESH',
+        'UTTARAKHAND',
+        'WEST BENGAL',
+        'ANDAMAN AND NICOBAR ISLANDS',
+        'CHANDIGARH',
+        'DADRA AND NAGAR HAVELI AND DAMAN AND DIU',
+        'DELHI',
+        'JAMMU AND KASHMIR',
+        'LADAKH',
+        'LAKSHADWEEP',
+        'PUDUCHERRY'
+    ]
+
     const validatePinCode = async (pin) => {
         if (!pin || pin.length !== 6) {
             setPinCodeError('PIN code must be 6 digits')
@@ -45,7 +85,7 @@ const AddUserAddress = () => {
                 if (data.PostOffice && data.PostOffice.length > 0) {
                     const firstPostOffice = data.PostOffice[0]
                     setCity(firstPostOffice.District || '')
-                    setState(firstPostOffice.State || '')
+                    setState(firstPostOffice.State?.toUpperCase() || '')
                 }
                 return true
             }
@@ -88,14 +128,16 @@ const AddUserAddress = () => {
 
             const rowData = {
                 userId: userId,
-                name: name,
+                firstName: firstName,
+                lastName: lastName,
                 number: number,
                 address: address,
-                 area: area,
+                area: area,
                 landmark: landMark,
                 pincode: pinCode,
                 city: city,
                 state: state,
+                country:country,
                 addressType: addressType,
                 defaultAddress: defaultAddress,
             }
@@ -129,22 +171,43 @@ const AddUserAddress = () => {
                 <div className='flex justify-center items-center'>
                     <Card className='p-5 w-[600px]'>
                         <form action="" className="space-y-5 mt-3" onSubmit={createAddressFormSubmit}>
-                            {/* Name */}
-                            <div className="flex flex-col gap-1 w-full">
-                                <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base">
-                                    Name
-                                </label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    id="name"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value.toUpperCase())}
-                                    placeholder="Enter your name"
-                                    required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
-                                />
+                            {/* First Name and Last Name in same row */}
+                            <div className="flex gap-5 w-full">
+                                {/* First Name */}
+                                <div className="flex flex-col gap-1 w-1/2">
+                                    <label htmlFor="firstName" className="font-medium text-sm xl:text-base lg:text-base">
+                                        First Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="firstName"
+                                        id="firstName"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value.toUpperCase())}
+                                        placeholder="Enter your first name"
+                                        required
+                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
+                                    />
+                                </div>
+
+                                {/* Last Name */}
+                                <div className="flex flex-col gap-1 w-1/2">
+                                    <label htmlFor="lastName" className="font-medium text-sm xl:text-base lg:text-base">
+                                        Last Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="lastName"
+                                        id="lastName"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value.toUpperCase())}
+                                        placeholder="Enter your last name"
+                                        required
+                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
+                                    />
+                                </div>
                             </div>
+
                             {/* Number */}
                             <div className="flex flex-col gap-1 w-full">
                                 <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base">
@@ -181,7 +244,7 @@ const AddUserAddress = () => {
                                     name="area"
                                     id="area"
                                     value={area}
-                                    onChange={(e) => setAddress(e.target.value.toUpperCase())}
+                                    onChange={(e) => setArea(e.target.value.toUpperCase())}
                                     placeholder="Area, Street, Sector, Village..."
                                     required
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
@@ -234,18 +297,38 @@ const AddUserAddress = () => {
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
                             </div>
-                            {/* State */}
+                            {/* State Dropdown */}
                             <div className="flex flex-col gap-1">
-                                <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base">
+                                <label htmlFor="state" className="font-medium text-sm xl:text-base lg:text-base">
                                     State
                                 </label>
-                                <input
-                                    type="text"
+                                <select
                                     name="state"
                                     id="state"
                                     value={state}
-                                    onChange={(e) => setState(e.target.value.toUpperCase())}
-                                    placeholder="Enter your state"
+                                    onChange={(e) => setState(e.target.value)}
+                                    required
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md text-sm focus:outline-none uppercase"
+                                >
+                                    <option value="">SELECT YOUR STATE</option>
+                                    {indianStates.map((stateName, index) => (
+                                        <option key={index} value={stateName}>
+                                            {stateName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base">
+                                    Country
+                                </label>
+                                <input
+                                    type="text"
+                                    name="country"
+                                    id="country"
+                                    value={country}
+                                    onChange={(e) => setCountry(e.target.value.toUpperCase())}
+                                    placeholder="Enter your country"
                                     required
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />

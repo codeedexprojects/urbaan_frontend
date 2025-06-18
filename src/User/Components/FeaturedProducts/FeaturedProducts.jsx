@@ -101,7 +101,7 @@ const FeaturedProducts = () => {
 
     return (
         <>
-            <h1 className='text-secondary text-lg xl:text-2xl lg:text-2xl font-semibold text-center xl:text-left'>Featured Products</h1>
+            <h1 className='text-secondary text-lg xl:text-2xl lg:text-2xl font-semibold text-center xl:text-left'>Recent View</h1>
             {
                 isLoading ? (
                     <div className="col-span-2 flex justify-center items-center h-[50vh]">

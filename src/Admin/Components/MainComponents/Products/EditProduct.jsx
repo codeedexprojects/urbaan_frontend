@@ -39,7 +39,8 @@ const EditProduct = () => {
         occasion: '',
         innerLining: '',
         material: '',
-        pocket: ''
+        pocket: '',
+        neck:''
     });
     const [editProdDescription, setEditProdDescription] = useState('')
     const [editProdImage, setEditProdImage] = useState([])
@@ -63,7 +64,8 @@ const EditProduct = () => {
         occasion: [],
         innerLining: [],
         material: [],
-        pocket: []
+        pocket: [],
+        neck:[]
     });
 
     const [loading, setLoading] = useState(true);
@@ -83,7 +85,8 @@ const EditProduct = () => {
                     occasion: [],
                     innerLining: [],
                     material: [],
-                    pocket: []
+                    pocket: [],
+                    neck:[]
                 };
 
                 specs.forEach(spec => {
@@ -195,7 +198,8 @@ const EditProduct = () => {
                 occasion: initialProducts.features.occasion || '',
                 innerLining: initialProducts.features.innerLining || '',
                 material: initialProducts.features.material || '',
-                pocket: initialProducts.features.pocket || ''
+                pocket: initialProducts.features.pocket || '',
+                neck:initialProducts.features.neck || '',
             });
 
             const formattedAttributes = initialProducts.colors.map((color) => ({
@@ -405,7 +409,7 @@ const EditProduct = () => {
             setEditProdDiscount('');
             setEditProdOfferPrice('');
             setEditProdCheckboxes({ latest: false, offer: false, featured: false, freeDelivery: false });
-            setEditSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "" })
+            setEditSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "",neck:"" })
             setEditAttributeFields([{ color: "", sizes: [{ size: "", stock: "" }] }]);
             setEditProdDescription('');
             setEditProdImage([]);
@@ -610,22 +614,7 @@ const EditProduct = () => {
                                   bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
                                focus:outline-none'/>
                             </div>
-                            <div className='flex flex-col gap-1 w-1/3'>
-                                <label className='font-normal text-base'>Discount (%)</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={editProdDiscount}
-                                    onChange={(e) => {
-                                        setEditProdDiscount(e.target.value);
-                                        setLastChanged('discount');
-                                    }}
-                                    id=""
-                                    placeholder='Discount'
-                                    className='border-[1px] w-full 
-                                        bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
-                                       focus:outline-none'/>
-                            </div>
+                            
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor="" className='font-normal text-base'>Offer Price</label>
                                 <input
@@ -641,6 +630,22 @@ const EditProduct = () => {
                                     className='border-[1px] w-full
                                      bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
                                    focus:outline-none'/>
+                            </div>
+                            <div className='flex flex-col gap-1 w-1/3'>
+                                <label className='font-normal text-base'>Discount (%)</label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={editProdDiscount}
+                                    onChange={(e) => {
+                                        setEditProdDiscount(e.target.value);
+                                        setLastChanged('discount');
+                                    }}
+                                    id=""
+                                    placeholder='Discount'
+                                    className='border-[1px] w-full 
+                                        bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
+                                       focus:outline-none'/>
                             </div>
                         </div>
                         {/* checkboxes eg:latest, featured, offer */}
@@ -826,6 +831,23 @@ const EditProduct = () => {
                                 >
                                     <option value="">Select Pocket</option>
                                     {specificationOptions.pocket.map(option => (
+                                        <option key={option.id} value={option.name}>{option.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className='flex items-center gap-1'>
+                                <label htmlFor="neck" className='font-normal text-sm w-32'>Neck</label>
+                                <p>:</p>
+                                <select
+                                    id="neck"
+                                    name="neck"
+                                    value={editSpecifications.neck}
+                                    onChange={(e) => handleSpecificationChange(e, 'neck')}
+                                    className='border-[1px] w-full bg-gray-100/50 p-2 rounded-md focus:outline-none'
+                                    disabled={loading}
+                                >
+                                    <option value="">Select Neck</option>
+                                    {specificationOptions.neck.map(option => (
                                         <option key={option.id} value={option.name}>{option.name}</option>
                                     ))}
                                 </select>

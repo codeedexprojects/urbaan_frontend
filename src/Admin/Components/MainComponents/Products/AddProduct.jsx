@@ -37,7 +37,8 @@ const AddProduct = () => {
         occasion: [],
         innerLining: [],
         material: [],
-        pocket: []
+        pocket: [],
+        neck:[],
     });
     const [loading, setLoading] = useState(true);
 
@@ -93,7 +94,8 @@ const AddProduct = () => {
         occasion: '',
         innerLining: '',
         material: '',
-        pocket: ''
+        pocket: '',
+        neck:''
     });
 
     const [productDescription, setProductDescription] = useState('')
@@ -137,7 +139,8 @@ const AddProduct = () => {
                     occasion: [],
                     innerLining: [],
                     material: [],
-                    pocket: []
+                    pocket: [],
+                    neck:[]
                 };
 
                 specs.forEach(spec => {
@@ -372,7 +375,7 @@ const AddProduct = () => {
             setProductActualPrice('');
             setProductDiscount('');
             setCheckboxes({ latest: false, offer: false, featured: false, freeDelivery: false });
-            setSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "" })
+            setSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "" ,neck:""})
             setAttributeFields([{ color: "", sizes: [{ size: "", stock: "" }] }]);
             setProductDescription('');
             setProductImage([]);
@@ -550,22 +553,7 @@ const AddProduct = () => {
                                     bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
                                      focus:outline-none'/>
                             </div>
-                            <div className='flex flex-col gap-1 w-1/3'>
-                                <label className='font-normal text-base'>Discount (%)</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={productDiscount}
-                                    onChange={(e) => {
-                                        setProductDiscount(e.target.value);
-                                        setLastChanged('discount');
-                                    }}
-                                    id=""
-                                    placeholder='Discount'
-                                    className='border-[1px] w-full
-                                    bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
-                                     focus:outline-none'/>
-                            </div>
+                            
                             {/* offer price */}
                             <div className='flex flex-col gap-1 w-1/3'>
                                 <label htmlFor="" className='font-normal text-base'>Offer Price</label>
@@ -579,6 +567,22 @@ const AddProduct = () => {
                                     }}
                                     id=""
                                     placeholder='Offer price'
+                                    className='border-[1px] w-full
+                                    bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
+                                     focus:outline-none'/>
+                            </div>
+                            <div className='flex flex-col gap-1 w-1/3'>
+                                <label className='font-normal text-base'>Discount (%)</label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={productDiscount}
+                                    onChange={(e) => {
+                                        setProductDiscount(e.target.value);
+                                        setLastChanged('discount');
+                                    }}
+                                    id=""
+                                    placeholder='Discount'
                                     className='border-[1px] w-full
                                     bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
                                      focus:outline-none'/>
@@ -773,6 +777,25 @@ const AddProduct = () => {
                                 </select>
                             </div>
 
+                            {/* Neck */}
+                             <div className='flex items-center gap-1'>
+                                <label htmlFor="neck" className='font-normal text-sm w-32'>Neck</label>
+                                <p>:</p>
+                                <select
+                                    id="neck"
+                                    name="neck"
+                                    value={specifications.neck}
+                                    onChange={(e) => handleSpecificationChange(e, 'neck')}
+                                    className='border-[1px] w-full bg-gray-100/50 p-2 rounded-md focus:outline-none'
+                                    disabled={loading}
+                                >
+                                    <option value="">Select Neck</option>
+                                    {specificationOptions.neck.map(option => (
+                                        <option key={option.id} value={option.name}>{option.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
                             {loading && (
                                 <div className="text-center text-gray-500 py-2">
                                     Loading specifications...
@@ -798,7 +821,6 @@ const AddProduct = () => {
                     </div>
                 </div>
 
-                {/* second col */}
                 {/* photo upload */}
                 <div className='bg-white rounded-xl shadow-md p-5 space-y-6 h-fit'>
                     <div className='grid grid-cols-5 gap-2'>

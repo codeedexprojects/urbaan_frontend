@@ -15,6 +15,7 @@ const specificationTypes = [
   { value: 'occasion', label: 'Occasion' },
   { value: 'innerLining', label: 'Inner Lining' },
   { value: 'pocket', label: 'Pocket' },
+  { value: 'neck', label: 'Neck' },
   { value: 'other', label: 'Other' }
 ];
 
@@ -38,7 +39,7 @@ const ProductSpecifications = () => {
 
         const response = await axios.get(url);
         console.log("API Response:", response.data);
-        
+
         setSpecifications(response.data.specifications || []);
       } catch (error) {
         console.error("Fetch error:", error);
@@ -56,11 +57,11 @@ const ProductSpecifications = () => {
     }
     setIsSubmitting(true);
     try {
-      const response = await axios.post(`${BASE_URL}/admin/specification/add`, { 
+      const response = await axios.post(`${BASE_URL}/admin/specification/add`, {
         name: newSpecName,
         type: selectedType
       });
-      
+
       const newSpec = response.data.specification;
       setSpecifications(prev => [newSpec, ...prev]);
       toast.success(`${specificationTypes.find(t => t.value === selectedType)?.label} added successfully!`);
@@ -91,8 +92,8 @@ const ProductSpecifications = () => {
     try {
       const response = await axios.patch(`${BASE_URL}/admin/specification/toggle-status/${id}`);
       const updatedSpec = response.data.specification;
-      setSpecifications(prev => 
-        prev.map(spec => 
+      setSpecifications(prev =>
+        prev.map(spec =>
           spec._id === id ? updatedSpec : spec
         )
       );
@@ -115,23 +116,23 @@ const ProductSpecifications = () => {
 
       {/* Filter by type */}
       <div className="mb-6 w-64">
-  <Select 
-    label="Filter by Type" 
-    value={filterType}
-    onChange={(value) => setFilterType(value)}
-  >
-    <Option value="all">All Types</Option>
-    {specificationTypes.map(type => (
-      <Option key={type.value} value={type.value}>{type.label}</Option>
-    ))}
-  </Select>
-  {/* Add this to show the selected label */}
-  {filterType !== "all" && (
-    <div className="mt-1 text-sm text-gray-600">
-      Selected: {specificationTypes.find(t => t.value === filterType)?.label || filterType}
-    </div>
-  )}
-</div>
+        <Select
+          label="Filter by Type"
+          value={filterType}
+          onChange={(value) => setFilterType(value)}
+        >
+          <Option value="all">All Types</Option>
+          {specificationTypes.map(type => (
+            <Option key={type.value} value={type.value}>{type.label}</Option>
+          ))}
+        </Select>
+        {/* Add this to show the selected label */}
+        {filterType !== "all" && (
+          <div className="mt-1 text-sm text-gray-600">
+            Selected: {specificationTypes.find(t => t.value === filterType)?.label || filterType}
+          </div>
+        )}
+      </div>
 
       {/* Specifications Table */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -166,9 +167,9 @@ const ProductSpecifications = () => {
                   </Button>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <IconButton 
-                    onClick={() => handleDeleteSpecification(spec._id)} 
-                    variant="text" 
+                  <IconButton
+                    onClick={() => handleDeleteSpecification(spec._id)}
+                    variant="text"
                     color="red"
                   >
                     <MdDeleteOutline size={20} />
@@ -189,7 +190,7 @@ const ProductSpecifications = () => {
       <Dialog open={open} handler={() => setOpen(false)} size="sm" className="rounded-lg">
         <DialogBody>
           <Typography variant="h5" className="text-center mb-5">Add New Specification</Typography>
-          
+
           <div className="mb-5">
             <Select
               label="Specification Type"
@@ -201,7 +202,7 @@ const ProductSpecifications = () => {
               ))}
             </Select>
           </div>
-          
+
           <Input
             label="Specification Name"
             value={newSpecName}
@@ -209,7 +210,7 @@ const ProductSpecifications = () => {
             className="mb-5"
             required
           />
-          
+
           <div className="flex justify-center gap-4">
             <Button
               onClick={() => setOpen(false)}

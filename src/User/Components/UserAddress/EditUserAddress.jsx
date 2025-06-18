@@ -11,7 +11,8 @@ const EditUserAddress = () => {
     const location = useLocation()
     const initailAddressData = location.state.address
     const { BASE_URL } = useContext(AppContext)
-    const [editName, setEditName] = useState('')
+    const [editFirstName, setEditFirstName] = useState('')
+    const [editLastName, setEditLastName] = useState('')
     const [editNumber, setEditNumber] = useState('')
     const [editAddress, setEditAddress] = useState('')
     const [editArea, setEditArea] = useState('')
@@ -19,25 +20,68 @@ const EditUserAddress = () => {
     const [editPinCode, setEditPinCode] = useState('')
     const [editCity, setEditCity] = useState('')
     const [editState, setEditState] = useState('')
+    const [editCountry, setEditCountry] = useState('')
     const [editAddressType, setEditAddressType] = useState('home')
     const [editDefaultAddress, setEditDefaultAddress] = useState(true)
     const [pinCodeError, setPinCodeError] = useState('')
     const [isValidatingPin, setIsValidatingPin] = useState(false)
 
-    useEffect(() => {
-        if (initailAddressData) {
-            setEditName(initailAddressData.name)
-            setEditNumber(initailAddressData.number)
-            setEditAddress(initailAddressData.address)
-            setEditArea(initailAddressData.area)
-            setEditLandMark(initailAddressData.landmark)
-            setEditPinCode(initailAddressData.pincode)
-            setEditCity(initailAddressData.city)
-            setEditState(initailAddressData.state)
-            setEditAddressType(initailAddressData.addressType)
-            setEditDefaultAddress(initailAddressData.defaultAddress)
-        }
-    }, [initailAddressData])
+    // Indian states list
+    const indianStates = [
+        'ANDHRA PRADESH',
+        'ARUNACHAL PRADESH',
+        'ASSAM',
+        'BIHAR',
+        'CHHATTISGARH',
+        'GOA',
+        'GUJARAT',
+        'HARYANA',
+        'HIMACHAL PRADESH',
+        'JHARKHAND',
+        'KARNATAKA',
+        'KERALA',
+        'MADHYA PRADESH',
+        'MAHARASHTRA',
+        'MANIPUR',
+        'MEGHALAYA',
+        'MIZORAM',
+        'NAGALAND',
+        'ODISHA',
+        'PUNJAB',
+        'RAJASTHAN',
+        'SIKKIM',
+        'TAMIL NADU',
+        'TELANGANA',
+        'TRIPURA',
+        'UTTAR PRADESH',
+        'UTTARAKHAND',
+        'WEST BENGAL',
+        'ANDAMAN AND NICOBAR ISLANDS',
+        'CHANDIGARH',
+        'DADRA AND NAGAR HAVELI AND DAMAN AND DIU',
+        'DELHI',
+        'JAMMU AND KASHMIR',
+        'LADAKH',
+        'LAKSHADWEEP',
+        'PUDUCHERRY'
+    ]
+
+   useEffect(() => {
+    if (initailAddressData) {
+        setEditFirstName(initailAddressData.firstName) // Fixed typo: 'firtsName' -> 'firstName'
+        setEditLastName(initailAddressData.lastName)
+        setEditNumber(initailAddressData.number)
+        setEditAddress(initailAddressData.address)
+        setEditArea(initailAddressData.area)
+        setEditLandMark(initailAddressData.landmark)
+        setEditPinCode(initailAddressData.pincode)
+        setEditCity(initailAddressData.city)
+        setEditState(initailAddressData.state?.toUpperCase() || '') // Ensure uppercase
+        setEditCountry(initailAddressData.country)
+        setEditAddressType(initailAddressData.addressType)
+        setEditDefaultAddress(initailAddressData.defaultAddress)
+    }
+}, [initailAddressData])
 
     // Validate PIN code using Postal API
     const validatePinCode = async (pin) => {
@@ -62,7 +106,7 @@ const EditUserAddress = () => {
                 if (data.PostOffice && data.PostOffice.length > 0) {
                     const firstPostOffice = data.PostOffice[0]
                     setEditCity(prev => prev || firstPostOffice.District || '')
-                    setEditState(prev => prev || firstPostOffice.State || '')
+                    setEditState(prev => prev || firstPostOffice.State?.toUpperCase() || '')
                 }
                 return true
             }
@@ -105,7 +149,8 @@ const EditUserAddress = () => {
 
             const rowData = {
                 userId: userId,
-                name: editName,
+                firstName: editFirstName,
+                lastName: editLastName,
                 number: editNumber,
                 address: editAddress,
                 area: editArea,
@@ -113,6 +158,7 @@ const EditUserAddress = () => {
                 pincode: editPinCode,
                 city: editCity,
                 state: editState,
+                country: editCountry,
                 addressType: editAddressType,
                 defaultAddress: editDefaultAddress
             }
@@ -145,25 +191,46 @@ const EditUserAddress = () => {
                 <div className='flex justify-center items-center'>
                     <Card className='p-5 w-[600px]'>
                         <form action="" className="space-y-5 mt-3" onSubmit={editAddressFormSubmit}>
-                            {/* Name */}
-                            <div className="flex flex-col gap-1 w-full">
-                                <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base">
-                                    Name
-                                </label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    id="name"
-                                    value={editName}
-                                    onChange={(e) => setEditName(e.target.value.toUpperCase())}
-                                    placeholder="Enter your name"
-                                    required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
-                                />
+                            {/* First Name and Last Name in same row */}
+                            <div className="flex gap-5 w-full">
+                                {/* First Name */}
+                                <div className="flex flex-col gap-1 w-1/2">
+                                    <label htmlFor="editFirstName" className="font-medium text-sm xl:text-base lg:text-base">
+                                        First Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="editFirstName"
+                                        id="editFirstName"
+                                        value={editFirstName}
+                                        onChange={(e) => setEditFirstName(e.target.value.toUpperCase())}
+                                        placeholder="Enter your first name"
+                                        required
+                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
+                                    />
+                                </div>
+
+                                {/* Last Name */}
+                                <div className="flex flex-col gap-1 w-1/2">
+                                    <label htmlFor="editLastName" className="font-medium text-sm xl:text-base lg:text-base">
+                                        Last Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="editLastName"
+                                        id="editLastName"
+                                        value={editLastName}
+                                        onChange={(e) => setEditLastName(e.target.value.toUpperCase())}
+                                        placeholder="Enter your last name"
+                                        required
+                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
+                                    />
+                                </div>
                             </div>
+
                             {/* Number */}
                             <div className="flex flex-col gap-1 w-full">
-                                <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base">
+                                <label htmlFor="number" className="font-medium text-sm xl:text-base lg:text-base">
                                     Phone Number
                                 </label>
                                 <input
@@ -171,15 +238,15 @@ const EditUserAddress = () => {
                                     name="number"
                                     id="number"
                                     value={editNumber}
-                                    onChange={(e) => setEditNumber(e.target.value.toUpperCase())}
+                                    onChange={(e) => setEditNumber(e.target.value)}
                                     placeholder="Enter your phone number"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
                                 />
                             </div>
                             {/* Address */}
                             <div className="flex flex-col gap-1">
-                                <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base">
+                                <label htmlFor="address" className="font-medium text-sm xl:text-base lg:text-base">
                                     Address
                                 </label>
                                 <input
@@ -197,7 +264,7 @@ const EditUserAddress = () => {
                                     name="area"
                                     id="area"
                                     value={editArea}
-                                    onChange={(e) => setEditAddress(e.target.value.toUpperCase())}
+                                    onChange={(e) => setEditArea(e.target.value.toUpperCase())}
                                     placeholder="Area, Street, Sector, Village..."
                                     required
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
@@ -218,11 +285,11 @@ const EditUserAddress = () => {
                                         name="pincode"
                                         id="pincode"
                                         value={editPinCode}
-                                        onChange={(e) => setEditPinCode(e.target.value.toUpperCase())}
+                                        onChange={(e) => setEditPinCode(e.target.value)}
                                         onBlur={handlePinCodeBlur}
                                         placeholder="Pin code"
                                         required
-                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none w-full uppercase"
+                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none w-full"
                                     />
                                     {isValidatingPin && (
                                         <span className="absolute right-3 top-2.5 text-xs text-gray-500">Validating...</span>
@@ -234,7 +301,7 @@ const EditUserAddress = () => {
                             </div>
                             {/* City */}
                             <div className="flex flex-col gap-1">
-                                <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base">
+                                <label htmlFor="city" className="font-medium text-sm xl:text-base lg:text-base">
                                     City
                                 </label>
                                 <input
@@ -248,22 +315,43 @@ const EditUserAddress = () => {
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
                             </div>
-                            {/* State */}
+                            {/* State Dropdown */}
                             <div className="flex flex-col gap-1">
-                                <label htmlFor="name" className="font-medium text-sm xl:text-base lg:text-base">
+                                <label htmlFor="state" className="font-medium text-sm xl:text-base lg:text-base">
                                     State
                                 </label>
-                                <input
-                                    type="text"
+                                <select
                                     name="state"
                                     id="state"
                                     value={editState}
-                                    onChange={(e) => setEditState(e.target.value.toUpperCase())}
-                                    placeholder="Enter your state"
+                                    onChange={(e) => setEditState(e.target.value)}
+                                    required
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md text-sm focus:outline-none uppercase"
+                                >
+                                    <option value="">SELECT YOUR STATE</option>
+                                    {indianStates.map((stateName, index) => (
+                                        <option key={index} value={stateName}>
+                                            {stateName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                             <div className="flex flex-col gap-1">
+                                <label htmlFor="country" className="font-medium text-sm xl:text-base lg:text-base">
+                                    Country
+                                </label>
+                                <input
+                                    type="text"
+                                    name="country"
+                                    id="country"
+                                    value={editCountry}
+                                    onChange={(e) => setEditCountry(e.target.value.toUpperCase())}
+                                    placeholder="Enter your country"
                                     required
                                     className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
                                 />
                             </div>
+
 
                             {/* Address Type Buttons */}
                             <div className='flex items-center gap-3'>

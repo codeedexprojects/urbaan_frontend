@@ -162,24 +162,26 @@ const AllCategory = () => {
         <>
             <div className='h-[calc(100vh-4rem)] pb-20'>
                 {/* Header */}
-                <div className='w-full h-44 relative'>
-                    <img src="/banner.jpeg" alt="" className='w-full h-full object-cover' />
-                    <div className='absolute inset-0 bg-primary/70'></div>
-                    <div className='absolute inset-0 flex items-end justify-center mb-5'>
-                        <h1 className='text-white text-4xl font-medium capitalize flex items-center gap-2'>
-                            <CgArrowLongLeft onClick={() => navigate(-1)} className="text-white text-2xl cursor-pointer" />
-                            {productsCategory.name}
-                        </h1>
-                    </div>
-                </div>
+              <div className='w-full h-28 sm:h-44 relative'>
+  <img src="/banner.jpg" alt="" className='w-full h-full object-cover' />
+  <div className='absolute inset-0 bg-primary/70'></div>
+  <div className='absolute inset-0 flex items-end justify-center mb-3 sm:mb-5'>
+    <h1 className='text-white text-2xl sm:text-4xl font-medium capitalize flex items-center gap-2'>
+      <CgArrowLongLeft onClick={() => navigate(-1)} className="text-white text-xl sm:text-2xl cursor-pointer" />
+      {productsCategory.name}
+    </h1>
+  </div>
+</div>
+
 
                 {/* Filters */}
                 <div className="px-4 py-10 xl:py-16 xl:px-32 lg:py-16 lg:px-32 bg-userBg">
                     <ul className='space-y-3 xl:flex xl:items-center xl:space-y-0 xl:gap-5 xl:justify-center
                     lg:flex lg:items-center lg:space-y-0 lg:gap-5 lg:justify-center'>
+                        <li><FilterBySubCategory categoryId={productsCategory.id} handleSubCategory={handleSubCategory} /></li>
                        <li><FilterBySize handleSizeFilter={handleSizeFilter} categoryId={productsCategory.id} /></li>
                         <li><FilterByMaterial handleMaterialFilter={handleMaterialFilter} categoryId={productsCategory.id} /></li>
-                        <li><FilterBySubCategory categoryId={productsCategory.id} handleSubCategory={handleSubCategory} /></li>
+                        
                         <li><FilterByPrice handlePriceFilter={handlePriceFilter} /></li>
                     </ul>
 

@@ -28,6 +28,15 @@ const OrderTable = ({ orderList, setOrderList }) => {
   const [selectedOrderId, setSelectedOrderId] = useState(null)
   const [editTrackId, setEditTrackId] = useState(false)
   const [initialTrackId, setInitialTrackId] = useState(null);
+  const [expandedAddresses, setExpandedAddresses] = useState({});
+
+  const toggleAddress = (orderId) => {
+    setExpandedAddresses(prev => ({
+      ...prev,
+      [orderId]: !prev[orderId]
+    }));
+  };
+
 
   // Shop address - you can modify this as needed
   const SHOP_ADDRESS = {
@@ -230,16 +239,18 @@ const OrderTable = ({ orderList, setOrderList }) => {
               </div>
             </div>
             
-            <div class="address-block">
-              <div class="address-title">To:</div>
-              <div class="address-content">
-                <strong>${order.userId?.name || 'N/A'}</strong><br>
-                ${order.addressId?.address || 'N/A'}<br>
-                ${order.addressId?.city || ''} ${order.addressId?.state || ''}<br>
-                ${order.addressId?.pincode || ''}<br>
-                Phone: ${order.userId?.phone || 'N/A'}
-              </div>
-            </div>
+           <div class="address-block">
+  <div class="address-title">To:</div>
+  <div class="address-content">
+    <strong>${order.addressDetails?.firstName || 'N/A'} ${order.addressDetails?.lastName || ''}</strong><br>
+    ${order.addressDetails?.address || 'N/A'}<br>
+    ${order.addressDetails?.area ? `${order.addressDetails.area}, ` : ''}
+    ${order.addressDetails?.city || ''} ${order.addressDetails?.state || ''}<br>
+    ${order.addressDetails?.pincode || ''}<br>
+    ${order.addressDetails?.landmark ? `Landmark: ${order.addressDetails.landmark}<br>` : ''}
+    Phone: ${order.addressDetails?.number || order.userId?.phone || 'N/A'}
+  </div>
+</div>
           </div>
           
           <div class="order-info">
@@ -554,9 +565,45 @@ const OrderTable = ({ orderList, setOrderList }) => {
                           </Typography>
                         </td>
                         <td className={classes}>
-                          <Typography variant="small" className="font-normal font-custom text-sm capitalize w-40">
-                            {order?.addressId?.address}
-                          </Typography>
+                          <div className="w-48">
+                            {order?.addressDetails ? (
+                              <>
+                                {/* Compact view */}
+                                {!expandedAddresses[order._id] && (
+                                  <Typography variant="small" className="font-normal font-custom text-sm line-clamp-1">
+                                    {order.addressDetails.address}, {order.addressDetails.area}
+                                  </Typography>
+                                )}
+
+                                {/* Expanded view */}
+                                {expandedAddresses[order._id] && (
+                                  <div className="text-sm space-y-1">
+                                    <div className="font-medium">
+                                      {order.addressDetails.firstName} {order.addressDetails.lastName}
+                                    </div>
+                                    <div>{order.addressDetails.address}, {order.addressDetails.area}</div>
+                                    <div>{order.addressDetails.city}, {order.addressDetails.state} - {order.addressDetails.pincode}</div>
+                                    {order.addressDetails.landmark && (
+                                      <div className="text-gray-600">Landmark: {order.addressDetails.landmark}</div>
+                                    )}
+                                    <div className="text-gray-600">Phone: {order.addressDetails.number}</div>
+                                  </div>
+                                )}
+
+                                {/* Toggle button */}
+                                <button
+                                  className="text-blue-500 hover:underline text-xs mt-1 focus:outline-none"
+                                  onClick={() => toggleAddress(order._id)}
+                                >
+                                  {expandedAddresses[order._id] ? 'View Less' : 'View More'}
+                                </button>
+                              </>
+                            ) : (
+                              <Typography variant="small" className="font-normal font-custom text-sm">
+                                Address not available
+                              </Typography>
+                            )}
+                          </div>
                         </td>
                         <td className={classes}>
                           <Typography variant="small" className="font-normal font-custom text-sm">

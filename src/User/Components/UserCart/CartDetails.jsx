@@ -302,7 +302,7 @@ const CartDetails = () => {
                             <p className='text-sm font-normal mb-3 capitalize'>
                                 {selectedAddress
                                     ? `${selectedAddress.address},${selectedAddress.area}, ${selectedAddress.landmark}, ${selectedAddress.city}, ${selectedAddress.state},${selectedAddress.country}, ${selectedAddress.pincode}`
-                                    : `${defaultAddr?.address}, ${defaultAddr?.landmark}, ${defaultAddr?.city}, ${defaultAddr?.state}, ${defaultAddr?.country}, ${defaultAddr?.pincode}`}
+                                    : `${defaultAddr?.address},${defaultAddr?.area}, ${defaultAddr?.landmark}, ${defaultAddr?.city}, ${defaultAddr?.state}, ${defaultAddr?.country}, ${defaultAddr?.pincode}`}
                             </p>
                         )}
                     </>

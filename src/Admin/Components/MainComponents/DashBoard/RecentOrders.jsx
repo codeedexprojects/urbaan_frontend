@@ -67,7 +67,7 @@ const RecentOrders = () => {
         Processing: 'text-processingBg bg-processingBg/20',
         default: "text-gray-100 bg-gray-500",
         "In-Transist": "text-intransistBg bg-intransistBg/20",
-      };
+    };
 
     return (
         <Card className="w-full p-10">
@@ -124,12 +124,16 @@ const RecentOrders = () => {
                                         </div>
                                     </td>
                                     <td className={classes}>
-                                        <Typography
-                                            variant="small"
-                                            className="font-normal capitalize font-custom text-sm w-52"
-                                        >
-                                            {recentOrder.addressId.address}
-                                        </Typography>
+                                        <td className={classes}>
+                                            <Typography
+                                                variant="small"
+                                                className="font-normal capitalize font-custom text-sm w-52"
+                                            >
+                                                {recentOrder.addressDetails ?
+                                                    `${recentOrder.addressDetails.address}, ${recentOrder.addressDetails.area}, ${recentOrder.addressDetails.city}` :
+                                                    'Address not available'}
+                                            </Typography>
+                                        </td>
                                     </td>
                                     <td className={classes}>
                                         <Typography

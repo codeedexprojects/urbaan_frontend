@@ -1,4 +1,4 @@
-import { Button, Card, Radio, Typography } from '@material-tailwind/react'
+import { Button, Card, Radio, Typography ,Textarea } from '@material-tailwind/react'
 import React, { useState, useEffect, useContext } from 'react'
 import { IoIosArrowBack } from 'react-icons/io'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
@@ -8,7 +8,7 @@ import { AppContext } from '../../../StoreContext/StoreContext'
 import AppLoader from '../../../Loader'
 import { UserNotLoginPopup } from '../UserNotLogin/UserNotLoginPopup'
 import toast from 'react-hot-toast'
-import { CreditCard, Banknote, Wallet, DollarSign } from 'lucide-react';
+import { CreditCard, Banknote, Wallet, DollarSign , MessageSquare  } from 'lucide-react';
 
 const Checkout = () => {
     const navigate = useNavigate()
@@ -20,6 +20,7 @@ const Checkout = () => {
     const [deliveryCharge, setDeliveryCharge] = useState([]);
     const [paymentMethod, setPaymentMethod] = useState('');
     const [openUserNotLogin, setOpenUserNotLogin] = useState(false);
+    const [orderNote, setOrderNote] = useState(''); 
 
     // handle non logged users modal
     const handleOpenUserNotLogin = () => {
@@ -132,6 +133,7 @@ const Checkout = () => {
                         razorpayPaymentId: response.razorpay_payment_id,
                         razorpayOrderId: response.razorpay_order_id,
                         razorpaySignature: response.razorpay_signature,
+                          orderNote: orderNote.trim() || null, 
                     };
 
                     console.log("Confirm Order Payload:", confirmPayload);
@@ -167,43 +169,49 @@ const Checkout = () => {
 
     // handleSubmitOrder
     const handleSubmitOrder = async () => {
-        if (!paymentMethod) {
-            toast.error("Select any Payment options")
-            return;
-        }
-        try {
-            const orderPayload = {
-                userId: userId,
-                addressId: checkoutDetails.addressId._id,
-                deliveryCharge: calculateDeliveryCharge(checkoutDetails?.cartItems),
-                paymentMethod: paymentMethod,
-                checkoutId: checkoutDetailsId
-            }
-
-            console.log(orderPayload);
-
-            const response = await axios.post(`${BASE_URL}/user/order/create`, orderPayload, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            console.log(response.data);
-            if (orderPayload.paymentMethod === 'UPI' && response.data.razorpayOrderId) {
-                handleRazorpayPayment(response.data)
-                fetchCheckoutDetails();
-            }
-            // else {
-            //     // alert(response.message);
-            //     navigate('/order')
-            // }
-        } catch (error) {
-            console.error("Order submission error:", error);
-            if (error.response.status === 401) {
-                handleOpenUserNotLogin()
-            }
-            alert(error.response?.data?.message || "Something went wrong. Please try again.");
-        }
+    if (!paymentMethod) {
+        toast.error("Select any Payment options")
+        return;
     }
+    try {
+        // Define online payment methods that should use Razorpay
+        const onlinePaymentMethods = ['UPI', 'Card Payment', 'Netbanking', 'Wallets'];
+        
+        const orderPayload = {
+            userId: userId,
+            addressId: checkoutDetails.addressId._id,
+            deliveryCharge: calculateDeliveryCharge(checkoutDetails?.cartItems),
+            // Send the actual selected payment method to backend for record keeping
+            paymentMethod: paymentMethod,
+            checkoutId: checkoutDetailsId,
+            orderNote: orderNote.trim() || null 
+        }
+
+        console.log(orderPayload);
+
+        const response = await axios.post(`${BASE_URL}/user/order/create`, orderPayload, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        
+        console.log(response.data);
+        
+        if (onlinePaymentMethods.includes(paymentMethod) && response.data.razorpayOrderId) {
+            handleRazorpayPayment(response.data)
+            fetchCheckoutDetails();
+        } else if (paymentMethod === 'Cash on Delivery') {
+            toast.success("Order placed successfully!");
+            navigate('/order')
+        }
+    } catch (error) {
+        console.error("Order submission error:", error);
+        if (error.response.status === 401) {
+            handleOpenUserNotLogin()
+        }
+        alert(error.response?.data?.message || "Something went wrong. Please try again.");
+    }
+}
 
     return (
         <>
@@ -264,6 +272,30 @@ const Checkout = () => {
                                                 </div>
                                             </div>
                                         ))}
+                                    </div>
+                                </Card>
+                                 <Card className='p-4 xl:p-6 lg:p-6'>
+                                    <div className='flex items-center gap-2 mb-3'>
+                                        <MessageSquare size={20} className='text-secondary' />
+                                        <h1 className='text-secondary font-medium capitalize text-lg'>Order Note (Optional)</h1>
+                                    </div>
+                                    <div className='space-y-2'>
+                                        <Textarea
+                                            label="Add special delivery instructions or notes"
+                                            value={orderNote}
+                                            onChange={(e) => setOrderNote(e.target.value)}
+                                            maxLength={500}
+                                            className="min-h-[100px]"
+                                            resize={true}
+                                        />
+                                        <div className='flex justify-between items-center'>
+                                            <span className='text-xs text-gray-500'>
+                                                Examples: Delivery time preferences, customized color or size, special handling instructions, location details
+                                            </span>
+                                            <span className='text-xs text-gray-500'>
+                                                {orderNote.length}/500 characters
+                                            </span>
+                                        </div>
                                     </div>
                                 </Card>
                                 {/* total price */}
@@ -387,8 +419,8 @@ const Checkout = () => {
                                                     </span>
                                                 }
                                                 color='pink'
-                                                checked={paymentMethod === 'UPI'} // Force-checked if UPI is selected
-                                                onChange={() => setPaymentMethod('UPI')} // Always set to UPI
+                                                checked={paymentMethod === 'Card Payment'} // Force-checked if UPI is selected
+                                                onChange={() => setPaymentMethod('Card Payment')} // Always set to UPI
                                             />
                                             <Radio
                                                 name="type"
@@ -398,8 +430,8 @@ const Checkout = () => {
                                                     </span>
                                                 }
                                                 color='pink'
-                                                checked={paymentMethod === 'UPI'} // Force-checked if UPI is selected
-                                                onChange={() => setPaymentMethod('UPI')} // Always set to UPI
+                                                checked={paymentMethod === 'Netbanking'} // Force-checked if UPI is selected
+                                                onChange={() => setPaymentMethod('Netbanking')} // Always set to UPI
                                             />
                                             <Radio
                                                 name="type"
@@ -409,8 +441,8 @@ const Checkout = () => {
                                                     </span>
                                                 }
                                                 color='pink'
-                                                checked={paymentMethod === 'UPI'} // Force-checked if UPI is selected
-                                                onChange={() => setPaymentMethod('UPI')} // Always set to UPI
+                                                checked={paymentMethod === 'Wallets'} // Force-checked if UPI is selected
+                                                onChange={() => setPaymentMethod('Wallets')} // Always set to UPI
                                             />
                                         </div>
                                     </div>

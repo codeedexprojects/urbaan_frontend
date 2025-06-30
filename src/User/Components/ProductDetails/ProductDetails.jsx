@@ -521,16 +521,20 @@ const ProductDetails = () => {
                                                     key={size._id}
                                                     onClick={() => !isSizeOutOfStock && handleSizeClick(size.size, selectedColor)}
                                                     className={`
-            bg-white cursor-pointer uppercase shadow-md rounded-md w-20 h-10 flex items-center justify-center text-sm xl:text-sm lg:text-sm
-            ${isSelected ? '!bg-primary text-white' : ''}
-            ${isSizeOutOfStock ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-100'}
-          `}
-                                                    style={isSizeOutOfStock ? { backgroundColor: '#80aaff' } : {}}
+          relative bg-white cursor-pointer uppercase shadow-md rounded-md w-20 h-10 flex items-center justify-center text-sm xl:text-sm lg:text-sm
+          ${isSelected ? '!bg-primary text-white' : ''}
+          ${isSizeOutOfStock ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-100'}
+        `}
                                                     title={isSizeOutOfStock ? 'Out of stock' : ''}
                                                 >
                                                     {size.size}
                                                     {isSizeOutOfStock && (
-                                                        <span className="sr-only">(Out of stock)</span>
+                                                        <>
+                                                            <span className="sr-only">(Out of stock)</span>
+                                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                                <div className="w-full border-t border-red-500 transform rotate-[-15deg]"></div>
+                                                            </div>
+                                                        </>
                                                     )}
                                                 </li>
                                             );

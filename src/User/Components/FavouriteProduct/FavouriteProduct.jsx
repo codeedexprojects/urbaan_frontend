@@ -124,14 +124,19 @@ const FavouriteProduct = () => {
                                     />
                                     <div className="mt-3">
                                         <h4 className="font-medium text-sm xl:text-lg capitalize truncate w-40 xl:w-60 lg:w-60">
-                                            {product.productId.title}
+                                            {product.productId.title.slice(0, 17) + '...'}
                                         </h4>
                                         <p className="text-gray-600 text-xs xl:text-sm truncate w-40 xl:w-60">
-                                            {product.productId.description}
+                                            {product.productId.description.slice(0, 17) + '...'}
                                         </p>
-                                        <p className="text-primary text-base xl:text-xl font-semibold mt-2">
-                                            ₹{(product.productId.offerPrice % 1 >= 0.9) ? Math.ceil(product.productId.offerPrice) : Math.floor(product.productId.offerPrice)}
-                                        </p>
+                                        <div className='flex items-center gap-2 mt-2'>
+                                            <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold'>
+                                                ₹{product.productId.offerPrice % 1 >= 0.9 ? Math.ceil(product.productId.offerPrice) : Math.floor(product.productId.offerPrice)}
+                                            </p>
+                                            <p className='text-gray-600 text-sm xl:text-base lg:text-base line-through'>
+                                                ₹{product.productId.actualPrice % 1 >= 0.9 ? Math.ceil(product.productId.actualPrice) : Math.floor(product.productId.actualPrice)}
+                                            </p>
+                                        </div>
 
                                     </div>
 

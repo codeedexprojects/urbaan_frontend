@@ -12,7 +12,7 @@ import * as XLSX from 'xlsx';
 import namer from 'color-namer';
 
 
-const TABLE_HEAD = ["ID", "Customer", "Address", "Order Date", "Payment", "Total Price", "Status", "Orders", "Track ID", "Actions"];
+const TABLE_HEAD = ["ID", "Customer", "Address","Order Note", "Order Date", "Payment", "Total Price", "Status", "Orders", "Track ID", "Actions"];
 
 const OrderTable = ({ orderList, setOrderList }) => {
   const { BASE_URL } = useContext(AppContext);
@@ -605,6 +605,12 @@ const OrderTable = ({ orderList, setOrderList }) => {
                             )}
                           </div>
                         </td>
+                        <td className={classes}>
+                          <Typography variant="small" className="font-normal font-custom text-sm capitalize">
+                            {order?.orderNote ? order.orderNote : 'Not available'}
+                          </Typography>
+                        </td>
+
                         <td className={classes}>
                           <Typography variant="small" className="font-normal font-custom text-sm">
                             {new Date(order.createdAt).toLocaleDateString('en-US', {

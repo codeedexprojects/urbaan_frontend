@@ -47,7 +47,7 @@ const FilterBySubCategory = ({ categoryId, handleSubCategory }) => {
                     className="w-full shadow-none font-custom flex justify-between items-center py-2 px-3 
                          border-gray-800 text-gray-800 font-medium rounded-3xl focus:outline-none"
                 >
-                    Filter by Collections
+                    Filter By Collections
                     <span className="text-xs capitalize bg-primary ml-5 px-2 text-white rounded-md">
                         {selectedSubCategoryName}
                     </span>

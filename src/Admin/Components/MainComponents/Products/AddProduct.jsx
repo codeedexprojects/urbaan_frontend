@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { HiMiniXMark } from 'react-icons/hi2';
+import namer from 'color-namer';
 
 
 const AddProduct = () => {
@@ -38,7 +39,7 @@ const AddProduct = () => {
         innerLining: [],
         material: [],
         pocket: [],
-        neck:[],
+        neck: [],
     });
     const [loading, setLoading] = useState(true);
 
@@ -95,7 +96,7 @@ const AddProduct = () => {
         innerLining: '',
         material: '',
         pocket: '',
-        neck:''
+        neck: ''
     });
 
     const [productDescription, setProductDescription] = useState('')
@@ -123,6 +124,19 @@ const AddProduct = () => {
         return yiq >= 128 ? 'text-black' : 'text-white';
     };
 
+    const getNamedColor = (colorCode) => {
+        try {
+            // Check if it's already a name (not a hex code)
+            if (!colorCode.startsWith('#')) return colorCode;
+
+            const namedColors = namer(colorCode);
+            return namedColors.pantone[0].name || colorCode; // Fallback to hex if no name found
+        } catch (error) {
+            console.error("Error getting color name:", error);
+            return colorCode; // Return original if error
+        }
+    };
+
     // handle input change of specifications
     useEffect(() => {
         const fetchSpecifications = async () => {
@@ -140,7 +154,7 @@ const AddProduct = () => {
                     innerLining: [],
                     material: [],
                     pocket: [],
-                    neck:[]
+                    neck: []
                 };
 
                 specs.forEach(spec => {
@@ -375,7 +389,7 @@ const AddProduct = () => {
             setProductActualPrice('');
             setProductDiscount('');
             setCheckboxes({ latest: false, offer: false, featured: false, freeDelivery: false });
-            setSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "" ,neck:""})
+            setSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "", neck: "" })
             setAttributeFields([{ color: "", sizes: [{ size: "", stock: "" }] }]);
             setProductDescription('');
             setProductImage([]);
@@ -553,7 +567,7 @@ const AddProduct = () => {
                                     bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
                                      focus:outline-none'/>
                             </div>
-                            
+
                             {/* offer price */}
                             <div className='flex flex-col gap-1 w-1/3'>
                                 <label htmlFor="" className='font-normal text-base'>Offer Price</label>
@@ -778,7 +792,7 @@ const AddProduct = () => {
                             </div>
 
                             {/* Neck */}
-                             <div className='flex items-center gap-1'>
+                            <div className='flex items-center gap-1'>
                                 <label htmlFor="neck" className='font-normal text-sm w-32'>Neck</label>
                                 <p>:</p>
                                 <select
@@ -926,9 +940,8 @@ const AddProduct = () => {
                                 onClick={handleAddColorField}
                             />
                         </div>
-                        {attributeFields.map((field, colorIndex) => (
+                        {/* {attributeFields.map((field, colorIndex) => (
                             <div key={colorIndex} className="flex flex-col gap-2">
-                                {/* Color Picker and Header */}
                                 <div className="flex items-center justify-between gap-2">
                                     <div className="flex items-center gap-2 w-full">
                                         <div className="w-64 bg-primary text-white rounded-md font-custom tracking-wider flex items-center justify-center gap-2 p-2 cursor-pointer relative">
@@ -959,7 +972,51 @@ const AddProduct = () => {
                                         className="text-xl text-primary cursor-pointer"
                                         onClick={() => handleDeleteColorField(colorIndex)}
                                     />
-                                </div>
+                                </div> */}
+                                {attributeFields.map((field, colorIndex) => (
+    <div key={colorIndex} className="flex flex-col gap-2">
+      {/* Color Picker and Header */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 w-full">
+          <div className="w-64 bg-primary text-white rounded-md font-custom tracking-wider flex items-center justify-center gap-2 p-2 cursor-pointer relative">
+            <input
+              type="color"
+              value={field.color.startsWith('#') ? field.color : '#ffffff'} // Default to white if not hex
+              onChange={(e) => {
+                const hexColor = e.target.value;
+                const colorName = getNamedColor(hexColor);
+                handleAttributeInputChange(colorIndex, "color", colorName);
+              }}
+              className="absolute w-full h-full opacity-0 cursor-pointer"
+            />
+            <p className='text-sm flex items-center gap-2'>
+              <FaPlus className="text-base" />
+              {field.color ? getNamedColor(field.color) : "Add Color"}
+            </p>
+          </div>
+          <div className='w-full'>
+            <input
+              type="text"
+              value={field.color}
+              placeholder="Enter color name or color code"
+              onChange={(e) => handleAttributeInputChange(colorIndex, "color", e.target.value)}
+              className={`w-full p-2 text-center bg-gray-100/50 border rounded-md text-sm uppercase placeholder:capitalize focus:outline-none ${getContrastYIQ(field.color)}`}
+              style={{ 
+                backgroundColor: field.color.startsWith('#') ? field.color : '#ffffff',
+                color: getContrastYIQ(field.color.startsWith('#') ? field.color : '#ffffff')
+              }}
+              required
+            />
+            {!field.color && (
+              <p className="text-red-500 text-xs mt-1">Color is required</p>
+            )}
+          </div>
+        </div>
+        <MdDelete
+          className="text-xl text-primary cursor-pointer"
+          onClick={() => handleDeleteColorField(colorIndex)}
+        />
+      </div>
 
                                 <div className='flex flex-col gap-2'>
                                     {Array.isArray(field.sizes) && field.sizes.map((sizeField, sizeIndex) => (

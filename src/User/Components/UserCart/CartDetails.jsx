@@ -86,40 +86,98 @@ const CartDetails = () => {
     };
 
     // handle checkout
+    // const handleCheckout = async () => {
+    //     if (!userId || !token) return;
+    //     try {
+    //         // Use selectedAddress if available, otherwise defaultAddr
+    //         const addressToSend = selectedAddress || defaultAddr;
+
+    //         if (!addressToSend || !addressToSend._id) {
+    //             toast.error("Please select a valid delivery address.");
+    //             return null; // Ensure the function exits early if no valid address is selected
+    //         }
+
+    //         const checkoutPayload = {
+    //             userId: userId,
+    //             addressId: addressToSend._id,
+    //         };
+
+    //         console.log(checkoutPayload);
+
+    //         const response = await axios.post(`${BASE_URL}/user/checkout/checkout`, checkoutPayload, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //         });
+
+    //         const newCheckoutId = response.data.checkoutId;
+    //         setCheckoutId(newCheckoutId); // Update local state for completeness
+    //         return newCheckoutId; // Return the checkoutId for further use
+    //     } catch (error) {
+    //         console.error("Error during checkout:", error.response?.data || error.message);
+    //         if (error.response.status === 401) {
+    //             setOpenUserNotLogin(true)
+    //         }
+    //     }
+    // };
     const handleCheckout = async () => {
-        if (!userId || !token) return;
-        try {
-            // Use selectedAddress if available, otherwise defaultAddr
-            const addressToSend = selectedAddress || defaultAddr;
+    if (!userId || !token) return;
+    
+    try {
+        // Use selectedAddress if available, otherwise defaultAddr
+        const addressToSend = selectedAddress || defaultAddr;
 
-            if (!addressToSend || !addressToSend._id) {
-                toast.error("Please select a valid delivery address.");
-                return null; // Ensure the function exits early if no valid address is selected
-            }
-
-            const checkoutPayload = {
-                userId: userId,
-                addressId: addressToSend._id,
-            };
-
-            console.log(checkoutPayload);
-
-            const response = await axios.post(`${BASE_URL}/user/checkout/checkout`, checkoutPayload, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            const newCheckoutId = response.data.checkoutId;
-            setCheckoutId(newCheckoutId); // Update local state for completeness
-            return newCheckoutId; // Return the checkoutId for further use
-        } catch (error) {
-            console.error("Error during checkout:", error.response?.data || error.message);
-            if (error.response.status === 401) {
-                setOpenUserNotLogin(true)
-            }
+        if (!addressToSend || !addressToSend._id) {
+            toast.error("Please select a valid delivery address.");
+            return null;
         }
-    };
+
+        const checkoutPayload = {
+            userId: userId,
+            addressId: addressToSend._id,
+        };
+
+        console.log(checkoutPayload);
+
+        const response = await axios.post(`${BASE_URL}/user/checkout/checkout`, checkoutPayload, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const newCheckoutId = response.data.checkoutId;
+        setCheckoutId(newCheckoutId);
+        return newCheckoutId;
+        
+    } catch (error) {
+        console.error("Error during checkout:", error.response?.data || error.message);
+        
+        // Handle 401 unauthorized
+        if (error.response?.status === 401) {
+            setOpenUserNotLogin(true);
+            return;
+        }
+        
+        // Handle specific checkout errors (like inventory issues)
+        if (error.response?.data) {
+            const errorData = error.response.data;
+            
+            // Show only the specific error details from the 'errors' array
+            if (errorData.errors && Array.isArray(errorData.errors)) {
+                // Display each specific error
+                errorData.errors.forEach((errorMsg, index) => {
+                    // Use a slight delay to show multiple toasts
+                    setTimeout(() => {
+                        toast.error(errorMsg);
+                    }, index * 100);
+                });
+            }
+        } else {
+            // Fallback for unexpected errors
+            toast.error("An unexpected error occurred during checkout. Please try again.");
+        }
+    }
+};
 
     //handle address with defaultAddress true
     useEffect(() => {
@@ -276,7 +334,7 @@ const CartDetails = () => {
                     <Link to='/select-delivery-address'>
                         <p className='flex items-center gap-1 text-primary underline text-sm font-medium'>
                             <FiEdit className='text-base' />
-                            Change
+                            Select Address
                         </p>
                     </Link>
                 </div>

@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { HiMiniXMark } from "react-icons/hi2";
+import namer from 'color-namer';
 
 
 const EditProduct = () => {
@@ -67,6 +68,18 @@ const EditProduct = () => {
         pocket: [],
         neck:[]
     });
+    const getNamedColor = (colorCode) => {
+  try {
+    // Check if it's already a name (not a hex code)
+    if (!colorCode.startsWith('#')) return colorCode;
+    
+    const namedColors = namer(colorCode);
+    return namedColors.pantone[0].name || colorCode; // Fallback to hex if no name found
+  } catch (error) {
+    console.error("Error getting color name:", error);
+    return colorCode; // Return original if error
+  }
+};
 
     const [loading, setLoading] = useState(true);
 
@@ -1013,39 +1026,50 @@ const EditProduct = () => {
                             />
                         </div>
 
-                        {editAttributeFields.map((field, colorIndex) => (
-                            <div
-                                key={colorIndex}
-                                className="flex flex-col gap-2">
-                                {/* Color Picker and Header */}
-                                <div className="flex items-center justify-between gap-2">
-                                    <div className="flex items-center gap-2 w-full">
-                                        <div className="w-64 bg-primary text-white rounded-md font-custom tracking-wider flex items-center justify-center gap-2 p-2 cursor-pointer relative">
-                                            <input
-                                                type="color"
-                                                value={field.color}
-                                                onChange={(e) => handleAttributeInputChange(colorIndex, "color", e.target.value)}
-                                                className="absolute w-full h-full opacity-0 cursor-pointer"
-                                            />
-                                            <p className='text-sm flex items-center gap-2'><FaPlus className="text-base" />Add Color</p>
-                                        </div>
-                                        <div className='w-full'>
-                                            <input
-                                                type="text"
-                                                value={field.color}
-                                                placeholder="Enter color name or color code"
-                                                onChange={(e) => handleAttributeInputChange(colorIndex, "color", e.target.value)}
-                                                className={`w-full p-2 text-center bg-gray-100/50 border rounded-md text-sm uppercase placeholder:capitalize 
-                                focus:outline-none ${getContrastYIQ(field.color)}`}
-                                                style={{ backgroundColor: field.color }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <MdDelete
-                                        className="text-xl text-primary cursor-pointer"
-                                        onClick={() => handleDeleteColorField(colorIndex)}
-                                    />
-                                </div>
+                       {editAttributeFields.map((field, colorIndex) => (
+  <div key={colorIndex} className="flex flex-col gap-2">
+    {/* Color Picker and Header */}
+    <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center gap-2 w-full">
+        <div 
+          className="w-64 bg-primary text-white rounded-md font-custom tracking-wider flex items-center justify-center gap-2 p-2 cursor-pointer relative"
+          style={{ backgroundColor: field.color.startsWith('#') ? field.color : '#ffffff' }}
+        >
+          <input
+            type="color"
+            value={field.color.startsWith('#') ? field.color : '#ffffff'}
+            onChange={(e) => {
+              const hexColor = e.target.value;
+              const colorName = getNamedColor(hexColor);
+              handleAttributeInputChange(colorIndex, "color", colorName);
+            }}
+            className="absolute w-full h-full opacity-0 cursor-pointer"
+          />
+          <p className='text-sm flex items-center gap-2'>
+            <FaPlus className="text-base" />
+            {field.color ? getNamedColor(field.color) : "Add Color"}
+          </p>
+        </div>
+        <div className='w-full'>
+          <input
+            type="text"
+            value={field.color}
+            placeholder="Enter color name or color code"
+            onChange={(e) => handleAttributeInputChange(colorIndex, "color", e.target.value)}
+            className={`w-full p-2 text-center bg-gray-100/50 border rounded-md text-sm uppercase placeholder:capitalize 
+              focus:outline-none ${getContrastYIQ(field.color.startsWith('#') ? field.color : '#ffffff')}`}
+            style={{ 
+              backgroundColor: field.color.startsWith('#') ? field.color : '#ffffff',
+              color: getContrastYIQ(field.color.startsWith('#') ? field.color : '#ffffff')
+            }}
+          />
+        </div>
+      </div>
+      <MdDelete
+        className="text-xl text-primary cursor-pointer"
+        onClick={() => handleDeleteColorField(colorIndex)}
+      />
+    </div>
 
                                 {/* Sizes and Stock Table */}
                                 <div className='flex flex-col gap-2'>

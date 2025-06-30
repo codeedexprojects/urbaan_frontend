@@ -32,7 +32,6 @@ export function EditSizeChartModal({
         if (open && initialData) {
             setTitle(initialData.title || '');
             
-            // Set sizes from initial data
             if (initialData.sizes && initialData.sizes.length > 0) {
                 setSizes(initialData.sizes);
             } else {
@@ -42,7 +41,6 @@ export function EditSizeChartModal({
                 }]);
             }
             
-            // Extract all measurement fields from sizes
             const allFields = new Set();
             initialData.sizes?.forEach(size => {
                 Object.keys(size.measurements || {}).forEach(field => {
@@ -53,7 +51,6 @@ export function EditSizeChartModal({
         }
     }, [open, initialData]);
 
-    // Add new size row
     const addSizeRow = () => {
         setSizes([
             ...sizes,
@@ -61,13 +58,11 @@ export function EditSizeChartModal({
                 size: '',
                 measurements: measurementFields && Array.isArray(measurementFields)
                     ? Object.fromEntries(measurementFields.map(field => [field, '']))
-                    : {} // Fallback to an empty object if measurementFields is not an array
+                    : {}
             }
         ]);
     };
-    
 
-    // Remove size row
     const removeSizeRow = (index) => {
         if (sizes.length > 1) {
             const newSizes = [...sizes];
@@ -76,14 +71,12 @@ export function EditSizeChartModal({
         }
     };
 
-    // Handle size field changes
     const handleSizeChange = (index, field, value) => {
         const newSizes = [...sizes];
         newSizes[index][field] = value;
         setSizes(newSizes);
     };
 
-    // Handle measurement changes
     const handleMeasurementChange = (sizeIndex, field, value) => {
         const newSizes = [...sizes];
         if (!newSizes[sizeIndex].measurements) {
@@ -93,12 +86,10 @@ export function EditSizeChartModal({
         setSizes(newSizes);
     };
 
-    // Add new measurement field
     const addMeasurementField = () => {
         const trimmed = newMeasurementField.trim();
         if (trimmed && !measurementFields.includes(trimmed)) {
             setMeasurementFields([...measurementFields, trimmed]);
-            // Add the new field to all existing sizes
             setSizes(sizes.map(size => ({
                 ...size,
                 measurements: {
@@ -110,13 +101,9 @@ export function EditSizeChartModal({
         }
     };
 
-    // Remove measurement field
     const removeMeasurementField = (field) => {
-        // Remove field from measurementFields
         const updatedFields = measurementFields.filter(f => f !== field);
         setMeasurementFields(updatedFields);
-
-        // Remove field from each size's measurements
         setSizes(sizes.map(size => {
             const { [field]: _, ...restMeasurements } = size.measurements || {};
             return {
@@ -126,7 +113,6 @@ export function EditSizeChartModal({
         }));
     };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -138,7 +124,6 @@ export function EditSizeChartModal({
                 return;
             }
 
-            // Prepare the data in required format
             const sizeChartData = {
                 title,
                 sizes: sizes.map(size => ({
@@ -148,7 +133,7 @@ export function EditSizeChartModal({
                             .filter(([_, value]) => value !== '')
                             .map(([field, value]) => [field, parseFloat(value) || 0])
                     )
-                })).filter(size => size.size) // Filter out empty rows
+                })).filter(size => size.size)
             };
 
             const headers = {
@@ -156,20 +141,15 @@ export function EditSizeChartModal({
                 'Content-Type': 'application/json'
             };
 
-            // API call to update size chart
             const response = await axios.patch(
                 `${BASE_URL}/admin/sizechart/update/${sizeChartId}`,
                 sizeChartData,
                 { headers }
             );
 
-            // Success message
             toast.success('Size chart updated successfully!');
-            
-            // Close modal
             handleOpen();
             
-            // Refresh size charts list
             if (setAdminSizeCharts) {
                 const fetchResponse = await axios.get(`${BASE_URL}/admin/sizechart/get`, { headers });
                 setAdminSizeCharts(fetchResponse.data);
@@ -249,44 +229,47 @@ export function EditSizeChartModal({
                             <label className="font-normal text-base">Size Measurements</label>
 
                             {sizes.map((size, index) => (
-                                <div key={index} className="grid grid-cols-4 gap-2 items-center">
-                                    {/* Size */}
-                                    <div>
-                                        <input
-                                            type="text"
-                                            value={size.size}
-                                            onChange={(e) => handleSizeChange(index, 'size', e.target.value)}
-                                            placeholder="Size (e.g. S, M, L)"
-                                            className="border-[1px] text-sm bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500 focus:outline-none"
-                                            required
-                                        />
-                                    </div>
-
-                                    {/* Dynamic Measurement Fields */}
-                                    {measurementFields.map(field => (
-                                        <div key={field}>
+                                <div key={index} className="border p-4 rounded-lg space-y-3">
+                                    <div className="grid grid-cols-12 gap-4 items-end">
+                                        {/* Size Field */}
+                                        <div className="col-span-3">
+                                            <label className="block text-sm font-medium mb-1">Size</label>
                                             <input
-                                                type="number"
-                                                value={size.measurements?.[field] || ''}
-                                                onChange={(e) => handleMeasurementChange(index, field, e.target.value)}
-                                                placeholder={`${field} (in)`}
-                                                className="border-[1px] text-sm bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500 focus:outline-none"
-                                                min="0"
-                                                step="0.1"
+                                                type="text"
+                                                value={size.size}
+                                                onChange={(e) => handleSizeChange(index, 'size', e.target.value)}
+                                                placeholder="e.g. S, M, L"
+                                                className="border-[1px] text-sm bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500 focus:outline-none w-full"
+                                                required
                                             />
                                         </div>
-                                    ))}
 
-                                    {/* Remove Button */}
-                                    <div className="flex justify-center">
-                                        <IconButton
-                                            variant="text"
-                                            color="red"
-                                            onClick={() => removeSizeRow(index)}
-                                            disabled={sizes.length <= 1}
-                                        >
-                                            <MdDeleteOutline className="text-xl" />
-                                        </IconButton>
+                                        {/* Measurement Fields */}
+                                        {measurementFields.map(field => (
+                                            <div key={field} className="col-span-3">
+                                                <label className="block text-sm font-medium mb-1">{field} (in)</label>
+                                                <input
+                                                    type="number"
+                                                    value={size.measurements?.[field] || ''}
+                                                    onChange={(e) => handleMeasurementChange(index, field, e.target.value)}
+                                                    className="border-[1px] text-sm bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500 focus:outline-none w-full"
+                                                    min="0"
+                                                    step="0.1"
+                                                />
+                                            </div>
+                                        ))}
+
+                                        {/* Remove Button */}
+                                        <div className="col-span-3 flex justify-center">
+                                            <IconButton
+                                                variant="text"
+                                                color="red"
+                                                onClick={() => removeSizeRow(index)}
+                                                disabled={sizes.length <= 1}
+                                            >
+                                                <MdDeleteOutline className="text-xl" />
+                                            </IconButton>
+                                        </div>
                                     </div>
                                 </div>
                             ))}

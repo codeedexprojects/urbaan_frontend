@@ -15,6 +15,7 @@ import FilterBySubCategory from './FilterBySubCategory';
 import { MdZoomOutMap } from 'react-icons/md';
 import { ImageZoomModal } from '../ImageZoomModal/ImageZoomModal';
 import { CgArrowLongLeft } from "react-icons/cg";
+import FilterByCategory from './FilterByCategory';
 
 
 const AllCategory = () => {
@@ -30,6 +31,8 @@ const AllCategory = () => {
     const [openImageModal, setOpenImageModal] = React.useState(false);
     const [zoomImage, setZoomImage] = useState(null);
     const [openUserNotLogin, setOpenUserNotLogin] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+
 
     const userId = localStorage.getItem('userId');
 
@@ -75,6 +78,13 @@ const AllCategory = () => {
     const applyFilters = () => {
         let filteredProducts = [...allProducts];
 
+        // Apply category filter (NEW)
+        if (selectedCategory) {
+            filteredProducts = filteredProducts.filter(
+                (product) => product.category._id === selectedCategory
+            );
+        }
+
         // Apply subcategory filter
         if (selectedSubCategory) {
             filteredProducts = filteredProducts.filter(
@@ -106,6 +116,9 @@ const AllCategory = () => {
 
         setProducts(filteredProducts);
     };
+    const handleCategoryFilter = (categoryId) => {
+        setSelectedCategory(categoryId);
+    };
 
     // Handle individual filter changes
     const handleSubCategory = (subCategoryId) => {
@@ -127,7 +140,7 @@ const AllCategory = () => {
     // Reapply filters whenever a filter state changes
     useEffect(() => {
         applyFilters();
-    }, [selectedSize, selectedMaterial, selectedSubCategory, priceRange]);
+    }, [selectedSize, selectedMaterial, selectedSubCategory, selectedCategory, priceRange]);
 
     // add to wishlist
     const handleWishlist = async (productId, productTitle) => {
@@ -162,31 +175,33 @@ const AllCategory = () => {
         <>
             <div className='h-[calc(100vh-4rem)] pb-20'>
                 {/* Header */}
-              <div className='w-full h-28 sm:h-44 relative'>
-  <img src="/banner.jpg" alt="" className='w-full h-full object-cover' />
-  <div className='absolute inset-0 bg-primary/70'></div>
-  <div className='absolute inset-0 flex items-end justify-center mb-3 sm:mb-5'>
-    <h1 className='text-white text-2xl sm:text-4xl font-medium capitalize flex items-center gap-2'>
-      <CgArrowLongLeft onClick={() => navigate(-1)} className="text-white text-xl sm:text-2xl cursor-pointer" />
-      {productsCategory.name}
-    </h1>
-  </div>
-</div>
+                <div className='w-full h-20 sm:h-44 relative'>
+                    <img src="/banner.jpg" alt="" className='w-full h-full object-cover' />
+                    <div className='absolute inset-0 bg-primary/70'></div>
+                    <div className='absolute inset-0 flex items-end justify-center mb-2 sm:mb-5'>
+                        <h1 className='text-white text-xl sm:text-4xl font-medium capitalize flex items-center gap-2'>
+                            <CgArrowLongLeft
+                                onClick={() => navigate(-1)}
+                                className="text-white text-lg sm:text-2xl cursor-pointer"
+                            />
+                            {productsCategory.name}
+                        </h1>
+                    </div>
+                </div>
 
-
-                {/* Filters */}
-                <div className="px-4 py-10 xl:py-16 xl:px-32 lg:py-16 lg:px-32 bg-userBg">
-                    <ul className='space-y-3 xl:flex xl:items-center xl:space-y-0 xl:gap-5 xl:justify-center
+                {/* Filters - Optimized for mobile */}
+                <div className="px-3 py-4 xl:py-16 xl:px-32 lg:py-16 lg:px-32 bg-userBg">
+                    <ul className='grid grid-cols-2 gap-2 xl:flex xl:items-center xl:space-y-0 xl:gap-5 xl:justify-center
                     lg:flex lg:items-center lg:space-y-0 lg:gap-5 lg:justify-center'>
-                        <li><FilterBySubCategory categoryId={productsCategory.id} handleSubCategory={handleSubCategory} /></li>
-                       <li><FilterBySize handleSizeFilter={handleSizeFilter} categoryId={productsCategory.id} /></li>
-                        <li><FilterByMaterial handleMaterialFilter={handleMaterialFilter} categoryId={productsCategory.id} /></li>
-                        
-                        <li><FilterByPrice handlePriceFilter={handlePriceFilter} /></li>
+                        <li className='col-span-1'><FilterByCategory handleCategoryFilter={handleCategoryFilter} /></li>
+                        <li className='col-span-1'><FilterBySubCategory categoryId={productsCategory.id} handleSubCategory={handleSubCategory} /></li>
+                        <li className='col-span-1'><FilterBySize handleSizeFilter={handleSizeFilter} categoryId={productsCategory.id} /></li>
+                        <li className='col-span-1'><FilterByMaterial handleMaterialFilter={handleMaterialFilter} categoryId={productsCategory.id} /></li>
+                        <li className='col-span-1'><FilterByPrice handlePriceFilter={handlePriceFilter} /></li>
                     </ul>
 
                     {/* Products */}
-                    <div className="xl:p-10 mt-10">
+                    <div className="xl:p-10 mt-6">
                         <div className="grid grid-cols-2 xl:grid-cols-5 lg:grid-cols-5 gap-5">
                             {isLoading ? (
                                 <div className='col-span-5 flex justify-center items-center h-[50vh]'>
@@ -217,7 +232,7 @@ const AllCategory = () => {
                                             )}
                                             <div className='mt-3'>
                                                 <p className='font-medium text-sm xl:text-lg lg:text-lg truncate capitalize'>{product.title}</p>
-                                                <p className='text-gray-600 font-normal text-xs xl:text-sm lg:text-sm truncate overflow-hidden whitespace-nowrap w-40 xl:w-56 lg:w-48 capitalize'>{product.description}</p>
+                                                <p className='text-gray-600 font-normal text-xs xl:text-sm lg:text-sm truncate overflow-hidden whitespace-nowrap w-40 xl:w-56 lg:w-48 capitalize'>{product.description.slice(0, 17) + '...'}</p>
                                                 <div className='flex items-center gap-2 mt-2'>
                                                     <p className='text-primary text-base xl:text-xl lg:text-xl font-semibold'>
                                                         ₹{product.offerPrice % 1 >= 0.9 ? Math.ceil(product.offerPrice) : Math.floor(product.offerPrice)}

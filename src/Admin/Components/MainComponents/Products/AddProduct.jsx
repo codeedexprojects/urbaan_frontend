@@ -973,50 +973,50 @@ const AddProduct = () => {
                                         onClick={() => handleDeleteColorField(colorIndex)}
                                     />
                                 </div> */}
-                                {attributeFields.map((field, colorIndex) => (
-    <div key={colorIndex} className="flex flex-col gap-2">
-      {/* Color Picker and Header */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 w-full">
-          <div className="w-64 bg-primary text-white rounded-md font-custom tracking-wider flex items-center justify-center gap-2 p-2 cursor-pointer relative">
-            <input
-              type="color"
-              value={field.color.startsWith('#') ? field.color : '#ffffff'} // Default to white if not hex
-              onChange={(e) => {
-                const hexColor = e.target.value;
-                const colorName = getNamedColor(hexColor);
-                handleAttributeInputChange(colorIndex, "color", colorName);
-              }}
-              className="absolute w-full h-full opacity-0 cursor-pointer"
-            />
-            <p className='text-sm flex items-center gap-2'>
-              <FaPlus className="text-base" />
-              {field.color ? getNamedColor(field.color) : "Add Color"}
-            </p>
-          </div>
-          <div className='w-full'>
-            <input
-              type="text"
-              value={field.color}
-              placeholder="Enter color name or color code"
-              onChange={(e) => handleAttributeInputChange(colorIndex, "color", e.target.value)}
-              className={`w-full p-2 text-center bg-gray-100/50 border rounded-md text-sm uppercase placeholder:capitalize focus:outline-none ${getContrastYIQ(field.color)}`}
-              style={{ 
-                backgroundColor: field.color.startsWith('#') ? field.color : '#ffffff',
-                color: getContrastYIQ(field.color.startsWith('#') ? field.color : '#ffffff')
-              }}
-              required
-            />
-            {!field.color && (
-              <p className="text-red-500 text-xs mt-1">Color is required</p>
-            )}
-          </div>
-        </div>
-        <MdDelete
-          className="text-xl text-primary cursor-pointer"
-          onClick={() => handleDeleteColorField(colorIndex)}
-        />
-      </div>
+                        {attributeFields.map((field, colorIndex) => (
+                            <div key={colorIndex} className="flex flex-col gap-2">
+                                {/* Color Picker and Header */}
+                                <div className="flex items-center justify-between gap-2">
+                                    <div className="flex items-center gap-2 w-full">
+                                        <div className="w-64 bg-primary text-white rounded-md font-custom tracking-wider flex items-center justify-center gap-2 p-2 cursor-pointer relative">
+                                            <input
+                                                type="color"
+                                                value={field.color.startsWith('#') ? field.color : '#ffffff'} // Default to white if not hex
+                                                onChange={(e) => {
+                                                    const hexColor = e.target.value;
+                                                    const colorName = getNamedColor(hexColor);
+                                                    handleAttributeInputChange(colorIndex, "color", colorName);
+                                                }}
+                                                className="absolute w-full h-full opacity-0 cursor-pointer"
+                                            />
+                                            <p className='text-sm flex items-center gap-2'>
+                                                <FaPlus className="text-base" />
+                                                {field.color ? getNamedColor(field.color) : "Add Color"}
+                                            </p>
+                                        </div>
+                                        <div className='w-full'>
+                                            <input
+                                                type="text"
+                                                value={field.color}
+                                                placeholder="Enter color name or color code"
+                                                onChange={(e) => handleAttributeInputChange(colorIndex, "color", e.target.value)}
+                                                className={`w-full p-2 text-center bg-gray-100/50 border rounded-md text-sm uppercase placeholder:capitalize focus:outline-none ${getContrastYIQ(field.color)}`}
+                                                style={{
+                                                    backgroundColor: field.color.startsWith('#') ? field.color : '#ffffff',
+                                                    color: getContrastYIQ(field.color.startsWith('#') ? field.color : '#ffffff')
+                                                }}
+                                                required
+                                            />
+                                            {!field.color && (
+                                                <p className="text-red-500 text-xs mt-1">Color is required</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <MdDelete
+                                        className="text-xl text-primary cursor-pointer"
+                                        onClick={() => handleDeleteColorField(colorIndex)}
+                                    />
+                                </div>
 
                                 <div className='flex flex-col gap-2'>
                                     {Array.isArray(field.sizes) && field.sizes.map((sizeField, sizeIndex) => (
@@ -1037,7 +1037,7 @@ const AddProduct = () => {
                                                         required
                                                     >
                                                         <option value="">Select Size</option>
-                                                        <optgroup label="Kurthi Sizes">
+                                                        <optgroup label="Sizes">
                                                             <option value="XS (34)">XS (34)</option>
                                                             <option value="S (36)">S (36)</option>
                                                             <option value="M (38)">M (38)</option>
@@ -1048,7 +1048,7 @@ const AddProduct = () => {
                                                             <option value="4XL (48)">4XL (48)</option>
                                                             <option value="5XL (50)">5XL (50)</option>
                                                         </optgroup>
-                                                        <optgroup label="Bottom Sizes">
+                                                        <optgroup label="Sizes">
                                                             <option value="S">S</option>
                                                             <option value="M">M</option>
                                                             <option value="L">L</option>

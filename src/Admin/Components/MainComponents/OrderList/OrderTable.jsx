@@ -12,7 +12,7 @@ import * as XLSX from 'xlsx';
 import namer from 'color-namer';
 
 
-const TABLE_HEAD = ["ID", "Customer", "Address","Order Note", "Order Date", "Payment", "Total Price", "Status", "Orders", "Track ID", "Actions"];
+const TABLE_HEAD = ["ID", "Customer", "Address", "Order Note", "Order Date", "Payment", "Total Price", "Status", "Orders", "Track ID", "Actions"];
 
 const OrderTable = ({ orderList, setOrderList }) => {
   const { BASE_URL } = useContext(AppContext);
@@ -38,6 +38,7 @@ const OrderTable = ({ orderList, setOrderList }) => {
   };
 
 
+  
   // Shop address - you can modify this as needed
   const SHOP_ADDRESS = {
     name: "URBAAN Collections",
@@ -450,14 +451,29 @@ const OrderTable = ({ orderList, setOrderList }) => {
     }
 
     // Format data for Excel
-    const formattedData = orderList.map(order => ({
-      Order_ID: order.orderId,
-      Customer_Name: order.userId?.name || 'N/A',
-      Address: order.addressId?.address || 'N/A',
-      Order_Date: new Date(order.createdAt).toLocaleDateString(),
-      Payment_Method: order.paymentMethod,
-      Status: order.status,
-    }));
+    const formattedData = orderList.map(order => {
+      const address = order.addressDetails || order.addressId || {};
+      const name = `${address.firstName || ''} ${address.lastName || ''}`.trim();
+      const addressLine = address.address || '';
+      const area = address.area || '';
+      const city = address.city || '';
+      const state = address.state || '';
+      const pincode = address.pincode || '';
+      const landmark = address.landmark ? `Landmark: ${address.landmark}` : '';
+      const phone = address.number || order.userId?.phone || 'N/A';
+
+      const fullAddress = `${addressLine}${area ? ', ' + area : ''}, ${city}, ${state} - ${pincode}${landmark ? ', ' + landmark : ''}`;
+
+      return {
+        Order_ID: order.orderId,
+        Customer_Name: name || order.userId?.name || 'N/A',
+        Phone: phone,
+        Full_Address: fullAddress || 'N/A',
+        Order_Date: new Date(order.createdAt).toLocaleDateString(),
+        Payment_Method: order.paymentMethod,
+        Status: order.status,
+      };
+    });
 
     // Create a new workbook and add a worksheet
     const ws = XLSX.utils.json_to_sheet(formattedData);
@@ -469,6 +485,7 @@ const OrderTable = ({ orderList, setOrderList }) => {
 
     toast.success("Order list downloaded successfully");
   };
+
 
   return (
     <>
@@ -566,12 +583,13 @@ const OrderTable = ({ orderList, setOrderList }) => {
                         </td>
                         <td className={classes}>
                           <div className="w-48">
-                            {order?.addressDetails ? (
+                            {order?.addressDetails || order?.addressId ? (
                               <>
                                 {/* Compact view */}
                                 {!expandedAddresses[order._id] && (
                                   <Typography variant="small" className="font-normal font-custom text-sm line-clamp-1">
-                                    {order.addressDetails.address}, {order.addressDetails.area}
+                                    {order.addressDetails?.address || order.addressId?.address},
+                                    {order.addressDetails?.area || ''}
                                   </Typography>
                                 )}
 
@@ -579,14 +597,23 @@ const OrderTable = ({ orderList, setOrderList }) => {
                                 {expandedAddresses[order._id] && (
                                   <div className="text-sm space-y-1">
                                     <div className="font-medium">
-                                      {order.addressDetails.firstName} {order.addressDetails.lastName}
+                                      {order.addressDetails?.firstName || ''} {order.addressDetails?.lastName || ''}
                                     </div>
-                                    <div>{order.addressDetails.address}, {order.addressDetails.area}</div>
-                                    <div>{order.addressDetails.city}, {order.addressDetails.state} - {order.addressDetails.pincode}</div>
-                                    {order.addressDetails.landmark && (
+                                    <div>
+                                      {order.addressDetails?.address || order.addressId?.address},
+                                      {order.addressDetails?.area ? ` ${order.addressDetails.area}` : ''}
+                                    </div>
+                                    <div>
+                                      {order.addressDetails?.city || order.addressId?.city},
+                                      {order.addressDetails?.state || order.addressId?.state} -
+                                      {order.addressDetails?.pincode || order.addressId?.pincode}
+                                    </div>
+                                    {order.addressDetails?.landmark && (
                                       <div className="text-gray-600">Landmark: {order.addressDetails.landmark}</div>
                                     )}
-                                    <div className="text-gray-600">Phone: {order.addressDetails.number}</div>
+                                    <div className="text-gray-600">
+                                      Phone: {order.addressDetails?.number || order.userId?.phone || 'N/A'}
+                                    </div>
                                   </div>
                                 )}
 

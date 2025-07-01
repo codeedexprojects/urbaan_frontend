@@ -1087,7 +1087,7 @@ const EditProduct = () => {
                                                     className="border w-full bg-gray-100/50 p-2 rounded-md uppercase placeholder:text-sm focus:outline-none placeholder:capitalize"
                                                 >
                                                     <option value="">Select Size</option>
-                                                    <optgroup label="Kurthi Sizes">
+                                                    <optgroup label="Sizes">
                                                         <option value="XS (34)">XS (34)</option>
                                                         <option value="S (36)">S (36)</option>
                                                         <option value="M (38)">M (38)</option>
@@ -1098,7 +1098,7 @@ const EditProduct = () => {
                                                         <option value="4XL (48)">4XL (48)</option>
                                                         <option value="5XL (50)">5XL (50)</option>
                                                     </optgroup>
-                                                    <optgroup label="Bottom Sizes">
+                                                    <optgroup label="Sizes">
                                                         <option value="S">S</option>
                                                         <option value="M">M</option>
                                                         <option value="L">L</option>

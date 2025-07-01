@@ -80,7 +80,7 @@ const OrdersTracking = () => {
                 ) : userOrders.length === 0 ? (
                     <p className="text-center py-10">No orders found</p>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
                         {userOrders.map((order) => (
                             <Card key={order._id} className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-white">
                                 {/* Header with Status Badge */}

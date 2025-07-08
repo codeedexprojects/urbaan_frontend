@@ -66,22 +66,22 @@ const EditUserAddress = () => {
         'PUDUCHERRY'
     ]
 
-   useEffect(() => {
-    if (initailAddressData) {
-        setEditFirstName(initailAddressData.firstName) // Fixed typo: 'firtsName' -> 'firstName'
-        setEditLastName(initailAddressData.lastName)
-        setEditNumber(initailAddressData.number)
-        setEditAddress(initailAddressData.address)
-        setEditArea(initailAddressData.area)
-        setEditLandMark(initailAddressData.landmark)
-        setEditPinCode(initailAddressData.pincode)
-        setEditCity(initailAddressData.city)
-        setEditState(initailAddressData.state?.toUpperCase() || '') // Ensure uppercase
-        setEditCountry(initailAddressData.country)
-        setEditAddressType(initailAddressData.addressType)
-        setEditDefaultAddress(initailAddressData.defaultAddress)
-    }
-}, [initailAddressData])
+    useEffect(() => {
+        if (initailAddressData) {
+            setEditFirstName(initailAddressData.firstName) // Fixed typo: 'firtsName' -> 'firstName'
+            setEditLastName(initailAddressData.lastName)
+            setEditNumber(initailAddressData.number)
+            setEditAddress(initailAddressData.address)
+            setEditArea(initailAddressData.area)
+            setEditLandMark(initailAddressData.landmark)
+            setEditPinCode(initailAddressData.pincode)
+            setEditCity(initailAddressData.city)
+            setEditState(initailAddressData.state?.toUpperCase() || '') // Ensure uppercase
+            setEditCountry(initailAddressData.country)
+            setEditAddressType(initailAddressData.addressType)
+            setEditDefaultAddress(initailAddressData.defaultAddress)
+        }
+    }, [initailAddressData])
 
     // Validate PIN code using Postal API
     const validatePinCode = async (pin) => {
@@ -180,21 +180,22 @@ const EditUserAddress = () => {
         <>
             <div className="bg-white shadow-md py-4 px-4 w-full sticky top-0 z-50">
                 <h1
-                    className="flex items-center gap-2 text-xl font-medium cursor-pointer"
+                    className="flex items-center gap-2 text-lg sm:text-xl font-medium cursor-pointer"
                     onClick={() => navigate(-1)}
                 >
-                    <IoIosArrowBack className="text-secondary text-2xl cursor-pointer" />Edit Delivery Address
+                    <IoIosArrowBack className="text-secondary text-xl sm:text-2xl cursor-pointer" />
+                    <span className="truncate">Edit Delivery Address</span>
                 </h1>
             </div>
 
-            <div className="p-4 xl:py-16 xl:px-32 lg:py-16 lg:px-32 bg-userBg h-[calc(100vh-4rem)] pb-20 overflow-y-auto">
+            <div className="p-2 sm:p-4 xl:py-16 xl:px-32 lg:py-16 lg:px-32 bg-userBg min-h-[calc(100vh-4rem)] pb-20 overflow-y-auto">
                 <div className='flex justify-center items-center'>
-                    <Card className='p-5 w-[600px]'>
-                        <form action="" className="space-y-5 mt-3" onSubmit={editAddressFormSubmit}>
-                            {/* First Name and Last Name in same row */}
-                            <div className="flex gap-5 w-full">
+                    <Card className='p-3 sm:p-5 w-full max-w-[600px] mx-auto'>
+                        <form className="space-y-4 sm:space-y-5 mt-3" onSubmit={editAddressFormSubmit}>
+                            {/* First Name and Last Name - Stack on mobile, side by side on larger screens */}
+                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 w-full">
                                 {/* First Name */}
-                                <div className="flex flex-col gap-1 w-1/2">
+                                <div className="flex flex-col gap-1 w-full sm:w-1/2">
                                     <label htmlFor="editFirstName" className="font-medium text-sm xl:text-base lg:text-base">
                                         First Name
                                     </label>
@@ -206,12 +207,12 @@ const EditUserAddress = () => {
                                         onChange={(e) => setEditFirstName(e.target.value.toUpperCase())}
                                         placeholder="Enter your first name"
                                         required
-                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
+                                        className="border-[1px] bg-transparent border-gray-400 p-2 sm:p-3 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase text-sm"
                                     />
                                 </div>
 
                                 {/* Last Name */}
-                                <div className="flex flex-col gap-1 w-1/2">
+                                <div className="flex flex-col gap-1 w-full sm:w-1/2">
                                     <label htmlFor="editLastName" className="font-medium text-sm xl:text-base lg:text-base">
                                         Last Name
                                     </label>
@@ -223,30 +224,32 @@ const EditUserAddress = () => {
                                         onChange={(e) => setEditLastName(e.target.value.toUpperCase())}
                                         placeholder="Enter your last name"
                                         required
-                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
+                                        className="border-[1px] bg-transparent border-gray-400 p-2 sm:p-3 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase text-sm"
                                     />
                                 </div>
                             </div>
 
-                            {/* Number */}
+                            {/* Phone Number */}
                             <div className="flex flex-col gap-1 w-full">
                                 <label htmlFor="number" className="font-medium text-sm xl:text-base lg:text-base">
                                     Phone Number
                                 </label>
                                 <input
-                                    type="number"
+                                    type="tel"
                                     name="number"
                                     id="number"
                                     value={editNumber}
                                     onChange={(e) => setEditNumber(e.target.value)}
                                     placeholder="Enter your phone number"
+                                    maxLength="10"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 sm:p-3 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none text-sm"
                                 />
                             </div>
-                            {/* Address */}
-                            <div className="flex flex-col gap-1">
-                                <label htmlFor="address" className="font-medium text-sm xl:text-base lg:text-base">
+
+                            {/* Address Fields */}
+                            <div className="flex flex-col gap-3">
+                                <label className="font-medium text-sm xl:text-base lg:text-base">
                                     Address
                                 </label>
                                 <input
@@ -257,7 +260,7 @@ const EditUserAddress = () => {
                                     onChange={(e) => setEditAddress(e.target.value.toUpperCase())}
                                     placeholder="Flat No, House No, Building, Company..."
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 sm:p-3 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase text-sm"
                                 />
                                 <input
                                     type="text"
@@ -267,7 +270,7 @@ const EditUserAddress = () => {
                                     onChange={(e) => setEditArea(e.target.value.toUpperCase())}
                                     placeholder="Area, Street, Sector, Village..."
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 sm:p-3 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase text-sm"
                                 />
                                 <input
                                     type="text"
@@ -277,66 +280,74 @@ const EditUserAddress = () => {
                                     onChange={(e) => setEditLandMark(e.target.value.toUpperCase())}
                                     placeholder="Landmark"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 sm:p-3 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase text-sm"
                                 />
                                 <div className="relative">
                                     <input
-                                        type="number"
+                                        type="tel"
                                         name="pincode"
                                         id="pincode"
                                         value={editPinCode}
                                         onChange={(e) => setEditPinCode(e.target.value)}
                                         onBlur={handlePinCodeBlur}
                                         placeholder="Pin code"
+                                        maxLength="6"
                                         required
-                                        className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none w-full"
+                                        className="border-[1px] bg-transparent border-gray-400 p-2 sm:p-3 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none w-full text-sm"
                                     />
                                     {isValidatingPin && (
-                                        <span className="absolute right-3 top-2.5 text-xs text-gray-500">Validating...</span>
+                                        <span className="absolute right-3 top-2.5 sm:top-3.5 text-xs text-gray-500">Validating...</span>
                                     )}
                                 </div>
                                 {pinCodeError && (
                                     <p className="text-red-500 text-xs">{pinCodeError}</p>
                                 )}
                             </div>
-                            {/* City */}
-                            <div className="flex flex-col gap-1">
-                                <label htmlFor="city" className="font-medium text-sm xl:text-base lg:text-base">
-                                    City
-                                </label>
-                                <input
-                                    type="text"
-                                    name="city"
-                                    id="city"
-                                    value={editCity}
-                                    onChange={(e) => setEditCity(e.target.value.toUpperCase())}
-                                    placeholder="Enter your city"
-                                    required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
-                                />
+
+                            {/* City and State - Stack on mobile, side by side on larger screens */}
+                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 w-full">
+                                {/* City */}
+                                <div className="flex flex-col gap-1 w-full sm:w-1/2">
+                                    <label htmlFor="city" className="font-medium text-sm xl:text-base lg:text-base">
+                                        City
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="city"
+                                        id="city"
+                                        value={editCity}
+                                        onChange={(e) => setEditCity(e.target.value.toUpperCase())}
+                                        placeholder="Enter your city"
+                                        required
+                                        className="border-[1px] bg-transparent border-gray-400 p-2 sm:p-3 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase text-sm"
+                                    />
+                                </div>
+
+                                {/* State Dropdown */}
+                                <div className="flex flex-col gap-1 w-full sm:w-1/2">
+                                    <label htmlFor="state" className="font-medium text-sm xl:text-base lg:text-base">
+                                        State
+                                    </label>
+                                    <select
+                                        name="state"
+                                        id="state"
+                                        value={editState}
+                                        onChange={(e) => setEditState(e.target.value)}
+                                        required
+                                        className="border-[1px] bg-transparent border-gray-400 p-2 sm:p-3 rounded-md text-sm focus:outline-none uppercase"
+                                    >
+                                        <option value="">SELECT YOUR STATE</option>
+                                        {indianStates.map((stateName, index) => (
+                                            <option key={index} value={stateName}>
+                                                {stateName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
-                            {/* State Dropdown */}
+
+                            {/* Country */}
                             <div className="flex flex-col gap-1">
-                                <label htmlFor="state" className="font-medium text-sm xl:text-base lg:text-base">
-                                    State
-                                </label>
-                                <select
-                                    name="state"
-                                    id="state"
-                                    value={editState}
-                                    onChange={(e) => setEditState(e.target.value)}
-                                    required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md text-sm focus:outline-none uppercase"
-                                >
-                                    <option value="">SELECT YOUR STATE</option>
-                                    {indianStates.map((stateName, index) => (
-                                        <option key={index} value={stateName}>
-                                            {stateName}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                             <div className="flex flex-col gap-1">
                                 <label htmlFor="country" className="font-medium text-sm xl:text-base lg:text-base">
                                     Country
                                 </label>
@@ -348,19 +359,42 @@ const EditUserAddress = () => {
                                     onChange={(e) => setEditCountry(e.target.value.toUpperCase())}
                                     placeholder="Enter your country"
                                     required
-                                    className="border-[1px] bg-transparent border-gray-400 p-2 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase"
+                                    className="border-[1px] bg-transparent border-gray-400 p-2 sm:p-3 rounded-md placeholder:text-sm placeholder:text-gray-500 focus:outline-none uppercase text-sm"
                                 />
                             </div>
 
-
-                            {/* Address Type Buttons */}
-                            <div className='flex items-center gap-3'>
-                                <Button onClick={() => setEditAddressType("home")} variant='outlined' className={`text-secondary border-secondary font-custom text-sm capitalize 
-                                    ${editAddressType === "home" ? "text-primary border-primary text-opacity-100 shadow-none" : ""}`}>Home</Button>
-                                <Button onClick={() => setEditAddressType("work")} variant='outlined' className={`text-secondary border-secondary font-custom text-sm capitalize 
-                                    ${editAddressType === "work" ? "text-primary border-primary text-opacity-100 shadow-none" : ""}`}>Work</Button>
-                                <Button onClick={() => setEditAddressType("other")} variant='outlined' className={`text-secondary border-secondary font-custom text-sm capitalize 
-                                    ${editAddressType === "other" ? "text-primary border-primary text-opacity-100 shadow-none" : ""}`}>Other</Button>
+                            {/* Address Type Buttons - Stack on mobile */}
+                            <div className='flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3'>
+                                <span className="font-medium text-sm xl:text-base lg:text-base mb-1 sm:mb-0">Address Type:</span>
+                                <div className="flex flex-wrap gap-2 sm:gap-3">
+                                    <Button 
+                                        onClick={() => setEditAddressType("home")} 
+                                        variant='outlined' 
+                                        size="sm"
+                                        className={`text-secondary border-secondary font-custom text-xs sm:text-sm capitalize min-w-[70px] 
+                                            ${editAddressType === "home" ? "text-primary border-primary text-opacity-100 shadow-none" : ""}`}
+                                    >
+                                        Home
+                                    </Button>
+                                    <Button 
+                                        onClick={() => setEditAddressType("work")} 
+                                        variant='outlined' 
+                                        size="sm"
+                                        className={`text-secondary border-secondary font-custom text-xs sm:text-sm capitalize min-w-[70px] 
+                                            ${editAddressType === "work" ? "text-primary border-primary text-opacity-100 shadow-none" : ""}`}
+                                    >
+                                        Work
+                                    </Button>
+                                    <Button 
+                                        onClick={() => setEditAddressType("other")} 
+                                        variant='outlined' 
+                                        size="sm"
+                                        className={`text-secondary border-secondary font-custom text-xs sm:text-sm capitalize min-w-[70px] 
+                                            ${editAddressType === "other" ? "text-primary border-primary text-opacity-100 shadow-none" : ""}`}
+                                    >
+                                        Other
+                                    </Button>
+                                </div>
                             </div>
 
                             {/* Default Address Checkbox */}
@@ -370,19 +404,21 @@ const EditUserAddress = () => {
                                     checked={editDefaultAddress}
                                     onChange={() => setEditDefaultAddress(!editDefaultAddress)}
                                     id="defaultAddress"
-                                    className="h-4 w-4"
+                                    className="h-4 w-4 flex-shrink-0"
                                 />
-                                <label htmlFor="defaultAddress" className="font-medium text-sm xl:text-base lg:text-base">Set as Default Address</label>
+                                <label htmlFor="defaultAddress" className="font-medium text-sm xl:text-base lg:text-base">
+                                    Set as Default Address
+                                </label>
                             </div>
 
                             {/* Submit Button */}
-                            <div className='mb-3'>
+                            <div className='mt-6'>
                                 <Button
                                     type='submit'
-                                    className='bg-primary font-custom text-sm capitalize w-full font-normal'
+                                    className='bg-primary font-custom text-sm capitalize w-full font-normal py-3'
                                     disabled={isValidatingPin || !!pinCodeError}
                                 >
-                                    Save Address
+                                    Update Address
                                 </Button>
                             </div>
                         </form>

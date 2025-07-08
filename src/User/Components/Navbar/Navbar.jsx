@@ -67,7 +67,7 @@ const NavList = () => {
                     hover:text-primary ${navActive === "trackOrder" ? "text-primary scale-110" : ""}`}
             >
                 <Link to='/orders-tracking' >
-                    Track Order
+                    Order / Track Order
                 </Link>
             </Typography>
             <Typography

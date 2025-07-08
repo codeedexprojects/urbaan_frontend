@@ -1,18 +1,24 @@
 import { Button, Card } from '@material-tailwind/react';
 import axios from 'axios';
-import namer from 'color-namer'; // Import the color-namer library
+import namer from 'color-namer';
 import React, { useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi2";
 import { RiDeleteBin5Line, RiHeart3Fill } from "react-icons/ri";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AppLoader from '../../../Loader';
 import { AppContext } from '../../../StoreContext/StoreContext';
 
 const CartItems = () => {
     const { BASE_URL, setCart, fetchCartItems, isLoading, cartItems, setCartItems, setViewCart } = useContext(AppContext);
     const [isUpdating, setIsUpdating] = useState(false);
+    const navigate = useNavigate();
+
+    // Check if user is logged in
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('userToken');
+    const isLoggedIn = !!userId;
 
     // Function to get the nearest named color
     const getNamedColor = (colorCode) => {
@@ -25,19 +31,36 @@ const CartItems = () => {
         }
     };
 
-    const userId = localStorage.getItem('userId');
-    const token = localStorage.getItem('userToken');
-
     useEffect(() => {
+        if (!isLoggedIn) return;
         fetchCartItems();
-    }, [])
+    }, [isLoggedIn])
 
+    // Early return if user is not logged in
+    if (!isLoggedIn) {
+        return (
+            <div className='flex flex-col justify-center items-center h-[60vh] !mb-20'>
+                <div className='w-72 h-72 xl:w-96 xl:h-96 lg:w-96 lg:h-96'>
+                    <img src="/empty-cart.png" alt="" className='w-full h-full object-cover' />
+                </div>
+                <div className='space-y-3 flex flex-col justify-center items-center'>
+                    <h1 className='text-2xl font-semibold'>Login To View Your Cart</h1>
+                    <p className='text-center text-gray-600'>Please login to access your shopping cart</p>
+                    <Button 
+                        onClick={() => navigate('/login-user')}
+                        className='bg-primary w-52 text-sm capitalize font-custom font-normal'
+                    >
+                        Login Now
+                    </Button>
+                </div>
+            </div>
+        );
+    }
 
     // handle update
     const updateQuantity = async (itemId, newQuantity) => {
         if (isUpdating || newQuantity <= 0) return;
         setIsUpdating(true);
-        if (!userId || !token) return;
         try {
             const item = cartItems.find(item => item._id === itemId);
 
@@ -81,10 +104,8 @@ const CartItems = () => {
         }
     };
 
-
     // handle remove
     const removeCart = async (itemId) => {
-        if (!userId || !token) return;
         // Find the item in the cartItems array
         const item = cartItems.find(item => item.productId._id === itemId);
 
@@ -123,10 +144,9 @@ const CartItems = () => {
                         ...prevViewCart,
                         items: updatedCartItems,
                         totalPrice: newTotalPrice,
-                        discountedTotal: newDiscountedTotal, // Update the discounted total here
+                        discountedTotal: newDiscountedTotal,
                     };
                 });
-
 
                 toast.success('Item removed from the cart');
             } else {
@@ -140,7 +160,6 @@ const CartItems = () => {
     };
 
     const handleClearAll = async () => {
-        if (!userId || !token) return;
         try {
             const response = await axios.delete(`${BASE_URL}/user/cart/clear/${userId}`, {
                 headers: {
@@ -157,8 +176,6 @@ const CartItems = () => {
             toast.error('Failed to clear the cart');
         }
     }
-
-
 
     return (
         <>
@@ -264,10 +281,9 @@ const CartItems = () => {
                         </div>
                     </Card>
                 ))
-            )
-            }
+            )}
         </>
     );
 };
 
-export default CartItems
+export default CartItems;

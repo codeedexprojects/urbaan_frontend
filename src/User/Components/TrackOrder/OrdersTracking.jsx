@@ -26,6 +26,9 @@ const OrdersTracking = () => {
         "In-Transist": "text-purple-700 bg-purple-100 border-purple-200",
     };
 
+    // Check if user is logged in
+    const isLoggedIn = !!userId;
+
     const getNamedColor = (colorCode) => {
         try {
             const namedColors = namer(colorCode);
@@ -37,6 +40,11 @@ const OrdersTracking = () => {
     };
 
     useEffect(() => {
+        if (!isLoggedIn) {
+            setIsLoading(false);
+            return;
+        }
+
         const fetchUserOrders = async () => {
             try {
                 const response = await axios.get(`${BASE_URL}/user/order/view/${userId}`, {
@@ -52,7 +60,7 @@ const OrdersTracking = () => {
             }
         }
         fetchUserOrders()
-    }, [BASE_URL, userId, userToken])
+    }, [BASE_URL, userId, userToken, isLoggedIn])
 
     const formatDate = (dateString) => {
         const date = new Date(dateString)
@@ -61,6 +69,29 @@ const OrdersTracking = () => {
             day: 'numeric', 
             year: 'numeric' 
         })
+    }
+
+    if (!isLoggedIn) {
+        return (
+            <div className="p-4 xl:py-16 xl:px-32 lg:py-16 lg:px-32 bg-userBg min-h-[calc(100vh-4rem)] pb-20 overflow-y-auto">
+                <h1 className="flex items-center gap-0 text-lg xl:text-xl lg:text-xl font-medium cursor-pointer" onClick={() => navigate(-1)}>
+                    <IoIosArrowBack className="text-secondary text-2xl cursor-pointer" /> Back
+                </h1>
+                
+                <div className="flex flex-col items-center justify-center h-[60vh]">
+                    <div className="text-center max-w-md">
+                        <h2 className="text-2xl font-medium text-gray-800 mb-4">Login To View Your Orders</h2>
+                        <p className="text-gray-600 mb-6">Please login to access your order history and tracking information.</p>
+                        <button
+                            onClick={() => navigate('/login-user')}
+                            className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-6 rounded-lg transition-colors"
+                        >
+                            Login Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (

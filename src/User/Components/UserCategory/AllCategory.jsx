@@ -175,7 +175,7 @@ const AllCategory = () => {
         <>
             <div className='h-[calc(100vh-4rem)] pb-20'>
                 {/* Header */}
-                <div className='w-full h-20 sm:h-44 relative'>
+                <div className='w-full h-10 sm:h-44 relative'>
                     <img src="/banner.jpg" alt="" className='w-full h-full object-cover' />
                     <div className='absolute inset-0 bg-primary/70'></div>
                     <div className='absolute inset-0 flex items-end justify-center mb-2 sm:mb-5'>

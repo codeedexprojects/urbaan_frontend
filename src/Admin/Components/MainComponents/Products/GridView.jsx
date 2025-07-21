@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom'
 import { DeleteModal } from '../../DeleteModal/DeleteModal'
 import { AppContext } from "../../../../StoreContext/StoreContext"
 import AppLoader from '../../../../Loader'
+import { ProductDetailsModal } from './ProductDetailsModal'
 
 const GridView = ({ products, isLoading, selectedProductId, setSelectedProductId, handleDeleteProduct }) => {
     const { open, handleOpen, modalType } = useContext(AppContext)
@@ -54,6 +55,15 @@ const GridView = ({ products, isLoading, selectedProductId, setSelectedProductId
                                                             </IconButton>
                                                         </MenuHandler>
                                                         <MenuList>
+                                                            <MenuItem
+                                                                onClick={() => {
+                                                                    handleOpen("viewProductModal");
+                                                                    setSelectedProductId(product._id);
+                                                                }}
+                                                                className='font-custom text-blue-600 hover:!text-blue-600'
+                                                            >
+                                                                View Details
+                                                            </MenuItem>
                                                             <Link
                                                                 to={{
                                                                     pathname: '/adminHome/editProduct',
@@ -145,7 +155,13 @@ const GridView = ({ products, isLoading, selectedProductId, setSelectedProductId
                 productId={selectedProductId}
                 title="Are you sure ?"
                 modalType="products"
-                description="Are you sure you want to remove this product item ?" />
+                description="Are you sure you want to remove this product item ?" />
+
+            <ProductDetailsModal
+                open={open === "viewProductModal"}
+                handleOpen={handleOpen}
+                productId={selectedProductId}
+            />
         </>
     )
 }

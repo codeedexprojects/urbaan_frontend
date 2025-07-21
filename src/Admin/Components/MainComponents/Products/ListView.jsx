@@ -7,6 +7,7 @@ import { AppContext } from "../../../../StoreContext/StoreContext"
 import { DeleteModal } from '../../DeleteModal/DeleteModal';
 import AppLoader from '../../../../Loader';
 import { useState } from 'react';
+import { ProductDetailsModal } from './ProductDetailsModal';
 
 const TABLE_HEAD = ["Product Name", "Description", "Stock", "Price", "Orders", "Publish", "Action"];
 
@@ -35,7 +36,6 @@ const ListView = ({ products, isLoading, selectedProductId, setSelectedProductId
             setCurrentPage(currentPage - 1);
         }
     };
-
 
     return (
         <>
@@ -99,8 +99,6 @@ const ListView = ({ products, isLoading, selectedProductId, setSelectedProductId
                                                             >
                                                                 {product.description}
                                                             </Typography>
-
-
                                                         </td>
                                                         <td className={classes}>
                                                             <Typography
@@ -110,14 +108,6 @@ const ListView = ({ products, isLoading, selectedProductId, setSelectedProductId
                                                                 {product.totalStock}
                                                             </Typography>
                                                         </td>
-                                                        {/* <td className={classes}>
-                                                            <Typography
-                                                                variant="small"
-                                                                className="font-normal font-custom text-xs flex items-center gap-1"
-                                                            >
-                                                                <FaStar className='text-ratingBg' />{product.rating}
-                                                            </Typography>
-                                                        </td> */}
                                                         <td className={classes}>
                                                             <Typography
                                                                 variant="small"
@@ -154,6 +144,15 @@ const ListView = ({ products, isLoading, selectedProductId, setSelectedProductId
                                                                     </IconButton>
                                                                 </MenuHandler>
                                                                 <MenuList>
+                                                                    <MenuItem
+                                                                        onClick={() => {
+                                                                            handleOpen("viewProductModal");
+                                                                            setSelectedProductId(product._id);
+                                                                        }}
+                                                                        className='font-custom text-blue-600 hover:!text-blue-600'
+                                                                    >
+                                                                        View Details
+                                                                    </MenuItem>
                                                                     <Link
                                                                         to={{
                                                                             pathname: '/adminHome/editProduct',
@@ -175,7 +174,6 @@ const ListView = ({ products, isLoading, selectedProductId, setSelectedProductId
                                                                     </MenuItem>
                                                                 </MenuList>
                                                             </Menu>
-
                                                         </td>
                                                     </tr>
                                                 );
@@ -213,11 +211,9 @@ const ListView = ({ products, isLoading, selectedProductId, setSelectedProductId
                                     </Button>
                                 </CardFooter>
                             </Card>
-                            {/* </div> */}
                         </>
                     )
                 }
-
             </div>
 
             <DeleteModal
@@ -227,7 +223,13 @@ const ListView = ({ products, isLoading, selectedProductId, setSelectedProductId
                 productId={selectedProductId}
                 title="Are you sure ?"
                 modalType="products"
-                description="Are you sure you want to remove this product item ?" />
+                description="Are you sure you want to remove this product item ?" />
+
+            <ProductDetailsModal
+                open={open === "viewProductModal"}
+                handleOpen={handleOpen}
+                productId={selectedProductId}
+            />
         </>
     )
 }

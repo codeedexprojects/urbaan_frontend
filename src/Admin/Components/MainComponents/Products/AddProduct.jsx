@@ -940,7 +940,7 @@ const AddProduct = () => {
                                 onClick={handleAddColorField}
                             />
                         </div>
-                        {/* {attributeFields.map((field, colorIndex) => (
+                        {attributeFields.map((field, colorIndex) => (
                             <div key={colorIndex} className="flex flex-col gap-2">
                                 <div className="flex items-center justify-between gap-2">
                                     <div className="flex items-center gap-2 w-full">
@@ -972,10 +972,10 @@ const AddProduct = () => {
                                         className="text-xl text-primary cursor-pointer"
                                         onClick={() => handleDeleteColorField(colorIndex)}
                                     />
-                                </div> */}
-                        {attributeFields.map((field, colorIndex) => (
+                                </div>
+                        {/* {attributeFields.map((field, colorIndex) => (
                             <div key={colorIndex} className="flex flex-col gap-2">
-                                {/* Color Picker and Header */}
+                                
                                 <div className="flex items-center justify-between gap-2">
                                     <div className="flex items-center gap-2 w-full">
                                         <div className="w-64 bg-primary text-white rounded-md font-custom tracking-wider flex items-center justify-center gap-2 p-2 cursor-pointer relative">
@@ -1016,7 +1016,7 @@ const AddProduct = () => {
                                         className="text-xl text-primary cursor-pointer"
                                         onClick={() => handleDeleteColorField(colorIndex)}
                                     />
-                                </div>
+                                </div> */}
 
                                 <div className='flex flex-col gap-2'>
                                     {Array.isArray(field.sizes) && field.sizes.map((sizeField, sizeIndex) => (
@@ -1024,7 +1024,7 @@ const AddProduct = () => {
                                             <Button
                                                 onClick={() => handleAddSizeField(colorIndex)}
                                                 className='bg-gray-100/50 border border-gray-300 text-secondary shadow-none rounded-3xl w-11 h-10 p-2 flex items-center justify-center 
-          font-custom font-normal capitalize text-sm hover:shadow-none'
+                                                font-custom font-normal capitalize text-sm hover:shadow-none'
                                             >
                                                 <FaPlus />
                                             </Button>

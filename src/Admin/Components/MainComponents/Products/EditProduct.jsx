@@ -41,7 +41,7 @@ const EditProduct = () => {
         innerLining: '',
         material: '',
         pocket: '',
-        neck:''
+        neck: ''
     });
     const [editProdDescription, setEditProdDescription] = useState('')
     const [editProdImage, setEditProdImage] = useState([])
@@ -66,20 +66,20 @@ const EditProduct = () => {
         innerLining: [],
         material: [],
         pocket: [],
-        neck:[]
+        neck: []
     });
     const getNamedColor = (colorCode) => {
-  try {
-    // Check if it's already a name (not a hex code)
-    if (!colorCode.startsWith('#')) return colorCode;
-    
-    const namedColors = namer(colorCode);
-    return namedColors.pantone[0].name || colorCode; // Fallback to hex if no name found
-  } catch (error) {
-    console.error("Error getting color name:", error);
-    return colorCode; // Return original if error
-  }
-};
+        try {
+            // Check if it's already a name (not a hex code)
+            if (!colorCode.startsWith('#')) return colorCode;
+
+            const namedColors = namer(colorCode);
+            return namedColors.pantone[0].name || colorCode; // Fallback to hex if no name found
+        } catch (error) {
+            console.error("Error getting color name:", error);
+            return colorCode; // Return original if error
+        }
+    };
 
     const [loading, setLoading] = useState(true);
 
@@ -99,7 +99,7 @@ const EditProduct = () => {
                     innerLining: [],
                     material: [],
                     pocket: [],
-                    neck:[]
+                    neck: []
                 };
 
                 specs.forEach(spec => {
@@ -212,7 +212,7 @@ const EditProduct = () => {
                 innerLining: initialProducts.features.innerLining || '',
                 material: initialProducts.features.material || '',
                 pocket: initialProducts.features.pocket || '',
-                neck:initialProducts.features.neck || '',
+                neck: initialProducts.features.neck || '',
             });
 
             const formattedAttributes = initialProducts.colors.map((color) => ({
@@ -422,7 +422,7 @@ const EditProduct = () => {
             setEditProdDiscount('');
             setEditProdOfferPrice('');
             setEditProdCheckboxes({ latest: false, offer: false, featured: false, freeDelivery: false });
-            setEditSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "",neck:"" })
+            setEditSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "", neck: "" })
             setEditAttributeFields([{ color: "", sizes: [{ size: "", stock: "" }] }]);
             setEditProdDescription('');
             setEditProdImage([]);
@@ -627,7 +627,7 @@ const EditProduct = () => {
                                   bg-gray-100/50 p-2 rounded-md placeholder:text-sm placeholder:font-light placeholder:text-gray-500
                                focus:outline-none'/>
                             </div>
-                            
+
                             <div className='flex flex-col gap-1'>
                                 <label htmlFor="" className='font-normal text-base'>Offer Price</label>
                                 <input
@@ -1026,50 +1026,39 @@ const EditProduct = () => {
                             />
                         </div>
 
-                       {editAttributeFields.map((field, colorIndex) => (
-  <div key={colorIndex} className="flex flex-col gap-2">
-    {/* Color Picker and Header */}
-    <div className="flex items-center justify-between gap-2">
-      <div className="flex items-center gap-2 w-full">
-        <div 
-          className="w-64 bg-primary text-white rounded-md font-custom tracking-wider flex items-center justify-center gap-2 p-2 cursor-pointer relative"
-          style={{ backgroundColor: field.color.startsWith('#') ? field.color : '#ffffff' }}
-        >
-          <input
-            type="color"
-            value={field.color.startsWith('#') ? field.color : '#ffffff'}
-            onChange={(e) => {
-              const hexColor = e.target.value;
-              const colorName = getNamedColor(hexColor);
-              handleAttributeInputChange(colorIndex, "color", colorName);
-            }}
-            className="absolute w-full h-full opacity-0 cursor-pointer"
-          />
-          <p className='text-sm flex items-center gap-2'>
-            <FaPlus className="text-base" />
-            {field.color ? getNamedColor(field.color) : "Add Color"}
-          </p>
-        </div>
-        <div className='w-full'>
-          <input
-            type="text"
-            value={field.color}
-            placeholder="Enter color name or color code"
-            onChange={(e) => handleAttributeInputChange(colorIndex, "color", e.target.value)}
-            className={`w-full p-2 text-center bg-gray-100/50 border rounded-md text-sm uppercase placeholder:capitalize 
-              focus:outline-none ${getContrastYIQ(field.color.startsWith('#') ? field.color : '#ffffff')}`}
-            style={{ 
-              backgroundColor: field.color.startsWith('#') ? field.color : '#ffffff',
-              color: getContrastYIQ(field.color.startsWith('#') ? field.color : '#ffffff')
-            }}
-          />
-        </div>
-      </div>
-      <MdDelete
-        className="text-xl text-primary cursor-pointer"
-        onClick={() => handleDeleteColorField(colorIndex)}
-      />
-    </div>
+                        {editAttributeFields.map((field, colorIndex) => (
+                            <div key={colorIndex} className="flex flex-col gap-2">
+                                <div className="flex items-center justify-between gap-2">
+                                    <div className="flex items-center gap-2 w-full">
+                                        <div className="w-64 bg-primary text-white rounded-md font-custom tracking-wider flex items-center justify-center gap-2 p-2 cursor-pointer relative">
+                                            <input
+                                                type="color"
+                                                value={field.color}
+                                                onChange={(e) => handleAttributeInputChange(colorIndex, "color", e.target.value)}
+                                                className="absolute w-full h-full opacity-0 cursor-pointer"
+                                            />
+                                            <p className='text-sm flex items-center gap-2'><FaPlus className="text-base" />Add Color</p>
+                                        </div>
+                                        <div className='w-full'>
+                                            <input
+                                                type="text"
+                                                value={field.color}
+                                                placeholder="Enter color name or color code"
+                                                onChange={(e) => handleAttributeInputChange(colorIndex, "color", e.target.value)}
+                                                className={`w-full p-2 text-center bg-gray-100/50 border rounded-md text-sm uppercase placeholder:capitalize focus:outline-none ${getContrastYIQ(field.color)}`}
+                                                style={{ backgroundColor: field.color }}
+                                                required
+                                            />
+                                            {!field.color && (
+                                                <p className="text-red-500 text-xs mt-1">Color is required</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <MdDelete
+                                        className="text-xl text-primary cursor-pointer"
+                                        onClick={() => handleDeleteColorField(colorIndex)}
+                                    />
+                                </div>
 
                                 {/* Sizes and Stock Table */}
                                 <div className='flex flex-col gap-2'>

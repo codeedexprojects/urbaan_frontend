@@ -19,6 +19,8 @@
     "@mui/x-date-pickers": "^7.22.3",
     "axios": "^1.7.9",
     "chart.js": "^4.4.7",
+    "color-convert": "^3.1.0",
+    "color-name-list": "^11.24.0",
     "color-namer": "^1.4.0",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.507.0",

@@ -21,6 +21,7 @@ import { ImageZoomModal } from '../ImageZoomModal/ImageZoomModal';
 import SimilarProducts from './SimilarProducts';
 import { useRef } from 'react';
 
+
 const ProductDetails = () => {
     const { handleOpenSizeDrawer, BASE_URL, setCart, setFav } = useContext(AppContext)
     const location = useLocation();
@@ -38,7 +39,7 @@ const ProductDetails = () => {
     const [zoomImage, setZoomImage] = useState(null);
     const [openUserNotLogin, setOpenUserNotLogin] = useState(false);
     const [allSizeCharts, setAllSizeCharts] = useState([]);
-
+    
 
 
     const userId = localStorage.getItem('userId');
@@ -49,6 +50,21 @@ const ProductDetails = () => {
     const handleClick = () => {
         topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
+
+    const handleNextImage = () => {
+    setZoomImage(prev => ({
+        ...prev,
+        currentIndex: (prev.currentIndex + 1) % prev.images.length
+    }));
+};
+
+const handlePrevImage = () => {
+    setZoomImage(prev => ({
+        ...prev,
+        currentIndex: (prev.currentIndex - 1 + prev.images.length) % prev.images.length
+    }));
+};
+
 
     useEffect(() => {
         handleClick()
@@ -521,10 +537,10 @@ const ProductDetails = () => {
                                                     key={size._id}
                                                     onClick={() => !isSizeOutOfStock && handleSizeClick(size.size, selectedColor)}
                                                     className={`
-          relative bg-white cursor-pointer uppercase shadow-md rounded-md w-20 h-10 flex items-center justify-center text-sm xl:text-sm lg:text-sm
-          ${isSelected ? '!bg-primary text-white' : ''}
-          ${isSizeOutOfStock ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-100'}
-        `}
+                                                        relative bg-white cursor-pointer uppercase shadow-md rounded-md w-20 h-10 flex items-center justify-center text-sm xl:text-sm lg:text-sm
+                                                        ${isSelected ? '!bg-primary text-white' : ''}
+                                                        ${isSizeOutOfStock ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-100'}
+                                                    `}
                                                     title={isSizeOutOfStock ? 'Out of stock' : ''}
                                                 >
                                                     {size.size}
@@ -700,10 +716,12 @@ const ProductDetails = () => {
             />
 
             <ImageZoomModal
-                open={openImageModal}
-                handleOpen={handleOpenImageZoom}
-                zoomImage={zoomImage}
-            />
+    open={openImageModal}
+    handleOpen={handleOpenImageZoom}
+    zoomImage={zoomImage}
+    onNext={handleNextImage}
+    onPrev={handlePrevImage}
+/>
 
         </>
     )

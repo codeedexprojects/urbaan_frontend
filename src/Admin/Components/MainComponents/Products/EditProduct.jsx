@@ -41,7 +41,8 @@ const EditProduct = () => {
         innerLining: '',
         material: '',
         pocket: '',
-        neck: ''
+        neck: '',
+        other: ''
     });
     const [editProdDescription, setEditProdDescription] = useState('')
     const [editProdImage, setEditProdImage] = useState([])
@@ -66,7 +67,8 @@ const EditProduct = () => {
         innerLining: [],
         material: [],
         pocket: [],
-        neck: []
+        neck: [],
+        other: []
     });
     const getNamedColor = (colorCode) => {
         try {
@@ -99,7 +101,8 @@ const EditProduct = () => {
                     innerLining: [],
                     material: [],
                     pocket: [],
-                    neck: []
+                    neck: [],
+                    other: []
                 };
 
                 specs.forEach(spec => {
@@ -213,6 +216,7 @@ const EditProduct = () => {
                 material: initialProducts.features.material || '',
                 pocket: initialProducts.features.pocket || '',
                 neck: initialProducts.features.neck || '',
+                other: initialProducts.features.other || ''
             });
 
             const formattedAttributes = initialProducts.colors.map((color) => ({
@@ -422,7 +426,7 @@ const EditProduct = () => {
             setEditProdDiscount('');
             setEditProdOfferPrice('');
             setEditProdCheckboxes({ latest: false, offer: false, featured: false, freeDelivery: false });
-            setEditSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "", neck: "" })
+            setEditSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "", neck: "" , other: "" });
             setEditAttributeFields([{ color: "", sizes: [{ size: "", stock: "" }] }]);
             setEditProdDescription('');
             setEditProdImage([]);
@@ -861,6 +865,24 @@ const EditProduct = () => {
                                 >
                                     <option value="">Select Neck</option>
                                     {specificationOptions.neck.map(option => (
+                                        <option key={option.id} value={option.name}>{option.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className='flex items-center gap-1'>
+                                <label htmlFor="neck" className='font-normal text-sm w-32'>Other</label>
+                                <p>:</p>
+                                <select
+                                    id="other"
+                                    name="other"
+                                    value={editSpecifications.other}
+                                    onChange={(e) => handleSpecificationChange(e, 'other')}
+                                    className='border-[1px] w-full bg-gray-100/50 p-2 rounded-md focus:outline-none'
+                                    disabled={loading}
+                                >
+                                    <option value="">Select Other</option>
+                                    {specificationOptions.other.map(option => (
                                         <option key={option.id} value={option.name}>{option.name}</option>
                                     ))}
                                 </select>

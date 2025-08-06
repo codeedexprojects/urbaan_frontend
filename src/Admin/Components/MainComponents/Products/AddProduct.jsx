@@ -40,6 +40,7 @@ const AddProduct = () => {
         material: [],
         pocket: [],
         neck: [],
+        other: []
     });
     const [loading, setLoading] = useState(true);
 
@@ -96,7 +97,8 @@ const AddProduct = () => {
         innerLining: '',
         material: '',
         pocket: '',
-        neck: ''
+        neck: '',
+        other: ''
     });
 
     const [productDescription, setProductDescription] = useState('')
@@ -154,7 +156,8 @@ const AddProduct = () => {
                     innerLining: [],
                     material: [],
                     pocket: [],
-                    neck: []
+                    neck: [],
+                    other: []
                 };
 
                 specs.forEach(spec => {
@@ -389,7 +392,7 @@ const AddProduct = () => {
             setProductActualPrice('');
             setProductDiscount('');
             setCheckboxes({ latest: false, offer: false, featured: false, freeDelivery: false });
-            setSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "", neck: "" })
+            setSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "", neck: "", other: "" });
             setAttributeFields([{ color: "", sizes: [{ size: "", stock: "" }] }]);
             setProductDescription('');
             setProductImage([]);
@@ -805,6 +808,25 @@ const AddProduct = () => {
                                 >
                                     <option value="">Select Neck</option>
                                     {specificationOptions.neck.map(option => (
+                                        <option key={option.id} value={option.name}>{option.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Other Specifications */}
+                            <div className='flex items-center gap-1'>
+                                <label htmlFor="neck" className='font-normal text-sm w-32'>Other</label>
+                                <p>:</p>
+                                <select
+                                    id="other"
+                                    name="other"
+                                    value={specifications.other}
+                                    onChange={(e) => handleSpecificationChange(e, 'other')}
+                                    className='border-[1px] w-full bg-gray-100/50 p-2 rounded-md focus:outline-none'
+                                    disabled={loading}
+                                >
+                                    <option value="">Select Other</option>
+                                    {specificationOptions.other.map(option => (
                                         <option key={option.id} value={option.name}>{option.name}</option>
                                     ))}
                                 </select>

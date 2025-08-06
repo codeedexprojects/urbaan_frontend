@@ -127,7 +127,7 @@ const StoreContext = ({ children }) => {
                 handleOpenSizeDrawer,
                 handleCloseSizeDrawer,
                 openSizeDrawer,
-                modalType, // Provide modal type
+                modalType,
                 profile,
                 setProfile,
                 getAddress,

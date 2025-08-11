@@ -114,7 +114,7 @@ const UserSearch = () => {
                         {searchedProducts.map((product) => {
                             return (
                                 <div className='group relative' key={product._id}>
-                                    <Link to="/product-details" state={{ productId: product._id, categoryId: product.category?._id }} className="cursor-pointer">
+                                    <Link  to={`/product-details/${product._id}/${product.category._id}`} state={{ productId: product._id, categoryId: product.category?._id }} className="cursor-pointer">
                                         <div className='w-full h-52 xl:h-80 lg:h-80 rounded-xl overflow-hidden'>
                                             <img
                                                 src={product.images[0]}

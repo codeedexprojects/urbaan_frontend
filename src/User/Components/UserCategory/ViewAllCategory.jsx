@@ -165,7 +165,7 @@ const ViewAllCategory = () => {
                                     return (
                                         <div className='group relative' key={index}>
                                             <Link
-                                                to="/product-details"
+                                                 to={`/product-details/${product._id}/${product.category._id}`}
                                                 state={{
                                                     productId: product._id,
                                                     categoryId: product.category._id

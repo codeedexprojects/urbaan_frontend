@@ -26,7 +26,7 @@ import ProductShare from './ProductShare';
 const ProductDetails = () => {
     const { handleOpenSizeDrawer, BASE_URL, setCart, setFav } = useContext(AppContext)
     const location = useLocation();
-    const { productId  , categoryId } = useParams();
+    const { productId, categoryId } = useParams();
     // const { categoryId } = location.state || {}
     const navigate = useNavigate();
     const [productDetails, setProductDetails] = useState([]);
@@ -539,7 +539,7 @@ const ProductDetails = () => {
                                 <div className='mt-7 flex items-center gap-3'>
                                     <Button onClick={addToCart}
                                         className='hidden xl:flex lg:flex items-center justify-center gap-2 font-normal font-custom tracking-wide text-sm
-        xl:text-base lg:text-base flex-1 bg-primary border-[3px] border-primary rounded-md hover:shadow-none'>
+                                            xl:text-base lg:text-base flex-1 bg-primary border-[3px] border-primary rounded-md hover:shadow-none'>
                                         <RiHandbagLine />Add to cart
                                     </Button>
 
@@ -547,8 +547,8 @@ const ProductDetails = () => {
                                         <Button
                                             onClick={() => handleWishlist(productDetails._id, productDetails.title)}
                                             className='hidden xl:flex lg:flex items-center justify-center gap-2 font-normal font-custom tracking-wide text-sm
-        xl:text-base lg:text-base bg-transparent text-primary border-[1px] border-gray-500 shadow-none rounded-md 
-            hover:shadow-none px-4'>
+                                            xl:text-base lg:text-base bg-transparent text-primary border-[1px] border-gray-500 shadow-none rounded-md 
+                                                hover:shadow-none px-4'>
                                             <RiHeart3Fill
                                                 className='xl:text-3xl lg:text-3xl text-2xl cursor-pointer text-primary'
                                             />
@@ -557,8 +557,8 @@ const ProductDetails = () => {
                                         <Button
                                             onClick={() => handleWishlist(productDetails._id, productDetails.title)}
                                             className='hidden xl:flex lg:flex items-center justify-center gap-2 font-normal font-custom tracking-wide text-sm
-        xl:text-base lg:text-base bg-transparent text-primary border-[1px] border-gray-500 shadow-none rounded-md
-         hover:shadow-none px-4'>
+                                                xl:text-base lg:text-base bg-transparent text-primary border-[1px] border-gray-500 shadow-none rounded-md
+                                                hover:shadow-none px-4'>
                                             <IoHeartOutline
                                                 className='xl:text-3xl lg:text-3xl text-2xl text-primary'
                                             />
@@ -657,28 +657,42 @@ const ProductDetails = () => {
 
                 <div className="bg-white shadow-md fixed bottom-0 inset-x-0 z-50 w-full p-4 xl:hidden lg:hidden">
                     <div className="flex items-center gap-3">
+                        {/* Add to Cart Button */}
                         <Button
                             onClick={addToCart}
-                            className='flex-1 flex items-center justify-center gap-2 font-normal rounded-md font-custom tracking-wide text-sm
-                            bg-primary'>
+                            className='flex-1 flex items-center justify-center gap-2 font-normal rounded-md font-custom tracking-wide text-sm bg-primary'
+                        >
                             <RiHandbagLine />Add to cart
                         </Button>
 
+                        {/* Wishlist Button */}
                         {productDetails.isInWishlist || heartIcons[productDetails._id] ? (
                             <Button
                                 onClick={() => handleWishlist(productDetails._id, productDetails.title)}
                                 className='flex items-center justify-center gap-2 font-normal rounded-md font-custom tracking-wide text-sm
-                                bg-transparent text-primary border border-gray-500 px-3'>
+        bg-transparent text-primary border border-gray-500 px-3'
+                            >
                                 <RiHeart3Fill className='text-xl' />
                             </Button>
                         ) : (
                             <Button
                                 onClick={() => handleWishlist(productDetails._id, productDetails.title)}
                                 className='flex items-center justify-center gap-2 font-normal rounded-md font-custom tracking-wide text-sm
-                                bg-transparent text-primary border border-gray-500 px-3'>
+        bg-transparent text-primary border border-gray-500 px-3'
+                            >
                                 <IoHeartOutline className='text-xl' />
                             </Button>
                         )}
+
+
+                        <div>
+                            <ProductShare
+                                productDetails={productDetails}
+                                productId={productId}
+                                categoryId={categoryId}
+                                iconOnly={true} // Optional: If you want just an icon without text
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

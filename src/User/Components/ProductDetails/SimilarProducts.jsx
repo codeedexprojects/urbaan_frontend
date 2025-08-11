@@ -76,7 +76,7 @@ const SimilarProducts = ({ similarProducts, fetchSimilarProducts }) => {
                             return (
                                 <div className='group relative' key={product._id}>
                                     <Link
-                                        // to="/product-details"
+                                         to={`/product-details/${product._id}/${product.category._id}`}
                                         state={{
                                             productId: product._id,
                                             categoryId: product.category._id // Pass the category ID

@@ -81,7 +81,7 @@ const RoutesWithLocation = () => {
                 <Route path='/' element={<UserHome />} />
                 <Route path='/login-user' element={<LoginSignUpUser />} />
                 <Route path='/otp' element={<Otp />} />
-                <Route path='/product-details' element={<ProductDetails />} />
+                <Route path='/product-details/:productId/:categoryId?' element={<ProductDetails />} />
                 <Route path='/customer-reviews' element={<CustomerReviews />} />
                 <Route path='/write-review' element={<WriteReview />} />
                 <Route path='/favourite' element={<FavouriteProduct />} />

@@ -104,20 +104,22 @@ const FavouriteProduct = () => {
                                         className="text-deleteBg absolute -top-5 right-1 cursor-pointer"
                                     />
                                     <Link
-                                        to="/product-details"
+                                        to={`/product-details/${product?.productId?._id}${product?.productId?.category?._id ? `/${product.productId.category._id}` : ""}`}
                                         state={{
                                             productId: product?.productId?._id,
                                             categoryId: product?.productId?.category?._id
                                         }}
-                                        className="group">
+                                        className="group"
+                                    >
                                         <div className="w-full h-52 xl:h-80 rounded-xl overflow-hidden">
                                             <img
-                                                src={product?.productId?.images[0] || '/no-image.jpg'}
+                                                src={product?.productId?.images?.[0] || '/no-image.jpg'}
                                                 alt={product?.productId?.title}
                                                 className="w-full h-full object-cover rounded-xl shadow-md transition-transform scale-100 duration-500 group-hover:scale-105"
                                             />
                                         </div>
                                     </Link>
+
                                     <MdZoomOutMap
                                         onClick={() => handleOpenImageZoom(product?.productId?.images, 0)}
                                         className='absolute top-2 left-2 cursor-pointer text-gray-600 bg-white w-7 h-7 xl:w-8 xl:h-8 lg:w-8 lg:h-8 p-1 rounded-full shadow-md'

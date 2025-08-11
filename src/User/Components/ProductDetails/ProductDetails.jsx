@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { FaStar } from "react-icons/fa6";
 import { FaCircle } from "react-icons/fa";
 import { Button } from '@material-tailwind/react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AppContext } from '../../../StoreContext/StoreContext';
 import { IoHeartOutline } from "react-icons/io5";
 import { IoIosArrowBack } from 'react-icons/io';
@@ -20,12 +20,14 @@ import { MdZoomOutMap } from 'react-icons/md';
 import { ImageZoomModal } from '../ImageZoomModal/ImageZoomModal';
 import SimilarProducts from './SimilarProducts';
 import { useRef } from 'react';
+import ProductShare from './ProductShare';
 
 
 const ProductDetails = () => {
     const { handleOpenSizeDrawer, BASE_URL, setCart, setFav } = useContext(AppContext)
     const location = useLocation();
-    const { productId, categoryId } = location.state || {}
+    const { productId  , categoryId } = useParams();
+    // const { categoryId } = location.state || {}
     const navigate = useNavigate();
     const [productDetails, setProductDetails] = useState([]);
     const [selectedColor, setSelectedColor] = useState("");
@@ -39,8 +41,6 @@ const ProductDetails = () => {
     const [zoomImage, setZoomImage] = useState(null);
     const [openUserNotLogin, setOpenUserNotLogin] = useState(false);
     const [allSizeCharts, setAllSizeCharts] = useState([]);
-    
-
 
     const userId = localStorage.getItem('userId');
     const userToken = localStorage.getItem('userToken');
@@ -52,19 +52,18 @@ const ProductDetails = () => {
     };
 
     const handleNextImage = () => {
-    setZoomImage(prev => ({
-        ...prev,
-        currentIndex: (prev.currentIndex + 1) % prev.images.length
-    }));
-};
+        setZoomImage(prev => ({
+            ...prev,
+            currentIndex: (prev.currentIndex + 1) % prev.images.length
+        }));
+    };
 
-const handlePrevImage = () => {
-    setZoomImage(prev => ({
-        ...prev,
-        currentIndex: (prev.currentIndex - 1 + prev.images.length) % prev.images.length
-    }));
-};
-
+    const handlePrevImage = () => {
+        setZoomImage(prev => ({
+            ...prev,
+            currentIndex: (prev.currentIndex - 1 + prev.images.length) % prev.images.length
+        }));
+    };
 
     useEffect(() => {
         handleClick()
@@ -74,7 +73,6 @@ const handlePrevImage = () => {
     const handleOpenUserNotLogin = () => {
         setOpenUserNotLogin(!openUserNotLogin);
     };
-
 
     //handle image zoom
     const handleOpenImageZoom = (productImages, index) => {
@@ -207,30 +205,23 @@ const handlePrevImage = () => {
                 toast.error("Please select a size for the selected color.");
                 return;
             }
-
             if (!userId && !userToken) {
                 setOpenUserNotLogin(true);
                 return;
             }
-
-
             const payload = {
                 userId: userId,
                 productId: productDetails._id,
-                quantity: 1, // Default quantity
+                quantity: 1,
                 color: selectedColor,
                 size: selectedSize[selectedColor],
             };
-
             console.log(payload);
-
-
             const response = await axios.post(`${BASE_URL}/user/cart/add`, payload, {
                 headers: {
                     Authorization: `Bearer ${userToken}`,
                 },
             });
-
             if (response.status === 200 || response.status === 201) {
                 navigate('/user-cart')
                 toast.success(`${productDetails.title} added to your cart`);
@@ -276,16 +267,10 @@ const handlePrevImage = () => {
         }
     }, [productDetails.colors]);
 
-
-
-
-
     const handleColorClick = (color) => {
         setSelectedColor((prevColor) => (prevColor === color ? "" : color));
         setSelectedSize({});
     };
-
-
 
     // Handle size click for a specific color
     const handleSizeClick = (size, color) => {
@@ -295,7 +280,7 @@ const handlePrevImage = () => {
             if (updatedSelectedSize[color] === size) {
                 delete updatedSelectedSize[color];
             } else {
-                updatedSelectedSize[color] = size; // Otherwise, select the new size for the color
+                updatedSelectedSize[color] = size;
             }
             return updatedSelectedSize;
         });
@@ -308,10 +293,8 @@ const handlePrevImage = () => {
                 return;
             }
             const payload = { userId, productId };
-
             const response = await axios.post(`${BASE_URL}/user/wishlist/add`, payload);
             console.log(response.data);
-
             if (response.data.isInWishlist) {
                 toast.success(`${productTitle} added to wishlist`);
                 setHeartIcons(prev => ({ ...prev, [productId]: true }));
@@ -331,7 +314,6 @@ const handlePrevImage = () => {
     const colorOptions = productDetails.colors || [];
     const features = productDetails.features || []
 
-
     useEffect(() => {
         const fetchUserOrders = async () => {
             try {
@@ -347,13 +329,11 @@ const handlePrevImage = () => {
                         product.productId?._id === productId && order.status === "Delivered"
                     )
                 );
-
                 setReviewEligible(hasPurchased);
             } catch (error) {
                 console.error(error);
             }
         };
-
         if (userToken && userId) {
             fetchUserOrders();
         }
@@ -365,8 +345,6 @@ const handlePrevImage = () => {
             toast.error("You can only review products you have purchased and received.");
         }
     };
-
-
 
     return (
         <>
@@ -561,7 +539,7 @@ const handlePrevImage = () => {
                                 <div className='mt-7 flex items-center gap-3'>
                                     <Button onClick={addToCart}
                                         className='hidden xl:flex lg:flex items-center justify-center gap-2 font-normal font-custom tracking-wide text-sm
-                                        xl:text-base lg:text-base w-full bg-primary border-[3px] border-primary rounded-md hover:shadow-none'>
+        xl:text-base lg:text-base flex-1 bg-primary border-[3px] border-primary rounded-md hover:shadow-none'>
                                         <RiHandbagLine />Add to cart
                                     </Button>
 
@@ -569,27 +547,33 @@ const handlePrevImage = () => {
                                         <Button
                                             onClick={() => handleWishlist(productDetails._id, productDetails.title)}
                                             className='hidden xl:flex lg:flex items-center justify-center gap-2 font-normal font-custom tracking-wide text-sm
-                                        xl:text-base lg:text-base w-full bg-transparent text-primary border-[1px] border-gray-500 shadow-none rounded-md 
-                                            hover:shadow-none'>
+        xl:text-base lg:text-base bg-transparent text-primary border-[1px] border-gray-500 shadow-none rounded-md 
+            hover:shadow-none px-4'>
                                             <RiHeart3Fill
                                                 className='xl:text-3xl lg:text-3xl text-2xl cursor-pointer text-primary'
                                             />
-                                            add to wishlist
                                         </Button>
                                     ) : (
                                         <Button
                                             onClick={() => handleWishlist(productDetails._id, productDetails.title)}
                                             className='hidden xl:flex lg:flex items-center justify-center gap-2 font-normal font-custom tracking-wide text-sm
-                                        xl:text-base lg:text-base w-full bg-transparent text-primary border-[1px] border-gray-500 shadow-none rounded-md
-                                         hover:shadow-none'>
+        xl:text-base lg:text-base bg-transparent text-primary border-[1px] border-gray-500 shadow-none rounded-md
+         hover:shadow-none px-4'>
                                             <IoHeartOutline
                                                 className='xl:text-3xl lg:text-3xl text-2xl text-primary'
                                             />
-                                            add to wishlist
                                         </Button>
                                     )}
-                                </div>
 
+                                    {/* Add Share Button */}
+                                    <div className='hidden xl:block lg:block'>
+                                        <ProductShare
+                                            productDetails={productDetails}
+                                            productId={productId}
+                                            categoryId={categoryId}
+                                        />
+                                    </div>
+                                </div>
                                 {/* Specifications */}
                                 <div className="mt-7">
                                     <h4 className="font-medium mb-3 text-sm xl:text-base lg:text-base">Specifications</h4>
@@ -653,8 +637,6 @@ const handlePrevImage = () => {
                                                 </Button>
                                             </Link>
                                         </div>
-
-
                                     </>
                                 ) : (
                                     <>
@@ -678,7 +660,7 @@ const handlePrevImage = () => {
                         <Button
                             onClick={addToCart}
                             className='flex-1 flex items-center justify-center gap-2 font-normal rounded-md font-custom tracking-wide text-sm
-            bg-primary'>
+                            bg-primary'>
                             <RiHandbagLine />Add to cart
                         </Button>
 
@@ -686,43 +668,33 @@ const handlePrevImage = () => {
                             <Button
                                 onClick={() => handleWishlist(productDetails._id, productDetails.title)}
                                 className='flex items-center justify-center gap-2 font-normal rounded-md font-custom tracking-wide text-sm
-                bg-transparent text-primary border border-gray-500 px-3'>
+                                bg-transparent text-primary border border-gray-500 px-3'>
                                 <RiHeart3Fill className='text-xl' />
                             </Button>
                         ) : (
                             <Button
                                 onClick={() => handleWishlist(productDetails._id, productDetails.title)}
                                 className='flex items-center justify-center gap-2 font-normal rounded-md font-custom tracking-wide text-sm
-                bg-transparent text-primary border border-gray-500 px-3'>
+                                bg-transparent text-primary border border-gray-500 px-3'>
                                 <IoHeartOutline className='text-xl' />
                             </Button>
                         )}
                     </div>
                 </div>
-
             </div>
-
-
-
-
             <SizeChart productSizeData={sizeChartData} />
-
-
-
             {/* popup for non-logged users */}
             <UserNotLoginPopup
                 open={openUserNotLogin}
                 handleOpen={handleOpenUserNotLogin}
             />
-
             <ImageZoomModal
-    open={openImageModal}
-    handleOpen={handleOpenImageZoom}
-    zoomImage={zoomImage}
-    onNext={handleNextImage}
-    onPrev={handlePrevImage}
-/>
-
+                open={openImageModal}
+                handleOpen={handleOpenImageZoom}
+                zoomImage={zoomImage}
+                onNext={handleNextImage}
+                onPrev={handlePrevImage}
+            />
         </>
     )
 }

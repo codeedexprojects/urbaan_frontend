@@ -99,14 +99,14 @@ const UserWishlist = () => {
                                         onClick={() => handleWishlistDelete(product.productId._id, product.productId?.title)}
                                         className='text-deleteBg absolute -top-5 right-1 cursor-pointer'
                                     />
-                                    <Link
-                                        to="/product-details"
-                                        state={{
-                                            productId: product?.productId?._id,
-                                            categoryId: product?.productId?.category?._id
-                                        }}
-                                        className="group"
-                                    >
+                                     <Link
+                                                                            to={`/product-details/${product?.productId?._id}${product?.productId?.category?._id ? `/${product.productId.category._id}` : ""}`}
+                                                                            state={{
+                                                                                productId: product?.productId?._id,
+                                                                                categoryId: product?.productId?.category?._id
+                                                                            }}
+                                                                            className="group"
+                                                                        >
                                         <div className='w-full h-52 xl:h-80 lg:h-80 rounded-xl overflow-hidden'>
                                             <img
                                                 src={product?.productId?.images[0]}

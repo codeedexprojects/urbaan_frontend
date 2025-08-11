@@ -815,7 +815,7 @@ const AddProduct = () => {
 
                             {/* Other Specifications */}
                             <div className='flex items-center gap-1'>
-                                <label htmlFor="neck" className='font-normal text-sm w-32'>Other</label>
+                                <label htmlFor="other" className='font-normal text-sm w-32'>Other</label>
                                 <p>:</p>
                                 <select
                                     id="other"

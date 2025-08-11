@@ -871,7 +871,7 @@ const EditProduct = () => {
                             </div>
 
                             <div className='flex items-center gap-1'>
-                                <label htmlFor="neck" className='font-normal text-sm w-32'>Other</label>
+                                <label htmlFor="other" className='font-normal text-sm w-32'>Other</label>
                                 <p>:</p>
                                 <select
                                     id="other"
@@ -913,7 +913,7 @@ const EditProduct = () => {
                     </div>
                 </div>
 
-                {/* second col */}
+                
 
                 {/* photo upload */}
                 <div className='bg-white rounded-xl shadow-md p-5 space-y-6 h-fit'>

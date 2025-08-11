@@ -216,7 +216,8 @@ const AllCategory = () => {
                                 products.map((product) => {
                                     return (
                                         <div className='group relative' key={product._id}>
-                                            <Link to='/product-details' state={{ productId: product._id, categoryId: product.category._id }} className="cursor-pointer">
+                                            <Link  to={`/product-details/${product._id}/${product.category._id}`}
+                                             state={{ productId: product._id, categoryId: product.category._id }} className="cursor-pointer">
                                                 <div className="w-full aspect-[2/3] rounded-xl overflow-hidden">
                                                     <img src={product.images[0]} alt="" className='w-full h-full object-cover rounded-xl shadow-md transition transform scale-100 duration-500 ease-in-out cursor-pointer group-hover:scale-105' onError={(e) => e.target.src = '/no-image.jpg'} />
                                                 </div>

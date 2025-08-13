@@ -417,7 +417,6 @@ const EditProduct = () => {
 
             toast.success("Product is updated");
             navigate(-1)
-            // Reset form fields
             setEditProdTitle('');
             setEditProdCategory('');
             setEditProdSubCategory('');
@@ -426,7 +425,7 @@ const EditProduct = () => {
             setEditProdDiscount('');
             setEditProdOfferPrice('');
             setEditProdCheckboxes({ latest: false, offer: false, featured: false, freeDelivery: false });
-            setEditSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "", neck: "" , other: "" });
+            setEditSpecifications({ netWeight: "", fit: "", sleevesType: "", Length: "", occasion: "", innerLining: "", material: "", pocket: "", neck: "", other: "" });
             setEditAttributeFields([{ color: "", sizes: [{ size: "", stock: "" }] }]);
             setEditProdDescription('');
             setEditProdImage([]);
@@ -520,8 +519,6 @@ const EditProduct = () => {
             // Handle success based on the actual response
             if (response.data.message === "Image deleted successfully") {
                 toast.success("Product image is deleted");
-                // Update the images if the backend returns them
-                // setEditProdImage(initialProducts.images || []);
             } else {
                 console.error("Failed to delete the image on the server.");
                 toast.error("Failed to delete the image on the server.");
@@ -530,6 +527,14 @@ const EditProduct = () => {
             console.error("Error during deletion:", error);
             toast.error("An error occurred while deleting the image.");
         }
+    };
+
+    const roundPrice = (price) => {
+        return price % 1 >= 0.9 ? Math.ceil(price) : Math.floor(price);
+    };
+
+    const roundDiscount = (discount) => {
+        return discount % 1 >= 0.9 ? Math.ceil(discount) : Math.floor(discount);
     };
 
 
@@ -637,7 +642,7 @@ const EditProduct = () => {
                                 <input
                                     type="text"
                                     name="name"
-                                    value={editProdOfferPrice}
+                                    value={roundPrice(editProdOfferPrice)}
                                     onChange={(e) => {
                                         setEditProdOfferPrice(e.target.value);
                                         setLastChanged('offerPrice');
@@ -653,7 +658,7 @@ const EditProduct = () => {
                                 <input
                                     type="text"
                                     name="name"
-                                    value={editProdDiscount}
+                                    value={roundDiscount(editProdDiscount)}
                                     onChange={(e) => {
                                         setEditProdDiscount(e.target.value);
                                         setLastChanged('discount');
@@ -913,7 +918,7 @@ const EditProduct = () => {
                     </div>
                 </div>
 
-                
+
 
                 {/* photo upload */}
                 <div className='bg-white rounded-xl shadow-md p-5 space-y-6 h-fit'>

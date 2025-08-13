@@ -683,8 +683,6 @@ const ProductDetails = () => {
                                 <IoHeartOutline className='text-xl' />
                             </Button>
                         )}
-
-
                         <div>
                             <ProductShare
                                 productDetails={productDetails}

@@ -133,10 +133,15 @@ const OrderTable = ({ orderList, setOrderList }) => {
             margin-bottom: 10px;
             color: #2c5aa0;
           }
-          .address-content {
-            line-height: 1.6;
-            font-size: 14px;
-          }
+         .address-content {
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.address-block:first-child .address-content {
+  font-size: 12px; /* Smaller font for FROM address only */
+}
+
           .order-info {
             background-color: #f8f9fa;
             padding: 15px;

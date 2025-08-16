@@ -59,6 +59,10 @@ const RecentOrders = () => {
         }
     };
 
+    const roundPrice = (price) => {
+        return Math.ceil(price);
+    };
+
     // Status colors
     const statusColors = {
         Delivered: "text-shippedBg bg-shippedBg/20",
@@ -160,7 +164,7 @@ const RecentOrders = () => {
                                             variant="small"
                                             className="font-normal font-custom text-sm"
                                         >
-                                            ₹{recentOrder.totalPrice}
+                                            ₹{roundPrice(recentOrder?.totalPrice)}
                                         </Typography>
                                     </td>
                                     <td className={classes}>

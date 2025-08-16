@@ -9,7 +9,7 @@ import AppLoader from '../../../../Loader';
 import { useState } from 'react';
 import { ProductDetailsModal } from './ProductDetailsModal';
 
-const TABLE_HEAD = ["Product Name", "Description", "Stock", "Price", "Orders", "Publish", "Action"];
+const TABLE_HEAD = ["Product Name", "Description","Code", "Stock", "Price", "Orders", "Publish", "Action"];
 
 const ListView = ({ products, isLoading, selectedProductId, setSelectedProductId, handleDeleteProduct }) => {
     const { open, handleOpen, modalType } = useContext(AppContext);
@@ -98,6 +98,14 @@ const ListView = ({ products, isLoading, selectedProductId, setSelectedProductId
                                                                 className="font-normal font-custom text-sm capitalize truncate overflow-hidden whitespace-nowrap w-32"
                                                             >
                                                                 {product.description}
+                                                            </Typography>
+                                                        </td>
+                                                        <td className={classes}>
+                                                            <Typography
+                                                                variant="small"
+                                                                className="font-normal font-custom text-sm"
+                                                            >
+                                                                {product.product_Code}
                                                             </Typography>
                                                         </td>
                                                         <td className={classes}>

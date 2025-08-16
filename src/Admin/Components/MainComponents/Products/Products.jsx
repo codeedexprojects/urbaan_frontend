@@ -10,6 +10,7 @@ import { Button } from '@material-tailwind/react'
 import { Link } from 'react-router-dom'
 import { FaPlus } from 'react-icons/fa6'
 import toast from 'react-hot-toast'
+import { Input } from '@material-tailwind/react'
 
 
 const Products = () => {
@@ -20,6 +21,7 @@ const Products = () => {
   const [initialProducts, setInitialProducts] = useState(null)
   const [selectedProductId, setSelectedProductId] = useState(null)
   const [categoryFilter, setCategoryFilter] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // fetch products
   const fetchProducts = async () => {
@@ -35,6 +37,7 @@ const Products = () => {
       }
       const response = await axios.get(`${BASE_URL}/admin/products/view-products`, { headers });
       setProducts(response.data);
+      setInitialProducts(response.data); // Store initial products for reset
       setIsLoading(false)
       console.log(response.data);
     } catch (error) {
@@ -73,10 +76,49 @@ const Products = () => {
     }
   }
 
+  // handle search
+  const handleSearch = async (query) => {
+    setSearchQuery(query);
+    
+    if (!query.trim()) {
+      // If search query is empty, reset to initial products
+      fetchProducts();
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert("Authorization is missing");
+        return;
+      }
+
+      const headers = {
+        Authorization: `Bearer ${token}`
+      };
+
+      const response = await axios.get(`${BASE_URL}/admin/search/view?query=${query}`, { headers });
+      setProducts(response.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error, ": error searching products");
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
-      <h1 className='text-2xl lg:text-3xl font-semibold'>Products</h1>
+      <div className="flex justify-between items-center">
+        <h1 className='text-2xl lg:text-3xl font-semibold'>Products</h1>
+        <div className="w-72">
+          <Input
+            label="Search products..."
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+          />
+        </div>
+      </div>
       <div className="grid grid-cols-8 mt-5 gap-5">
         <div className='grid col-span-2 overflow-y-auto hide-scrollbar'>
           <Filter
@@ -84,7 +126,9 @@ const Products = () => {
             setView={setView}
             categoryFilter={categoryFilter}
             setCategoryFilter={setCategoryFilter}
-            setProducts={setProducts} />
+            setProducts={setProducts} 
+            initialProducts={initialProducts}
+          />
         </div>
         <div className='grid col-span-6 overflow-y-auto hide-scrollbar space-y-5'>
           <Link
@@ -96,8 +140,6 @@ const Products = () => {
             <ListView
               products={products}
               isLoading={isLoading}
-              // initialProducts={initialProducts}
-              // setInitialProducts={setInitialProducts}
               selectedProductId={selectedProductId}
               setSelectedProductId={setSelectedProductId}
               handleDeleteProduct={handleDeleteProduct}
@@ -106,14 +148,11 @@ const Products = () => {
             <GridView
               products={products}
               isLoading={isLoading}
-              // initialProducts={initialProducts}
-              // setInitialProducts={setInitialProducts}
               selectedProductId={selectedProductId}
               setSelectedProductId={setSelectedProductId}
               handleDeleteProduct={handleDeleteProduct}
             />
-          )
-          }
+          )}
         </div>
       </div>
     </>

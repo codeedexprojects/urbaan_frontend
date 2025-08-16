@@ -46,8 +46,8 @@ const OrderTable = ({ orderList, setOrderList }) => {
     city: "Ernakulam",
     state: "Kerala",
     pincode: "682024",
-    phone: "+91 9847820705",
-    email: "chimsuc@gmail.com"
+    phone: "+91 8921407174",
+    email: "urbaancollections@gmail.com"
   };
 
   const handleEditTrackId = (trackId) => {
@@ -95,7 +95,7 @@ const OrderTable = ({ orderList, setOrderList }) => {
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Order Invoice - ${order.orderId}</title>
+        <title>Order Details - ${order.orderId}</title>
         <style>
           body {
             font-family: Arial, sans-serif;

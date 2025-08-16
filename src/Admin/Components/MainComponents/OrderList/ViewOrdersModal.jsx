@@ -5,7 +5,7 @@ import {
     DialogFooter,
     Typography
 } from "@material-tailwind/react";
-import namer from 'color-namer'; // Import the color-namer library
+import namer from 'color-namer';
 import React from "react";
 
 export function ViewOrdersModal({ handleOpen, open, getUserOrders }) {
@@ -21,6 +21,9 @@ export function ViewOrdersModal({ handleOpen, open, getUserOrders }) {
             console.error("Invalid color code:", error);
             return "Invalid Color";
         }
+    };
+    const roundPrice = (price) => {
+        return Math.ceil(price);
     };
 
     return (
@@ -122,7 +125,7 @@ export function ViewOrdersModal({ handleOpen, open, getUserOrders }) {
                                                 color="blue-gray"
                                                 className="font-normal capitalize font-custom"
                                             >
-                                                ₹{userOrder?.price}
+                                                ₹{roundPrice(userOrder?.price)}
                                             </Typography>
                                         </td>
                                     </tr>
